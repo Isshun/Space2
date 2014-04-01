@@ -14,14 +14,8 @@ import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.service.GameService;
 
 public class SpaceScreen extends Screen {
-	private int time = 0;
-	private int mLastPosX = -1;
-	private int mLastPosY = -1;
 	private int mPosX;
 	private int mPosY;
-	private int mTouch = -1;
-	private int mTouchX;
-	private int mTouchY;
 
 	@Override
 	public void render () {
@@ -39,41 +33,18 @@ public class SpaceScreen extends Screen {
 	}
 
 	@Override
-	public void tick (Input input) {
-		time++;
-			if (time > Constants.TOUCH_RECOVERY && (input.buttons[Input.SHOOT] && !input.oldButtons[Input.SHOOT] || Gdx.input.isTouched())) {
-
-				int x = Gdx.input.getX() * Space2.GAME_WIDTH / Gdx.graphics.getWidth();
-				int y = Gdx.input.getY() * Space2.GAME_HEIGHT / Gdx.graphics.getHeight();
-				
-				if (mTouch == -1) {
-					mTouch = time;
-					mTouchX = x;
-					mTouchY = y;
-				}
-				
-				if (mLastPosX != -1) {
-					mPosX += mLastPosX - x;
-					mPosY += mLastPosY - y;
-				}
-				mLastPosX = x;
-				mLastPosY = y;
-				
-				input.releaseAllKeys();
+	public void onTouch (int x, int y) {
+		SystemModel system = GameService.getInstance().getSystemAtPos(x - mPosX, y - mPosY);
+		if (system != null) {
+			System.out.println("Open system: " + system.getName());
+			setScreen(new SystemScreen(system));
 		}
-			
-			if (Gdx.input.isTouched() == false && mTouch != -1) {
-				mLastPosX = -1;
+	}
 
-				if (mTouch + 60 > time) {
-					SystemModel system = GameService.getInstance().getSystemAtPos(mTouchX, mTouchY);
-					if (system != null) {
-						System.out.println("Open system: " + system.getName());
-						setScreen(new SystemScreen(system));
-					}
-				}
-				mTouch = -1;
-			}
+	@Override
+	public void onMove (int offsetX, int offsetY) {
+		mPosX += offsetX;
+		mPosY += offsetY;
 	}
 
 }

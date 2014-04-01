@@ -52,4 +52,16 @@ public class LevelTransitionScreen extends Screen {
 		c.y = (int)(ya * 240 * (1 - pow));
 		level2.render(this, c);
 	}
+
+	@Override
+	public void onTouch (int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMove (int offsetX, int offsetY) {
+		// TODO Auto-generated method stub
+		
+	}
 }

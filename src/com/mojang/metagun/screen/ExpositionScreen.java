@@ -60,4 +60,16 @@ public class ExpositionScreen extends Screen {
 			setScreen(new TitleScreen());
 		}
 	}
+
+	@Override
+	public void onTouch (int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMove (int offsetX, int offsetY) {
+		// TODO Auto-generated method stub
+		
+	}
 }
