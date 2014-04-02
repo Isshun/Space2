@@ -12,13 +12,12 @@ import com.mojang.metagun.screen.Screen;
 import com.mojang.metagun.screen.SpaceScreen;
 import com.mojang.metagun.service.GameService;
 
-public class Space2 implements ApplicationListener {
+public class Game implements ApplicationListener {
 	private static final long serialVersionUID = 1L;
 
 	private LinkedList<Screen> mScreens;
 	private boolean running = false;
 	private Screen screen;
-	private final Input input = new Input();
 	private final boolean started = false;
 	private float accum = 0;
 	private boolean mMenuIsOpen;
@@ -28,7 +27,6 @@ public class Space2 implements ApplicationListener {
 		
 		Art.load();
 		Sound.load();
-		Gdx.input.setInputProcessor(input);
 		running = true;
 		Gdx.input.setCatchBackKey(true);
 		Gdx.input.setCatchMenuKey(true);
@@ -67,8 +65,7 @@ public class Space2 implements ApplicationListener {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		accum += Gdx.graphics.getDeltaTime();
 		while (accum > 1.0f / 60.0f) {
-			screen.tick(input);
-			input.tick();
+			screen.tick();
 			accum -= 1.0f / 60.0f;
 		}
 		screen.render();

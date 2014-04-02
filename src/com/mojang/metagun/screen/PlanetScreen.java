@@ -1,21 +1,11 @@
 
 package com.mojang.metagun.screen;
 
-import java.util.List;
-
-import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.Gdx;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
-import com.mojang.metagun.Input;
-import com.mojang.metagun.Space2;
-import com.mojang.metagun.Sound;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.SystemModel;
-import com.mojang.metagun.service.GameService;
 
 public class PlanetScreen extends Screen {
 	private static final int PLANET_REVOLUTION = 100;

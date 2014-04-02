@@ -11,8 +11,11 @@ import com.mojang.metagun.model.PlanetClassModel;
 public class Art {
 	public static final int PLANET_RES_12 = 4;
 	public static final int PLANET_RES_16 = 0;
+	public static final int PLANET_RES_24 = 5;
 	public static final int PLANET_RES_32 = 1;
 	public static final int PLANET_RES_42 = 2;
+	public static final int PLANET_RES_56 = 6;
+	public static final int PLANET_RES_64 = 7;
 	public static final int PLANET_RES_128 = 3;
 	
 	public static TextureRegion[][] guys;
@@ -41,6 +44,7 @@ public class Art {
 	public static TextureRegion flag_planets;
 	public static TextureRegion flag_relations;
 	public static TextureRegion map;
+	public static TextureRegion ship;
 	public static TextureRegion ic_people;
 	public static TextureRegion ic_satisfaction;
 	public static TextureRegion ic_construction_16;
@@ -62,6 +66,7 @@ public class Art {
 		sun = load("res/sun.png", 128, 128);
 		level = new Pixmap(Gdx.files.internal("res/levels.png"));
 		titleScreen = load("res/titlescreen.png", 320, 740);
+		ship = load("res/ship.png", 16, 16);
 		guys = split("res/guys.png", 6, 6);
 		bigText = split("res/guys.png", 12, 12);
 		player1 = split("res/player.png", 16, 32);
@@ -85,7 +90,7 @@ public class Art {
 		winScreen1 = load("res/winscreen1.png", 320, 240);
 		winScreen2 = load("res/winscreen2.png", 320, 240);
 		
-		planets = new TextureRegion[15][5];
+		planets = new TextureRegion[15][8];
 		for (int i = 0; i < 15; i++) {
 			switch (i) {
 			case PlanetClassModel.CLASS_K_OCEAN: loadPlanet(planets[i], "planet_k1"); break;
@@ -103,8 +108,11 @@ public class Art {
 	private static void loadPlanet (TextureRegion[] textures, String name) {
 		textures[PLANET_RES_12] = load("res/" + name + "_12.png", 12, 12);
 		textures[PLANET_RES_16] = load("res/" + name + "_16.png", 16, 16);
+		textures[PLANET_RES_24] = load("res/" + name + "_24.png", 24, 24);
 		textures[PLANET_RES_32] = load("res/" + name + "_32.png", 32, 32);
 		textures[PLANET_RES_42] = load("res/" + name + "_42.png", 42, 42);
+		textures[PLANET_RES_56] = load("res/" + name + "_56.png", 56, 56);
+		textures[PLANET_RES_64] = load("res/" + name + "_64.png", 64, 64);
 		textures[PLANET_RES_128] = load("res/" + name + "_128.png", 128, 128);
 	}
 

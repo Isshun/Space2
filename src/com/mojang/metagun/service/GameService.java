@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.metagun.Constants;
+import com.mojang.metagun.model.FleetModel;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.PlayerModel;
 import com.mojang.metagun.model.SystemModel;
+import com.mojang.metagun.model.TravelModel;
 
 public class GameService {
 	
@@ -19,10 +21,13 @@ public class GameService {
 
 	private PlayerModel mPlayer;
 
+	private ArrayList<TravelModel> mTravels;
+
 	private GameService() {
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new ArrayList<PlanetModel>();
 		mPlayers = new ArrayList<PlayerModel>();
+		mTravels = new ArrayList<TravelModel>();
 	}
 	
 	public List<SystemModel> getSystems () {
@@ -125,6 +130,12 @@ public class GameService {
 			mSystems.add(system);
 		}
 
+		FleetModel f1 = new FleetModel(mPlayer);
+		FleetModel f2 = new FleetModel(mPlayer);
+		FleetModel f3 = new FleetModel(mPlayer);
+		
+		mTravels.add(new TravelModel(f1, mSystems.get(0), mSystems.get(4)));
+		mTravels.add(new TravelModel(f2, mSystems.get(1), mSystems.get(5)));
 	}
 
 	private void addPlanet (SystemModel system, PlanetModel p) {
@@ -141,6 +152,15 @@ public class GameService {
 		return null;
 	}
 
+	public TravelModel getTravelAtPos (int x, int y) {
+		for (TravelModel t: mTravels) {
+			if (x >= t.getX() && x <= t.getX() + Constants.SYSTEM_SIZE && y >= t.getY() && y <= t.getY() + Constants.SYSTEM_SIZE) {
+				return t;
+			}
+		}
+		return null;
+	}
+
 	public List<PlanetModel> getPlanets () {
 		return mPlanets;
 	}
@@ -151,6 +171,10 @@ public class GameService {
 
 	public List<PlayerModel> getPlayers () {
 		return mPlayers;
+	}
+
+	public List<TravelModel> getTravels () {
+		return mTravels;
 	}
 
 }

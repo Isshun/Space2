@@ -2,7 +2,6 @@
 package com.mojang.metagun.screen;
 
 import com.mojang.metagun.Art;
-import com.mojang.metagun.Input;
 
 public class PauseScreen extends Screen {
 	private final Screen parent;

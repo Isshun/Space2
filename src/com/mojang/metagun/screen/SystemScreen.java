@@ -3,17 +3,13 @@ package com.mojang.metagun.screen;
 
 import java.util.List;
 
-import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
-import com.mojang.metagun.Input;
-import com.mojang.metagun.Space2;
-import com.mojang.metagun.Sound;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.SystemModel;
-import com.mojang.metagun.service.GameService;
 
 public class SystemScreen extends Screen {
 	private static final int PLANET_REVOLUTION = 100;
@@ -37,14 +33,16 @@ public class SystemScreen extends Screen {
 		draw(Art.bg, 0, 0);
 		draw(Art.sun, -64, Constants.GAME_HEIGHT / 2 - 64);
 		
-		drawRectangle(6, 6, Constants.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
-		drawBigString(mSystem.getName(), 12, 12);
-
 		if (mSystem.getOwner() != null) {
-			draw(mSystem.getOwner().getFlag(), 4, 32);
+			Color color = new Color(mSystem.getOwner().getColor());
+			drawRectangle(6, 6, Constants.GAME_WIDTH - 12, 20, Color.rgba8888(color.r, color.g, color.b, 0.65f));
+			draw(mSystem.getOwner().getFlag(), 8, 8);
+			drawBigString(mSystem.getName(), 36, 12);
 			drawString(String.format("%s (%s)", mSystem.getOwner().getName(), mSystem.getOwner().getRelation()), 30, 32);
 		} else {
+			drawRectangle(6, 6, Constants.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
 			drawString("Free", 12, 32);
+			drawBigString(mSystem.getName(), 12, 12);
 		}
 
 		List<PlanetModel> planets = mSystem.getPlanets();
@@ -71,10 +69,35 @@ public class SystemScreen extends Screen {
 	}
 
 	private void drawPlanet (PlanetModel planet, int posX, int posY) {
-		draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_42], posX, posY);
-		drawString(planet.getShortName(), posX, posY + 42 + 6);
-		drawString("Size: " + planet.getShortSizeName(), posX, posY + 42 + 16);
-		drawString("Class:  " + planet.getShortClassification(), posX, posY + 42 + 26);
+		int offsetY = 0;
+		switch (planet.getSize()) {
+		case 0:
+			draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_16], posX + 26 - 8, posY + 22 - 8);
+			offsetY = 8;
+			break;
+		case 1:
+			draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_24], posX + 26 - 12, posY + 22 - 12);
+			offsetY = 12;
+			break;
+		case 2:
+		default:
+			draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_32], posX + 26 - 16, posY + 22 - 16);
+			offsetY = 16;
+			break;
+		case 3:
+			draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_42], posX + 26 - 21, posY + 22 - 21);
+			offsetY = 21;
+			break;
+		case 4:
+			draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_56], posX + 26 - 28, posY + 22 - 28);
+			offsetY = 28;
+			break;
+		}
+		String name = planet.getShortName();
+		drawString(name, posX + 26 - name.length() * 3, posY + 32 + Math.max(offsetY, 21));
+		
+		String code = planet.getShortClassification() + planet.getShortSizeName();
+		drawString(code, posX + 26 - code.length() * 3, posY + 44 + Math.max(offsetY, 21));
 	}
 
 	@Override

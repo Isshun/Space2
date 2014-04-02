@@ -4,6 +4,7 @@ package com.mojang.metagun.screen;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -13,14 +14,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
-import com.mojang.metagun.Input;
-import com.mojang.metagun.Space2;
+import com.mojang.metagun.Game;
 
 public abstract class Screen {
 	private static final int 		TOUCH_INTERVAL = 32;
 	private static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\< "};
 	protected static Random 		sRandom = new Random();
-	private Space2 					mGame;
+	private Game 						mGame;
 	public SpriteBatch 				mSpriteBatch;
 	private int 						mTime;
 	private int 						mBackHistory;
@@ -34,13 +34,13 @@ public abstract class Screen {
 		mSpriteBatch.dispose();
 	}
 
-	public final void init (Space2 metagun) {
-		this.mGame = metagun;
+	public final void init (Game game) {
+		this.mGame = game;
 		this.mTime = Constants.TOUCH_RECOVERY / 2;
 		mBackHistory = 0;
 		mTouch = -1;
 		Matrix4 projection = new Matrix4();
-		projection.setToOrtho(0, 320, 240, 0, -1, 1);
+		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
 
 		mSpriteBatch = new SpriteBatch(100);
 		mSpriteBatch.setProjectionMatrix(projection);
@@ -124,7 +124,7 @@ public abstract class Screen {
 	public abstract void onTouch(int x, int y);
 	public abstract void onMove(int offsetX, int offsetY);
 
-	public void tick (Input input) {
+	public void tick () {
 		mTime++;
 		
 		if (mTime < Constants.TOUCH_RECOVERY) {
@@ -177,8 +177,6 @@ public abstract class Screen {
 			mLastTouchX = x;
 			mLastTouchY = y;
 		}
-
-		input.releaseAllKeys();
 	}
 
 }

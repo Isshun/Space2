@@ -3,15 +3,12 @@ package com.mojang.metagun.screen;
 
 import java.util.List;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
-import com.mojang.metagun.Input;
-import com.mojang.metagun.Space2;
-import com.mojang.metagun.Sound;
 import com.mojang.metagun.model.SystemModel;
+import com.mojang.metagun.model.TravelModel;
 import com.mojang.metagun.service.GameService;
 
 public class SpaceScreen extends Screen {
@@ -24,8 +21,6 @@ public class SpaceScreen extends Screen {
 	@Override
 	public void render () {
 		mSpriteBatch.begin();
-		
-		System.out.println(mPosX / 2 % 320);
 		
 		int posX = mPosX / 2 % 320;
 		int posY = mPosY / 2 % 240;
@@ -41,12 +36,20 @@ public class SpaceScreen extends Screen {
 		draw(Art.bg, posX - 320, posY + 240);
 		draw(Art.bg, posX, posY + 240);
 		draw(Art.bg, posX + 320, posY + 240);
-
+		
 		List<SystemModel> systems = GameService.getInstance().getSystems();
 		for (SystemModel system : systems) {
 			draw(Art.system, mPosX + system.getX(), mPosY + system.getY());
 			String name = system.getName();
 			drawString(name, mPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mPosY + system.getY() + Constants.SYSTEM_SIZE + 6);
+		}
+
+		List<TravelModel> travels = GameService.getInstance().getTravels();
+		for (TravelModel travel : travels) {
+			Sprite ship = new Sprite(Art.ship);
+			ship.setRotation(travel.getAngle());
+			ship.setPosition(mPosX + travel.getX(), mPosY + travel.getY());
+			ship.draw(mSpriteBatch);
 		}
 		
 		drawGeneralInfos(systems, 6, 6);
@@ -88,6 +91,13 @@ public class SpaceScreen extends Screen {
 		if (system != null) {
 			addScreen(new SystemScreen(system));
 		}
+		
+		TravelModel travel = GameService.getInstance().getTravelAtPos(x - mPosX, y - mPosY);
+		if (travel != null) {
+			addScreen(new TravelScreen(travel));
+		}
+		List<TravelModel> travels = GameService.getInstance().getTravels();
+
 	}
 
 	@Override

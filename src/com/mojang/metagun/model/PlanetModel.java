@@ -155,4 +155,8 @@ public class PlanetModel {
 		return mSatisfaction;
 	}
 
+	public int getSize () {
+		return mSize;
+	}
+
 }

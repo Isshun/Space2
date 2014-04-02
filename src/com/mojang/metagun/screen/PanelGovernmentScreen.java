@@ -1,19 +1,14 @@
 package com.mojang.metagun.screen;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import com.badlogic.gdx.graphics.Color;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
-import com.mojang.metagun.Space2;
 import com.mojang.metagun.model.PlanetModel;
-import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.service.GameService;
 
 public class PanelGovernmentScreen extends Screen {
