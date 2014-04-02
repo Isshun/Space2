@@ -47,13 +47,13 @@ public class PanelGovernmentScreen extends Screen {
 			public int compare (PlanetModel p1, PlanetModel p2) {
 				switch (mSortMode) {
 				case -1: return p1.getName().compareTo(p2.getName());
-				case 0: return p1.getPeople() < p2.getPeople() ? -1 : 1;
-				case 1: return p1.getSatisfation() < p2.getSatisfation() ? -1 : 1;
-				case 2: return p1.getFood() < p2.getFood() ? -1 : 1;
-				case 3: return p1.getBuild() < p2.getBuild() ? -1 : 1;
-				case 4: return p1.getMoney() < p2.getMoney() ? -1 : 1;
-				case 5: return p1.getScience() < p2.getScience() ? -1 : 1;
-				case 6: return p1.getCulture() < p2.getCulture() ? -1 : 1;
+				case 0: return p1.getPeople() > p2.getPeople() ? -1 : 1;
+				case 1: return p1.getSatisfation() > p2.getSatisfation() ? -1 : 1;
+				case 2: return p1.getFood() > p2.getFood() ? -1 : 1;
+				case 3: return p1.getBuild() > p2.getBuild() ? -1 : 1;
+				case 4: return p1.getMoney() > p2.getMoney() ? -1 : 1;
+				case 5: return p1.getScience() > p2.getScience() ? -1 : 1;
+				case 6: return p1.getCulture() > p2.getCulture() ? -1 : 1;
 				}
 				return 0;
 			}
@@ -62,7 +62,8 @@ public class PanelGovernmentScreen extends Screen {
 		for (PlanetModel planet : planets) {
 			if (planet.getPeople() > 0) {
 				drawRectangle(4, START_Y + i * (LINE_HEIGHT + 1), Constants.GAME_WIDTH - 8, LINE_HEIGHT, i % 2 == 0 ? Color.rgba8888(0.85f, 0.85f, 1, 0.45f) : Color.rgba8888(0.85f, 0.85f, 1, 0.4f));
-				drawString(planet.getName(), 8, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_12], 5, START_Y + 2 + i * (LINE_HEIGHT + 1));
+				drawString(planet.getName(), 20, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				drawString(String.valueOf(planet.getPeople()), START_X + 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				drawString(String.valueOf((int)planet.getSatisfation()), START_X + 2 + SPACING_X * 1, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				drawString(String.valueOf((int)planet.getFood()), START_X + 2 + SPACING_X * 2, START_Y + 5 + i * (LINE_HEIGHT + 1));

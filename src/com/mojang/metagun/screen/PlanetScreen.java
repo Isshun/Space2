@@ -42,15 +42,15 @@ public class PlanetScreen extends Screen {
 		int posY = 20;
 
 		if (Math.sin(tick) >= 0) {
-			draw(Art.planet_128, posX, posY);
+			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], posX, posY);
 		}
 
 		int moonPosX = posX + 128 / 2 + (int)(Math.cos(tick) * 80) - 16;
 		int moonPosY = posY + 128 / 2 + (int)(Math.sin(tick) * 32) - 16;
-		draw(Art.planet_32, moonPosX, moonPosY);
+		draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_32], moonPosX, moonPosY);
 		
 		if (Math.sin(tick) < 0) {
-			draw(Art.planet_128, posX, posY);
+			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], posX, posY);
 		}
 		
 		drawRectangle(6, 6, Constants.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
@@ -65,36 +65,36 @@ public class PlanetScreen extends Screen {
 	private void drawCharacteristics (int posX, int posY) {
 		drawRectangle(posX, posY, 134, 46, Color.rgba8888(1, 1, 1, 0.5f));
 		drawRectangle(posX, posY, 134, 12, Color.rgba8888(1, 1, 1, 0.5f));
-		drawString("Characteristics", posX + 4, posY + 4);
+		drawString("Info", posX + 4, posY + 4);
 		drawString("Size:          " + mPlanet.getSizeName(), posX + 4, posY + 4 + 12);
-		drawString("Class:   " + mPlanet.getClassification(), posX + 4, posY + 4 + 22);
+		drawString("Class:   " + mPlanet.getClassName(), posX + 4, posY + 4 + 22);
 		drawString("Population:         " + mPlanet.getPeople(), posX + 4, posY + 4 + 32);
 	}
 
 	private void drawInfos (int posX, int posY) {
 		drawRectangle(posX, posY, 134, 72, Color.rgba8888(1, 1, 1, 0.5f));
 		drawRectangle(posX, posY, 134, 12, Color.rgba8888(1, 1, 1, 0.5f));
-		drawString("Production: ", posX + 4, posY + 4);
+		drawString("Production ", posX + 4, posY + 4);
 		
-		posY += 10;
-		draw(Art.res_food, posX + 4, posY + 8);
-		drawString(String.format("Food:        %d (%d)", (int)mPlanet.getFood(), (int)mPlanet.getBaseFood()), posX + 20, posY + 10);
+		posY += 14;
+		draw(Art.res_food, posX + 4, posY);
+		drawString(String.format("Food:        %d (%d)", (int)mPlanet.getFood(), (int)mPlanet.getBaseFood()), posX + 20, posY + 4);
 
-		posY += 10;
-		draw(Art.ic_construction_12, posX + 4, posY + 8);
-		drawString(String.format("Build:       %d (%d)", (int)mPlanet.getBuild(), (int)mPlanet.getBaseBuild()), posX + 20, posY + 10);
+		posY += 12;
+		draw(Art.ic_construction_12, posX + 4, posY);
+		drawString(String.format("Build:       %d (%d)", (int)mPlanet.getBuild(), (int)mPlanet.getBaseBuild()), posX + 20, posY + 4);
 
-		posY += 10;
-		draw(Art.ic_money_12, posX + 4, posY + 8);
-		drawString(String.format("Money:       %d (%d)", (int)mPlanet.getMoney(), (int)mPlanet.getBaseMoney()), posX + 20, posY + 10);
+		posY += 12;
+		draw(Art.ic_money_12, posX + 4, posY);
+		drawString(String.format("Money:       %d (%d)", (int)mPlanet.getMoney(), (int)mPlanet.getBaseMoney()), posX + 20, posY + 4);
 
-		posY += 10;
-		draw(Art.res_science, posX + 4, posY + 8);
-		drawString(String.format("Science:     %d (%d)", (int)mPlanet.getScience(), (int)mPlanet.getBaseScience()), posX + 20, posY + 10);
+		posY += 12;
+		draw(Art.res_science, posX + 4, posY);
+		drawString(String.format("Science:     %d (%d)", (int)mPlanet.getScience(), (int)mPlanet.getBaseScience()), posX + 20, posY + 4);
 
-		posY += 10;
-		draw(Art.res_culture, posX + 4, posY + 8);
-		drawString(String.format("Culture:     %d (%d)", (int)mPlanet.getCulture(), (int)mPlanet.getBaseCulture()), posX + 20, posY + 10);
+		posY += 12;
+		draw(Art.res_culture, posX + 4, posY);
+		drawString(String.format("Culture:     %d (%d)", (int)mPlanet.getCulture(), (int)mPlanet.getBaseCulture()), posX + 20, posY + 4);
 	}
 
 	@Override

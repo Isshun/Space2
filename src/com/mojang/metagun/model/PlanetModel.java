@@ -1,22 +1,9 @@
 package com.mojang.metagun.model;
 
 public class PlanetModel {
-
-	public static String sClassD = "Planetoid (D)";
-	public static String sClassF = "Inert (F)";
-	public static String sClassH = "Uninhabitable (H)";
-	public static String sClassJ = "Gas giant (J)";
-	public static String sClassK = "Adaptable (K)";
-	public static String sClassL = "Hostile (L)";
-	public static String sClassM = "Suitable (M)";
-	public static String sClassN = "Sulfurique (N)";
-	public static String sClassP = "Glaciated (P)";
-	public static String sClassT = "Gas Giant (T)";
-	public static String sClassY = "Deamon (Y)";
-
 	private String mName;
 	private double mInitialTick;
-	private String mClass;
+	private PlanetClassModel mClass;
 	private SystemModel mSystem;
 	private int mPos;
 	private int mPeople;
@@ -26,9 +13,11 @@ public class PlanetModel {
 	private double mBaseScience;
 	private double mBaseMoney;
 	private double mSatisfaction;
+	private int mSize;
 
 	public PlanetModel () {
-		mClass = sClassM;
+		mClass = getRandomPlanetClass();
+		mSize = (int)(Math.random() * 5);
 		mPeople = 1;
 		mBaseBuild = Math.random() * 10;
 		mBaseMoney = Math.random() * 10;
@@ -36,6 +25,25 @@ public class PlanetModel {
 		mBaseCulture = Math.random() * 10;
 		mBaseFood = Math.random() * 10;
 		mSatisfaction = Math.random() * 100;
+	}
+
+	private PlanetClassModel getRandomPlanetClass () {
+		int totalRand = 0;
+		
+		for (PlanetClassModel pc: PlanetClassModel.sClass) {
+			totalRand += pc.rand;
+		}
+		
+		int r = (int)(Math.random() * totalRand);
+		int sum = 0;
+		for (PlanetClassModel pc: PlanetClassModel.sClass) {
+			if (r <= sum + pc.rand) {
+				return pc;
+			}
+			sum += pc.rand;
+		}
+		
+		return null;
 	}
 
 	public String getName() {
@@ -46,7 +54,11 @@ public class PlanetModel {
 		return getLatinNumber(mPos + 1);
 	}
 
-	public String getClassification() {
+	public String getClassName() {
+		return mClass.name;
+	}
+
+	public PlanetClassModel getClassification() {
 		return mClass;
 	}
 
@@ -59,7 +71,7 @@ public class PlanetModel {
 	}
 
 	public String getSizeName () {
-		return "Medium";
+		return PlanetSizeModel.getText(mSize);
 	}
 
 	public void setSystem (SystemModel system, int pos) {
@@ -84,11 +96,11 @@ public class PlanetModel {
 	}
 
 	public String getShortClassification () {
-		return "M";
+		return mClass.shortName;
 	}
 
 	public String getShortSizeName () {
-		return "MED";
+		return PlanetSizeModel.getShortText(mSize);
 	}
 
 	public double getBaseFood () {

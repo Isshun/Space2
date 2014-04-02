@@ -4,9 +4,17 @@ package com.mojang.metagun;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mojang.metagun.model.PlanetClassModel;
 
 public class Art {
+	public static final int PLANET_RES_12 = 4;
+	public static final int PLANET_RES_16 = 0;
+	public static final int PLANET_RES_32 = 1;
+	public static final int PLANET_RES_42 = 2;
+	public static final int PLANET_RES_128 = 3;
+	
 	public static TextureRegion[][] guys;
 	public static TextureRegion[][] player1;
 	public static TextureRegion[][] player2;
@@ -22,15 +30,13 @@ public class Art {
 	public static TextureRegion winScreen2;
 	public static TextureRegion system;
 	public static TextureRegion sun;
-	public static TextureRegion planet;
-	public static TextureRegion planet_32;
-	public static TextureRegion planet_128;
 	public static TextureRegion ic_money_12;
 	public static TextureRegion res_culture;
 	public static TextureRegion ic_construction_12;
 	public static TextureRegion res_science;
 	public static TextureRegion res_food;
 	public static TextureRegion[][] bigText;
+	public static TextureRegion[][] planets;
 	public static TextureRegion flag_planets;
 	public static TextureRegion flag_relations;
 	public static TextureRegion map;
@@ -52,9 +58,6 @@ public class Art {
 		res_science = load("res/res_science.png", 12, 12);
 		ic_people = load("res/ic_people.png", 12, 12);
 		ic_satisfaction = load("res/ic_satisfaction.png", 12, 12);
-		planet = load("res/planet_bad_42.png", 42, 42);
-		planet_32 = load("res/planet_bad_32.png", 32, 32);
-		planet_128 = load("res/planet_bad_128.png", 128, 128);
 		sun = load("res/sun.png", 128, 128);
 		level = new Pixmap(Gdx.files.internal("res/levels.png"));
 		titleScreen = load("res/titlescreen.png", 320, 740);
@@ -68,6 +71,28 @@ public class Art {
 		shot = new TextureRegion(guys[0][0].getTexture(), 3, 27, 2, 2);
 		winScreen1 = load("res/winscreen1.png", 320, 240);
 		winScreen2 = load("res/winscreen2.png", 320, 240);
+		
+		planets = new TextureRegion[15][5];
+		for (int i = 0; i < 15; i++) {
+			switch (i) {
+			case PlanetClassModel.CLASS_K_OCEAN: loadPlanet(planets[i], "planet_k1"); break;
+			case PlanetClassModel.CLASS_M: loadPlanet(planets[i], "planet_m"); break;
+			case PlanetClassModel.CLASS_L: loadPlanet(planets[i], "planet_l"); break;
+			case PlanetClassModel.CLASS_T: loadPlanet(planets[i], "planet_t"); break;
+			case PlanetClassModel.CLASS_J: loadPlanet(planets[i], "planet_t"); break;
+			case PlanetClassModel.CLASS_L_DESERT: loadPlanet(planets[i], "planet_l"); break;
+			case PlanetClassModel.CLASS_L_JUNGLE: loadPlanet(planets[i], "planet_l"); break;
+			default: loadPlanet(planets[i], "planet_y"); break;
+			}
+		}
+	}
+
+	private static void loadPlanet (TextureRegion[] textures, String name) {
+		textures[PLANET_RES_12] = load("res/" + name + "_12.png", 12, 12);
+		textures[PLANET_RES_16] = load("res/" + name + "_16.png", 16, 16);
+		textures[PLANET_RES_32] = load("res/" + name + "_32.png", 32, 32);
+		textures[PLANET_RES_42] = load("res/" + name + "_42.png", 42, 42);
+		textures[PLANET_RES_128] = load("res/" + name + "_128.png", 128, 128);
 	}
 
 	private static TextureRegion[][] split (String name, int width, int height) {

@@ -62,7 +62,7 @@ public class SystemScreen extends Screen {
 	}
 
 	private void drawPlanet (PlanetModel planet, int posX, int posY) {
-		draw(Art.planet, posX, posY);
+		draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_42], posX, posY);
 		drawString(planet.getShortName(), posX, posY + 42 + 6);
 		drawString("Size: " + planet.getShortSizeName(), posX, posY + 42 + 16);
 		drawString("Class:  " + planet.getShortClassification(), posX, posY + 42 + 26);
