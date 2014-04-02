@@ -33,33 +33,77 @@ public class GameService {
 	public void initDebug () {
 		
 		{
-			SystemModel system = new SystemModel("Regula", 100, 100);
-			{
-				PlanetModel p = new PlanetModel();
-				p.setInitialTick(0);
-				addPlanet(system, p);
-			}
-			{
-				PlanetModel p = new PlanetModel();
-				p.setInitialTick(0);
-				addPlanet(system, p);
-			}
-			{
-				PlanetModel p = new PlanetModel();
-				p.setInitialTick(0);
-				addPlanet(system, p);
-			}
+			SystemModel system = new SystemModel("Archer", (int)(Math.random() * 800), (int)(Math.random() * 400));
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
 			mSystems.add(system);
 		}
 
 		{
-			SystemModel system = new SystemModel("Wolf", 50, 140);
+			SystemModel system = new SystemModel("Cerberus", (int)(Math.random() * 800), (int)(Math.random() * 400));
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			mSystems.add(system);
+		}
+
+		{
+			SystemModel system = new SystemModel("Proxima", (int)(Math.random() * 800), (int)(Math.random() * 400));
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			mSystems.add(system);
+		}
+
+		{
+			SystemModel system = new SystemModel("Vega", (int)(Math.random() * 800), (int)(Math.random() * 400));
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			mSystems.add(system);
+		}
+
+		{
+			SystemModel system = new SystemModel("Regula", (int)(Math.random() * 800), (int)(Math.random() * 400));
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			mSystems.add(system);
+		}
+
+		{
+			SystemModel system = new SystemModel("Tigen", (int)(Math.random() * 800), (int)(Math.random() * 400));
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			mSystems.add(system);
+		}
+
+		{
+			SystemModel system = new SystemModel("Remus", (int)(Math.random() * 800), (int)(Math.random() * 400));
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			mSystems.add(system);
+		}
+
+		{
+			SystemModel system = new SystemModel("Deridia", (int)(Math.random() * 800), (int)(Math.random() * 400));
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			mSystems.add(system);
+		}
+
+		{
+			SystemModel system = new SystemModel("Wolf", (int)(Math.random() * 800), (int)(Math.random() * 400));
 			addPlanet(system, new PlanetModel());
 			mSystems.add(system);
 		}
 		
 		{
-			SystemModel system = new SystemModel("Idron", 600, 400);
+			SystemModel system = new SystemModel("Idron", (int)(Math.random() * 800), (int)(Math.random() * 400));
 			addPlanet(system, new PlanetModel());
 			addPlanet(system, new PlanetModel());
 			mSystems.add(system);

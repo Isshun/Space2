@@ -34,7 +34,7 @@ public class PlanetClassModel {
 		new PlanetClassModel(CLASS_L,					8,		"Hostile (L)",			"L"),
 		new PlanetClassModel(CLASS_L_DESERT,		8,		"Hostile (L)",			"L"),
 		new PlanetClassModel(CLASS_L_JUNGLE,		8,		"Hostile (L)",			"L"),
-		new PlanetClassModel(CLASS_M,					10,	"Suitable (M)",		"M"),
+		new PlanetClassModel(CLASS_M,					20,	"Suitable (M)",		"M"),
 		new PlanetClassModel(CLASS_N,					2,		"Sulfurique (N)",		"N"),
 		new PlanetClassModel(CLASS_P,					2,		"Glaciated (P)",		"P"),
 		new PlanetClassModel(CLASS_T,					2,		"Gas Giant (T)",		"T"),

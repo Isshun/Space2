@@ -22,7 +22,7 @@ public class PanelGovernmentScreen extends Screen {
 	private static final int START_Y = 19;
 	private static final int START_X = 118;
 	private static final int SPACING_X = 30;
-	private int mSortMode;
+	int mSortMode;
 	
 	public PanelGovernmentScreen() {
 		mSortMode = -1;

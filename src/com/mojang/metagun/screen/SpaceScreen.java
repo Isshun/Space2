@@ -15,6 +15,9 @@ import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.service.GameService;
 
 public class SpaceScreen extends Screen {
+	private static final int MAP_POS_X = Constants.GAME_WIDTH - 64 - 6;
+	private static final int MAP_POS_Y = 6;
+	
 	private int mPosX;
 	private int mPosY;
 
@@ -46,12 +49,12 @@ public class SpaceScreen extends Screen {
 			drawString(name, mPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mPosY + system.getY() + Constants.SYSTEM_SIZE + 6);
 		}
 		
-		drawGeneralInfos(6, 6);
+		drawGeneralInfos(systems, 6, 6);
 		
 		mSpriteBatch.end();
 	}
 
-	private void drawGeneralInfos (int posX, int posY) {
+	private void drawGeneralInfos (List<SystemModel> systems, int posX, int posY) {
 		draw(Art.flag_planets, 6, 6);
 		drawString("GOV.", posX + 2, posY + 34);
 
@@ -59,8 +62,12 @@ public class SpaceScreen extends Screen {
 		drawString("RELS.", posX + 40, posY + 34);
 
 		draw(Art.map, Constants.GAME_WIDTH - 64 - 6, 6);
-		drawRectangle(Constants.GAME_WIDTH - 64 - 6 - mPosX / 50, 6 - mPosY / 50, 14, 10, Color.rgba8888(0.5f, 0.5f, 0.8f, 0.8f));
+		drawRectangle(Constants.GAME_WIDTH - 64 - 6 - mPosX / 20, 6 - mPosY / 20, 18, 12, Color.rgba8888(0.5f, 0.5f, 0.8f, 0.8f));
 		drawString("Cycle:  42", Constants.GAME_WIDTH - 64 - 4, posY + 49);
+		
+		for (SystemModel system : systems) {
+			drawRectangle(MAP_POS_X + system.getX() / 20, MAP_POS_Y + system.getY() / 20, 1, 1, Color.rgba8888(1, 0, 0, 1));
+		}
 	}
 
 	@Override
