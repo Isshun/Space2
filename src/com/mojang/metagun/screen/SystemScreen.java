@@ -27,12 +27,13 @@ public class SystemScreen extends Screen {
 	private int mTouchY;
 
 	public SystemScreen (SystemModel system) {
+		System.out.println("Open system: " + system.getName());
 		mSystem = system;
 	}
 
 	@Override
 	public void render () {
-		spriteBatch.begin();
+		mSpriteBatch.begin();
 		draw(Art.bg, 0, 0);
 		draw(Art.sun, -64, Space2.GAME_HEIGHT / 2 - 64);
 		drawString(mSystem.getName(), 8, Space2.GAME_HEIGHT / 2 + 64 + 8);
@@ -57,7 +58,7 @@ public class SystemScreen extends Screen {
 			pos++;
 		}
 		
-		spriteBatch.end();
+		mSpriteBatch.end();
 	}
 
 	private void drawPlanet (PlanetModel planet, int posX, int posY) {
@@ -68,59 +69,19 @@ public class SystemScreen extends Screen {
 	}
 
 	@Override
-	public void tick (Input input) {
-		time++;
-		tick += 0.01;
-		
-			if (time > Constants.TOUCH_RECOVERY && (input.buttons[Input.SHOOT] && !input.oldButtons[Input.SHOOT] || Gdx.input.isTouched())) {
-				
-				if (Gdx.input.getDeltaX() > 42) {
-					setScreen(new SpaceScreen());
-				}
-				
-				mTouch = true;
-				mTouchX = Gdx.input.getX();
-				mTouchY = Gdx.input.getY();
-				
-				//if (x - PLANET_OFFSET_LEFT % PLANET_SPACING)
-				
-//				PlanetModel planet = mSystem.getPlanetA();
-//				if (planet != null) {
-//					System.out.println("Open system: " + system.getName());
-//					setScreen(new SystemScreen(system));
-//				}
-
-				
-				input.releaseAllKeys();
-		}
-			
-			if (Gdx.input.isTouched() == false && mTouch) {
-				mTouch = false;
-				
-				int x = mTouchX * Space2.GAME_WIDTH / Gdx.graphics.getWidth();
-				int y = mTouchY * Space2.GAME_HEIGHT / Gdx.graphics.getHeight();
-				
-				if (Math.abs(y - Space2.GAME_HEIGHT / 2) <= PLANET_SIZE / 2) {
-					if ((x - PLANET_REVOLUTION) % PLANET_SPACING <= PLANET_SIZE) {
-						int pos = (x - PLANET_REVOLUTION) / PLANET_SPACING;
-						if (mSystem.getPlanets().size() > pos) {
-							setScreen(new PlanetScreen(mSystem, mSystem.getPlanets().get(pos)));
-						}
-					}
+	public void onTouch (int x, int y) {
+		if (Math.abs(y - Space2.GAME_HEIGHT / 2) <= PLANET_SIZE / 2) {
+			if ((x - PLANET_REVOLUTION) % PLANET_SPACING <= PLANET_SIZE) {
+				int pos = (x - PLANET_REVOLUTION) / PLANET_SPACING;
+				if (mSystem.getPlanets().size() > pos) {
+					addScreen(new PlanetScreen(mSystem, mSystem.getPlanets().get(pos)));
 				}
 			}
-	}
-
-	@Override
-	public void onTouch (int x, int y) {
-		// TODO Auto-generated method stub
-		
+		}
 	}
 
 	@Override
 	public void onMove (int offsetX, int offsetY) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

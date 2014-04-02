@@ -25,6 +25,7 @@ public class PlanetModel {
 	private double mBaseCulture;
 	private double mBaseScience;
 	private double mBaseMoney;
+	private double mSatisfaction;
 
 	public PlanetModel () {
 		mClass = sClassM;
@@ -34,6 +35,7 @@ public class PlanetModel {
 		mBaseScience = Math.random() * 10;
 		mBaseCulture = Math.random() * 10;
 		mBaseFood = Math.random() * 10;
+		mSatisfaction = Math.random() * 100;
 	}
 
 	public String getName() {
@@ -131,6 +133,14 @@ public class PlanetModel {
 
 	public double getScience () {
 		return Math.ceil(mBaseScience * mPeople);
+	}
+
+	public SystemModel getSystem () {
+		return mSystem;
+	}
+
+	public double getSatisfation () {
+		return mSatisfaction;
 	}
 
 }

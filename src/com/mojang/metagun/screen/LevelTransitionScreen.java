@@ -39,10 +39,10 @@ public class LevelTransitionScreen extends Screen {
 	public void render () {
 		double pow = time / (double)TRANSITION_DURATION;
 
-		spriteBatch.getTransformMatrix().idt();
-		spriteBatch.begin();
+		mSpriteBatch.getTransformMatrix().idt();
+		mSpriteBatch.begin();
 		draw(Art.bg, 0, 0);
-		spriteBatch.end();
+		mSpriteBatch.end();
 
 		c.x = (int)(-xa * 320 * pow);
 		c.y = (int)(-ya * 240 * pow);

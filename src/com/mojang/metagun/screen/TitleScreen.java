@@ -14,7 +14,7 @@ public class TitleScreen extends Screen {
 	public void render () {
 		int yOffs = 480 - time * 2;
 		if (yOffs < 0) yOffs = 0;
-		spriteBatch.begin();
+		mSpriteBatch.begin();
 		draw(Art.bg, 0, 0);
 		draw(Art.titleScreen, 0, -yOffs);
 		if (time > 240) {
@@ -30,7 +30,7 @@ public class TitleScreen extends Screen {
 			String msg = "COPYRIGHT MOJANG 2010";
 			drawString(msg, 2, 240 - 6 - 2);
 		}
-		spriteBatch.end();
+		mSpriteBatch.end();
 	}
 
 	@Override

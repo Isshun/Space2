@@ -75,12 +75,12 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void render () {
-		spriteBatch.begin();
+		mSpriteBatch.begin();
 		draw(Art.bg, 0, 0);
-		spriteBatch.end();
+		mSpriteBatch.end();
 		level.render(this, camera);
 
-		spriteBatch.begin();
+		mSpriteBatch.begin();
 		if (mayRespawn) {
 			String msg = "PRESS X TO TRY AGAIN";
 			drawString(msg, 160 - msg.length() * 3, 120 - 3);
@@ -95,7 +95,7 @@ public class GameScreen extends Screen {
 			draw(Art.buttons[2][0], 320 - 64, 240 - 32);
 			draw(Art.buttons[3][0], 320 - 32, 240 - 32);
 		}
-		spriteBatch.end();
+		mSpriteBatch.end();
 	}
 
 	public void readSign (int id) {

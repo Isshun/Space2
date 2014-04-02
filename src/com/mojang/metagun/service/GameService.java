@@ -12,9 +12,11 @@ public class GameService {
 	private static GameService sSelf;
 	
 	private List<SystemModel> mSystems;
+	private List<PlanetModel> mPlanets;
 
 	private GameService() {
 		mSystems = new ArrayList<SystemModel>();
+		mPlanets = new ArrayList<PlanetModel>();
 	}
 	
 	public List<SystemModel> getSystems () {
@@ -35,34 +37,39 @@ public class GameService {
 			{
 				PlanetModel p = new PlanetModel();
 				p.setInitialTick(0);
-				system.addPlanet(p);
+				addPlanet(system, p);
 			}
 			{
 				PlanetModel p = new PlanetModel();
 				p.setInitialTick(0);
-				system.addPlanet(p);
+				addPlanet(system, p);
 			}
 			{
 				PlanetModel p = new PlanetModel();
 				p.setInitialTick(0);
-				system.addPlanet(p);
+				addPlanet(system, p);
 			}
 			mSystems.add(system);
 		}
 
 		{
 			SystemModel system = new SystemModel("Wolf", 50, 140);
-			system.addPlanet(new PlanetModel());
+			addPlanet(system, new PlanetModel());
 			mSystems.add(system);
 		}
 		
 		{
 			SystemModel system = new SystemModel("Idron", 600, 400);
-			system.addPlanet(new PlanetModel());
-			system.addPlanet(new PlanetModel());
+			addPlanet(system, new PlanetModel());
+			addPlanet(system, new PlanetModel());
 			mSystems.add(system);
 		}
 
+	}
+
+	private void addPlanet (SystemModel system, PlanetModel p) {
+		mPlanets.add(p);
+		system.addPlanet(p);
 	}
 
 	public SystemModel getSystemAtPos (int x, int y) {
@@ -72,6 +79,10 @@ public class GameService {
 			}
 		}
 		return null;
+	}
+
+	public List<PlanetModel> getPlanets () {
+		return mPlanets;
 	}
 
 }

@@ -33,7 +33,7 @@ public class ExpositionScreen extends Screen {
 	@Override
 	public void render () {
 		int w = -Art.bg.getRegionHeight();
-		spriteBatch.begin();
+		mSpriteBatch.begin();
 		draw(Art.bg, 0, -(time / 8 % w));
 		draw(Art.bg, 0, -(time / 8 % w) + w);
 
@@ -44,7 +44,7 @@ public class ExpositionScreen extends Screen {
 				drawString(lines.get(yl), (320 - 40 * 6) / 2, y * 6 - yo % 6);
 			}
 		}
-		spriteBatch.end();
+		mSpriteBatch.end();
 	}
 
 	@Override

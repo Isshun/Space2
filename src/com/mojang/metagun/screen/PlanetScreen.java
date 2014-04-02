@@ -35,7 +35,7 @@ public class PlanetScreen extends Screen {
 
 	@Override
 	public void render () {
-		spriteBatch.begin();
+		mSpriteBatch.begin();
 		draw(Art.bg, 0, 0);
 		
 		int posX = Space2.GAME_WIDTH - 128 - 20;
@@ -53,13 +53,13 @@ public class PlanetScreen extends Screen {
 			draw(Art.planet_128, posX, posY);
 		}
 		
-		drawRectangle(4, 4, Space2.GAME_WIDTH - 8, 18, Color.rgba8888(1, 1, 1, 0.5f));
-		drawBigString(mPlanet.getName(), 8, 8);
+		drawRectangle(6, 6, Space2.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
+		drawBigString(mPlanet.getName(), 12, 12);
 		
-		drawCharacteristics(4, 26);
-		drawInfos(4, 100);
+		drawCharacteristics(6, 32);
+		drawInfos(6, 84);
 		
-		spriteBatch.end();
+		mSpriteBatch.end();
 	}
 
 	private void drawCharacteristics (int posX, int posY) {
@@ -81,11 +81,11 @@ public class PlanetScreen extends Screen {
 		drawString(String.format("Food:        %d (%d)", (int)mPlanet.getFood(), (int)mPlanet.getBaseFood()), posX + 20, posY + 10);
 
 		posY += 10;
-		draw(Art.res_construction, posX + 4, posY + 8);
+		draw(Art.ic_construction_12, posX + 4, posY + 8);
 		drawString(String.format("Build:       %d (%d)", (int)mPlanet.getBuild(), (int)mPlanet.getBaseBuild()), posX + 20, posY + 10);
 
 		posY += 10;
-		draw(Art.res_money, posX + 4, posY + 8);
+		draw(Art.ic_money_12, posX + 4, posY + 8);
 		drawString(String.format("Money:       %d (%d)", (int)mPlanet.getMoney(), (int)mPlanet.getBaseMoney()), posX + 20, posY + 10);
 
 		posY += 10;
@@ -95,26 +95,6 @@ public class PlanetScreen extends Screen {
 		posY += 10;
 		draw(Art.res_culture, posX + 4, posY + 8);
 		drawString(String.format("Culture:     %d (%d)", (int)mPlanet.getCulture(), (int)mPlanet.getBaseCulture()), posX + 20, posY + 10);
-	}
-
-	@Override
-	public void tick (Input input) {
-		time++;
-		tick += 0.001;
-		
-			if (Gdx.input.isKeyPressed(Keys.BACK)) {
-				setScreen(new SystemScreen(mSystem));
-			}
-		
-			if (time > Constants.TOUCH_RECOVERY && (input.buttons[Input.SHOOT] && !input.oldButtons[Input.SHOOT] || Gdx.input.isTouched())) {
-				
-				
-				if (Gdx.input.getDeltaX() > 42) {
-					setScreen(new SystemScreen(mSystem));
-				}
-				
-				input.releaseAllKeys();
-		}
 	}
 
 	@Override

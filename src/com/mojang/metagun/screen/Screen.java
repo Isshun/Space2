@@ -1,9 +1,12 @@
 
 package com.mojang.metagun.screen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -21,33 +24,41 @@ import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.service.GameService;
 
 public abstract class Screen {
-	private static final int TOUCH_INTERVAL = 60;
-	private final String[] chars = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\< "};
-	protected static Random random = new Random();
-	private Space2 metagun;
-	public SpriteBatch spriteBatch;
-	private int time;
-	private int mTouch;
-	private int mTouchX;
-	private int mTouchY;
-	private int mLastTouchX;
-	private int mLastTouchY;
+	private static final int 		TOUCH_INTERVAL = 32;
+	private static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\< "};
+	protected static Random 		sRandom = new Random();
+	private Space2 					mGame;
+	public SpriteBatch 				mSpriteBatch;
+	private int 						mTime;
+	private int 						mBackHistory;
+	private int 						mTouch;
+	private int 						mTouchX;
+	private int 						mTouchY;
+	private int 						mLastTouchX;
+	private int 						mLastTouchY;
 
 	public void removed () {
-		spriteBatch.dispose();
+		mSpriteBatch.dispose();
 	}
 
 	public final void init (Space2 metagun) {
-		this.metagun = metagun;
+		this.mGame = metagun;
+		this.mTime = Constants.TOUCH_RECOVERY / 2;
+		mBackHistory = 0;
+		mTouch = -1;
 		Matrix4 projection = new Matrix4();
 		projection.setToOrtho(0, 320, 240, 0, -1, 1);
 
-		spriteBatch = new SpriteBatch(100);
-		spriteBatch.setProjectionMatrix(projection);
+		mSpriteBatch = new SpriteBatch(100);
+		mSpriteBatch.setProjectionMatrix(projection);
+	}
+
+	protected void addScreen (Screen screen) {
+		mGame.addScreen(screen);
 	}
 
 	protected void setScreen (Screen screen) {
-		metagun.setScreen(screen);
+		mGame.setScreen(screen);
 	}
 
 	public void drawRectangle(int x, int y, int width, int height, int color) {
@@ -58,7 +69,7 @@ public abstract class Screen {
 		TextureRegion region = new TextureRegion(pixmaptex);
 ////int width = region.getRegionWidth();
 ////if (width < 0) width = -width;
-		spriteBatch.draw(region, x, y, width, height);
+		mSpriteBatch.draw(region, x, y, width, height);
 		pixmap.dispose();
 		
 		//		ShapeRenderer shapeRenderer = new ShapeRenderer(); 
@@ -74,7 +85,7 @@ public abstract class Screen {
 	public void draw (TextureRegion region, int x, int y) {
 		int width = region.getRegionWidth();
 		if (width < 0) width = -width;
-		spriteBatch.draw(region, x, y, width, region.getRegionHeight());
+		mSpriteBatch.draw(region, x, y, width, region.getRegionHeight());
 	}
 
 	public void drawString (String string, int x, int y) {
@@ -87,8 +98,8 @@ public abstract class Screen {
 			if (ch == ')') {
 				draw(Art.guys[19][10], x + i * 6, y);
 			}
-			for (int ys = 0; ys < chars.length; ys++) {
-				int xs = chars[ys].indexOf(ch);
+			for (int ys = 0; ys < CHARS.length; ys++) {
+				int xs = CHARS[ys].indexOf(ch);
 				if (xs >= 0) {
 					draw(Art.guys[xs][ys + 9], x + i * 6, y);
 				}
@@ -106,8 +117,8 @@ public abstract class Screen {
 			if (ch == ')') {
 				draw(Art.guys[19][10], x + i * 12, y);
 			}
-			for (int ys = 0; ys < chars.length; ys++) {
-				int xs = chars[ys].indexOf(ch);
+			for (int ys = 0; ys < CHARS.length; ys++) {
+				int xs = CHARS[ys].indexOf(ch);
 				if (xs >= 0) {
 					draw(Art.bigText[xs][ys + 7], x + i * 12, y);
 				}
@@ -121,41 +132,60 @@ public abstract class Screen {
 	public abstract void onMove(int offsetX, int offsetY);
 
 	public void tick (Input input) {
-		time++;
+		mTime++;
 		
-		if (time < Constants.TOUCH_RECOVERY) {
+		if (mTime < Constants.TOUCH_RECOVERY) {
 			return;
 		}
-		
+
+		if (Gdx.input.getDeltaX() > 30) {
+			mBackHistory = 4;
+		}
+
+		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.BACKSPACE)) {
+			mGame.goBack();
+			mTime = 0;
+			return;
+		}
+
 		// Start touch
 		if (mTouch == -1 && Gdx.input.isTouched()) {
-			mTouch = time;
+			mTouch = mTime;
 			mTouchX = mLastTouchX = Gdx.input.getX() * Space2.GAME_WIDTH / Gdx.graphics.getWidth();
 			mTouchY = mLastTouchY = Gdx.input.getY() * Space2.GAME_HEIGHT / Gdx.graphics.getHeight();
 		}
 		
 		// Stop touch
 		else if (mTouch != -1 && !Gdx.input.isTouched()) {
-			if (mTouch + TOUCH_INTERVAL > time) {
+			if (mGame.getHistoryScreen().size() > 0 && mBackHistory > 0) {
+				mTime = 0;
+				mBackHistory = 0;
+				mGame.goBack();
+				return;
+			}
+			if (Math.abs(mTouchX - mLastTouchX) < 5  && Math.abs(mTouchY - mLastTouchY) < 5 &&  mTouch + TOUCH_INTERVAL > mTime) {
 				onTouch(mTouchX, mTouchY);
 			}
 			mTouch = -1;
 		}
 		
 		// Move
-		else if (mTouch != -1 && Gdx.input.isTouched()) {
+		if (mTouch != -1 && Gdx.input.isTouched()) {
 			int x = Gdx.input.getX() * Space2.GAME_WIDTH / Gdx.graphics.getWidth();
 			int y = Gdx.input.getY() * Space2.GAME_HEIGHT / Gdx.graphics.getHeight();
 			
-//			if (mTouch + TOUCH_INTERVAL < time) {
-			System.out.println("onMove: " + (mLastTouchX - x) + ", " + (mLastTouchY - y));
-				onMove(x - mLastTouchX, y - mLastTouchY);
-//			}
+			mBackHistory--;
 			
-			mTouchX = mLastTouchX = x;
-			mTouchY = mLastTouchY = y;
+			if (mLastTouchX != x || mLastTouchY != y) {
+				System.out.println("onMove: " + (mLastTouchX - x) + ", " + (mLastTouchY - y));
+				onMove(x - mLastTouchX, y - mLastTouchY);
+			}
+			
+			mLastTouchX = x;
+			mLastTouchY = y;
 		}
 
 		input.releaseAllKeys();
 	}
+
 }

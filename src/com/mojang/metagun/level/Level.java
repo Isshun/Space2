@@ -198,8 +198,8 @@ public class Level {
 	public void render (Screen screen, Camera camera) {
 		matrix.idt();
 		matrix.setToTranslation(camera.x, camera.y, 0);
-		screen.spriteBatch.setTransformMatrix(matrix);
-		screen.spriteBatch.begin();
+		screen.mSpriteBatch.setTransformMatrix(matrix);
+		screen.mSpriteBatch.begin();
 		// g.translate(-camera.x, -camera.y);
 
 		int xo = 0;
@@ -249,7 +249,7 @@ public class Level {
 			e.render(screen, camera);
 		}
 
-		screen.spriteBatch.end();
+		screen.mSpriteBatch.end();
 	}
 
 	public boolean isFree (Entity ee, double xc, double yc, int w, int h, double xa, double ya) {

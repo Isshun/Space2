@@ -42,7 +42,7 @@ public class SignReadScreen extends Screen {
 	@Override
 	public void render () {
 		parent.render();
-		spriteBatch.begin();
+		mSpriteBatch.begin();
 		int xs = 0;
 		int ys = signs[id].length + 3;
 		for (int y = 0; y < signs[id].length; y++) {
@@ -66,7 +66,7 @@ public class SignReadScreen extends Screen {
 			drawString(signs[id][y], xp, yp + y * 6);
 		}
 		if (delay == 0) drawString("PRESS X", xp + (xs - 8) * 6, yp + (signs[id].length + 2) * 6);
-		spriteBatch.end();
+		mSpriteBatch.end();
 	}
 
 	@Override

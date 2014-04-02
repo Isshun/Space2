@@ -1,9 +1,14 @@
 
 package com.mojang.metagun;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.mojang.metagun.screen.PauseScreen;
 import com.mojang.metagun.screen.Screen;
 import com.mojang.metagun.screen.SpaceScreen;
 import com.mojang.metagun.screen.SystemScreen;
@@ -17,11 +22,13 @@ public class Space2 implements ApplicationListener {
 
 	private static final long serialVersionUID = 1L;
 
+	private LinkedList<Screen> mScreens;
 	private boolean running = false;
 	private Screen screen;
 	private final Input input = new Input();
 	private final boolean started = false;
 	private float accum = 0;
+	private boolean mMenuIsOpen;
 
 	@Override
 	public void create () {
@@ -36,7 +43,8 @@ public class Space2 implements ApplicationListener {
 		Gdx.input.setCatchMenuKey(true);
 		Gdx.graphics.setContinuousRendering(false);
 		Gdx.graphics.requestRendering();
-		setScreen(new SystemScreen(GameService.getInstance().getSystems().get(0)));
+		mScreens = new LinkedList<Screen>();
+		setScreen(new SpaceScreen());
 	}
 
 	@Override
@@ -53,6 +61,11 @@ public class Space2 implements ApplicationListener {
 		if (screen != null) screen.removed();
 		screen = newScreen;
 		if (screen != null) screen.init(this);
+	}
+
+	public void addScreen (Screen newScreen) {
+		mScreens.add(screen);
+		setScreen(newScreen);
 	}
 
 	@Override
@@ -76,5 +89,24 @@ public class Space2 implements ApplicationListener {
 
 	@Override
 	public void dispose () {
+	}
+
+	public void goBack () {
+		System.out.println("Go back");
+		Screen s = mScreens.pollLast();
+		if (s != null) {
+			setScreen(s);
+		} else {
+			if (mMenuIsOpen) {
+				setScreen(new PauseScreen(screen));
+			} else {
+				setScreen(new SpaceScreen());
+			}
+			mMenuIsOpen = !mMenuIsOpen;
+		}
+	}
+
+	public List<Screen> getHistoryScreen () {
+		return mScreens;
 	}
 }

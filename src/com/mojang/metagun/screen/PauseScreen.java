@@ -5,12 +5,12 @@ import com.mojang.metagun.Art;
 import com.mojang.metagun.Input;
 
 public class PauseScreen extends Screen {
-	private final GameScreen parent;
+	private final Screen parent;
 	private int selected = 0;
 
 	private final String[] options = {"BACK TO GAME", "AUTOMORTIS", "QUIT TO TITLE"};
 
-	public PauseScreen (GameScreen parent) {
+	public PauseScreen (Screen parent) {
 		this.parent = parent;
 	}
 
@@ -18,7 +18,7 @@ public class PauseScreen extends Screen {
 	public void render () {
 		parent.render();
 
-		spriteBatch.begin();
+		mSpriteBatch.begin();
 		int xs = 0;
 		int ys = options.length;
 		for (int y = 0; y < options.length; y++) {
@@ -45,39 +45,7 @@ public class PauseScreen extends Screen {
 			}
 			drawString(options[y], xp + 6, yp + y * 6);
 		}
-		spriteBatch.end();
-	}
-
-	@Override
-	public void tick (Input input) {
-		if (!input.oldButtons[Input.ESCAPE] && input.buttons[Input.ESCAPE]) {
-			setScreen(parent);
-			return;
-		}
-		if (input.buttons[Input.UP] && !input.oldButtons[Input.UP]) {
-			selected--;
-			if (selected < 0) selected += options.length;
-		}
-		if (input.buttons[Input.DOWN] && !input.oldButtons[Input.DOWN]) {
-			selected++;
-			if (selected >= options.length) selected -= options.length;
-		}
-		if (input.buttons[Input.SHOOT] && !input.oldButtons[Input.SHOOT]) {
-			if (selected == 0) {
-				setScreen(parent);
-			} else if (selected == 1) {
-				parent.level.player.die();
-				setScreen(parent);
-			} else if (selected == 2) {
-				setScreen(new TitleScreen());
-			} else if (selected == 3) {
-				setScreen(new WinScreen());
-			}
-		}
-		// if (delay>0) delay--;
-		// if (delay==0 && input.buttons[Input.SHOOT] && !input.oldButtons[Input.SHOOT]) {
-		// setScreen(parent);
-		// }
+		mSpriteBatch.end();
 	}
 
 	@Override

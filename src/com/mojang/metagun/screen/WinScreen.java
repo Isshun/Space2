@@ -10,7 +10,7 @@ public class WinScreen extends Screen {
 
 	@Override
 	public void render () {
-		spriteBatch.begin();
+		mSpriteBatch.begin();
 		int w = 240 * 8; // Art.bg.getHeight();
 		draw(Art.bg, 0, -(time * 2 % w));
 		draw(Art.bg, 0, -(time * 2 % w) + w);
@@ -45,7 +45,7 @@ public class WinScreen extends Screen {
 			String msg = "PRESS X TO RESET THE GAME";
 			drawString(msg, 160 - msg.length() * 3, yo + 10 * 6);
 		}
-		spriteBatch.end();
+		mSpriteBatch.end();
 	}
 
 	private String timeHideScale (int val, int time) {
