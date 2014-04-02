@@ -4,7 +4,11 @@ package com.mojang.metagun.screen;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.SystemModel;
@@ -36,7 +40,23 @@ public class SpaceScreen extends Screen {
 		draw(Art.bg, posX - 320, posY + 240);
 		draw(Art.bg, posX, posY + 240);
 		draw(Art.bg, posX + 320, posY + 240);
-		
+
+		// Draw travel lines
+		List<TravelModel> travels = GameService.getInstance().getTravels();
+		for (TravelModel travel : travels) {
+			int length = (int)Math.sqrt(Math.pow(Math.abs(travel.getFrom().getX() - travel.getTo().getX()), 2) + Math.pow(Math.abs(travel.getFrom().getY() - travel.getTo().getY()), 2));
+			Pixmap pixmap = new Pixmap(length, 1, Format.RGBA8888);
+			pixmap.setColor(Color.rgba8888(1, 0, 0, 1));
+			pixmap.fillRectangle(0, 0, length, 1);
+			Texture pixmaptex = new Texture(pixmap);
+			Sprite line = new Sprite(pixmaptex);
+			line.setRotation(travel.getAngle());
+			line.setPosition(mPosX - length / 2 + + Constants.SYSTEM_SIZE / 2 + travel.getX(), mPosY + Constants.SYSTEM_SIZE / 2 + travel.getY());
+			line.draw(mSpriteBatch);
+			pixmap.dispose();
+		}
+
+		// Draw systems
 		List<SystemModel> systems = GameService.getInstance().getSystems();
 		for (SystemModel system : systems) {
 			draw(Art.system, mPosX + system.getX(), mPosY + system.getY());
@@ -44,12 +64,14 @@ public class SpaceScreen extends Screen {
 			drawString(name, mPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mPosY + system.getY() + Constants.SYSTEM_SIZE + 6);
 		}
 
-		List<TravelModel> travels = GameService.getInstance().getTravels();
+		// Draws travel ships
 		for (TravelModel travel : travels) {
-			Sprite ship = new Sprite(Art.ship);
-			ship.setRotation(travel.getAngle());
-			ship.setPosition(mPosX + travel.getX(), mPosY + travel.getY());
-			ship.draw(mSpriteBatch);
+			if (travel.getNbFleet() > 0) {
+				Sprite ship = new Sprite(Art.ship);
+				ship.setRotation(travel.getAngle());
+				ship.setPosition(mPosX + 4 + travel.getX(), mPosY + 4 + travel.getY());
+				ship.draw(mSpriteBatch);
+			}
 		}
 		
 		drawGeneralInfos(systems, 6, 6);

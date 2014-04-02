@@ -7,11 +7,14 @@ import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.FleetModel;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.PlayerModel;
+import com.mojang.metagun.model.ShipModel;
 import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.model.TravelModel;
 
 public class GameService {
 	
+	private static final int TRAVEL_MAX_DISTANCE = 150;
+
 	private static GameService sSelf;
 	
 	private List<SystemModel> mSystems;
@@ -22,6 +25,8 @@ public class GameService {
 	private PlayerModel mPlayer;
 
 	private ArrayList<TravelModel> mTravels;
+
+	private ArrayList<TravelModel> mTravelLines;
 
 	private GameService() {
 		mSystems = new ArrayList<SystemModel>();
@@ -131,11 +136,33 @@ public class GameService {
 		}
 
 		FleetModel f1 = new FleetModel(mPlayer);
+		f1.addShip(new ShipModel());
 		FleetModel f2 = new FleetModel(mPlayer);
+		f2.addShip(new ShipModel());
+		f2.addShip(new ShipModel());
 		FleetModel f3 = new FleetModel(mPlayer);
+		f3.addShip(new ShipModel());
+		f3.addShip(new ShipModel());
+		f3.addShip(new ShipModel());
 		
-		mTravels.add(new TravelModel(f1, mSystems.get(0), mSystems.get(4)));
-		mTravels.add(new TravelModel(f2, mSystems.get(1), mSystems.get(5)));
+//		mTravels.add(new TravelModel(f1, mSystems.get(0), mSystems.get(4)));
+//		mTravels.add(new TravelModel(f2, mSystems.get(1), mSystems.get(5)));
+		
+		// Create travel lines
+		//mTravelLines = new ArrayList<TravelModel>();
+		for (SystemModel s1: mSystems) {
+			for (SystemModel s2: mSystems) {
+				int length = (int)Math.sqrt(Math.pow(Math.abs(s1.getX() - s2.getX()), 2) + Math.pow(Math.abs(s1.getY() - s2.getY()), 2));
+				System.out.println(s1.getName() + " <> " + s2.getName() + ", length: " + length + " a: " + Math.pow(Math.abs(s1.getX() - s2.getX()), 2) + ", b: " + Math.pow(Math.abs(s1.getY() - s2.getY()), 2));
+				if (s1 != s2 && length < TRAVEL_MAX_DISTANCE) {
+					System.out.println("Add travel line between " + s1.getName() + " and " + s2.getName());
+					mTravels.add(new TravelModel(s1, s2));
+				}
+			}
+		}
+		
+		mTravels.get(mTravels.size() / 2).addFleet(f1);
+		
 	}
 
 	private void addPlanet (SystemModel system, PlanetModel p) {

@@ -54,25 +54,24 @@ public abstract class Screen {
 		mGame.setScreen(screen);
 	}
 
+//	public void drawLine(int fromX, int fromY, int toX, int toY, int color) {
+//		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
+//		pixmap.setColor(color);
+//		pixmap.fillRectangle(0, 0, 32, 32);
+//		Texture pixmaptex = new Texture(pixmap);
+//		TextureRegion region = new TextureRegion(pixmaptex);
+//		mSpriteBatch.draw(region, x, y, width, height);
+//		pixmap.dispose();
+//	}
+
 	public void drawRectangle(int x, int y, int width, int height, int color) {
 		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
 		pixmap.setColor(color);
 		pixmap.fillRectangle(0, 0, 32, 32);
 		Texture pixmaptex = new Texture(pixmap);
 		TextureRegion region = new TextureRegion(pixmaptex);
-////int width = region.getRegionWidth();
-////if (width < 0) width = -width;
 		mSpriteBatch.draw(region, x, y, width, height);
 		pixmap.dispose();
-		
-		//		ShapeRenderer shapeRenderer = new ShapeRenderer(); 
-		
-		 
-////		Texture texture = new Texture();
-//		TextureRegion region = new TextureRegion();
-//////		int width = region.getRegionWidth();
-//////		if (width < 0) width = -width;
-//		spriteBatch.draw(region, x, y, width, region.getRegionHeight());
 	}
 	
 	public void draw (TextureRegion region, int x, int y) {
@@ -170,7 +169,7 @@ public abstract class Screen {
 			mBackHistory--;
 			
 			if (mLastTouchX != x || mLastTouchY != y) {
-				System.out.println("onMove: " + (mLastTouchX - x) + ", " + (mLastTouchY - y));
+//				System.out.println("onMove: " + (mLastTouchX - x) + ", " + (mLastTouchY - y));
 				onMove(x - mLastTouchX, y - mLastTouchY);
 			}
 			

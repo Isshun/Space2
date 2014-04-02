@@ -15,8 +15,17 @@ public class TravelScreen extends Screen {
 	public void render () {
 		mSpriteBatch.begin();
 		
-		drawString("from: " + mTravel.getFrom().getName(), 6, 6);
-		drawString("to: " + mTravel.getTo().getName(), 6, 18);
+		int posY = 6;
+		drawString("from: " + mTravel.getFrom().getName(), 6, posY);
+		
+		posY += 12;
+		drawString("to: " + mTravel.getTo().getName(), 6, posY);
+
+		posY += 12;
+		drawString("length: " + mTravel.getLength(), 6, posY);
+
+		posY += 12;
+//		drawString("ETA: " + mTravel.getETA(), 6, posY);
 		
 		mSpriteBatch.end();
 	}
