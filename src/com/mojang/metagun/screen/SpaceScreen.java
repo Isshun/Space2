@@ -58,9 +58,9 @@ public class SpaceScreen extends Screen {
 		draw(Art.flag_relations, 44, 6);
 		drawString("RELS.", posX + 40, posY + 34);
 
-		draw(Art.map, Space2.GAME_WIDTH - 64 - 6, 6);
-		drawRectangle(Space2.GAME_WIDTH - 64 - 6 - mPosX / 50, 6 - mPosY / 50, 14, 10, Color.rgba8888(0.5f, 0.5f, 0.8f, 0.8f));
-		drawString("Cycle:  42", Space2.GAME_WIDTH - 64 - 4, posY + 49);
+		draw(Art.map, Constants.GAME_WIDTH - 64 - 6, 6);
+		drawRectangle(Constants.GAME_WIDTH - 64 - 6 - mPosX / 50, 6 - mPosY / 50, 14, 10, Color.rgba8888(0.5f, 0.5f, 0.8f, 0.8f));
+		drawString("Cycle:  42", Constants.GAME_WIDTH - 64 - 4, posY + 49);
 	}
 
 	@Override

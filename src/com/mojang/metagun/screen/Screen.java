@@ -1,27 +1,20 @@
 
 package com.mojang.metagun.screen;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.Input;
 import com.mojang.metagun.Space2;
-import com.mojang.metagun.model.SystemModel;
-import com.mojang.metagun.service.GameService;
 
 public abstract class Screen {
 	private static final int 		TOUCH_INTERVAL = 32;
@@ -151,8 +144,8 @@ public abstract class Screen {
 		// Start touch
 		if (mTouch == -1 && Gdx.input.isTouched()) {
 			mTouch = mTime;
-			mTouchX = mLastTouchX = Gdx.input.getX() * Space2.GAME_WIDTH / Gdx.graphics.getWidth();
-			mTouchY = mLastTouchY = Gdx.input.getY() * Space2.GAME_HEIGHT / Gdx.graphics.getHeight();
+			mTouchX = mLastTouchX = Gdx.input.getX() * Constants.GAME_WIDTH / Gdx.graphics.getWidth();
+			mTouchY = mLastTouchY = Gdx.input.getY() * Constants.GAME_HEIGHT / Gdx.graphics.getHeight();
 		}
 		
 		// Stop touch
@@ -171,8 +164,8 @@ public abstract class Screen {
 		
 		// Move
 		if (mTouch != -1 && Gdx.input.isTouched()) {
-			int x = Gdx.input.getX() * Space2.GAME_WIDTH / Gdx.graphics.getWidth();
-			int y = Gdx.input.getY() * Space2.GAME_HEIGHT / Gdx.graphics.getHeight();
+			int x = Gdx.input.getX() * Constants.GAME_WIDTH / Gdx.graphics.getWidth();
+			int y = Gdx.input.getY() * Constants.GAME_HEIGHT / Gdx.graphics.getHeight();
 			
 			mBackHistory--;
 			

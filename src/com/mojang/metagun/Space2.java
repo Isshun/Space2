@@ -1,7 +1,6 @@
 
 package com.mojang.metagun;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,15 +10,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.mojang.metagun.screen.PauseScreen;
 import com.mojang.metagun.screen.Screen;
 import com.mojang.metagun.screen.SpaceScreen;
-import com.mojang.metagun.screen.SystemScreen;
-import com.mojang.metagun.screen.TitleScreen;
 import com.mojang.metagun.service.GameService;
 
 public class Space2 implements ApplicationListener {
-	public static final int GAME_WIDTH = 320;
-	public static final int GAME_HEIGHT = 240;
-	public static final int SCREEN_SCALE = 2;
-
 	private static final long serialVersionUID = 1L;
 
 	private LinkedList<Screen> mScreens;

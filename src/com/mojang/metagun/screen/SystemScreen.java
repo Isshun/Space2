@@ -35,8 +35,8 @@ public class SystemScreen extends Screen {
 	public void render () {
 		mSpriteBatch.begin();
 		draw(Art.bg, 0, 0);
-		draw(Art.sun, -64, Space2.GAME_HEIGHT / 2 - 64);
-		drawString(mSystem.getName(), 8, Space2.GAME_HEIGHT / 2 + 64 + 8);
+		draw(Art.sun, -64, Constants.GAME_HEIGHT / 2 - 64);
+		drawString(mSystem.getName(), 8, Constants.GAME_HEIGHT / 2 + 64 + 8);
 
 		List<PlanetModel> planets = mSystem.getPlanets();
 		int pos = 0;
@@ -52,7 +52,7 @@ public class SystemScreen extends Screen {
 				Gdx.graphics.requestRendering();
 			}
 			int posX = x + PLANET_SPACING * pos;
-			int posY = Space2.GAME_HEIGHT / 2 - 21 + y;
+			int posY = Constants.GAME_HEIGHT / 2 - 21 + y;
 			drawPlanet(planet, posX, posY);
 			
 			pos++;
@@ -70,7 +70,7 @@ public class SystemScreen extends Screen {
 
 	@Override
 	public void onTouch (int x, int y) {
-		if (Math.abs(y - Space2.GAME_HEIGHT / 2) <= PLANET_SIZE / 2) {
+		if (Math.abs(y - Constants.GAME_HEIGHT / 2) <= PLANET_SIZE / 2) {
 			if ((x - PLANET_REVOLUTION) % PLANET_SPACING <= PLANET_SIZE) {
 				int pos = (x - PLANET_REVOLUTION) / PLANET_SPACING;
 				if (mSystem.getPlanets().size() > pos) {

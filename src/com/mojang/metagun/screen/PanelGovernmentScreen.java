@@ -61,7 +61,7 @@ public class PanelGovernmentScreen extends Screen {
 		int i = 0;
 		for (PlanetModel planet : planets) {
 			if (planet.getPeople() > 0) {
-				drawRectangle(4, START_Y + i * (LINE_HEIGHT + 1), Space2.GAME_WIDTH - 8, LINE_HEIGHT, i % 2 == 0 ? Color.rgba8888(0.85f, 0.85f, 1, 0.45f) : Color.rgba8888(0.85f, 0.85f, 1, 0.4f));
+				drawRectangle(4, START_Y + i * (LINE_HEIGHT + 1), Constants.GAME_WIDTH - 8, LINE_HEIGHT, i % 2 == 0 ? Color.rgba8888(0.85f, 0.85f, 1, 0.45f) : Color.rgba8888(0.85f, 0.85f, 1, 0.4f));
 				drawString(planet.getName(), 8, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				drawString(String.valueOf(planet.getPeople()), START_X + 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				drawString(String.valueOf((int)planet.getSatisfation()), START_X + 2 + SPACING_X * 1, START_Y + 5 + i * (LINE_HEIGHT + 1));

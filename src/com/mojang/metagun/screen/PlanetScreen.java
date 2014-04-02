@@ -38,7 +38,7 @@ public class PlanetScreen extends Screen {
 		mSpriteBatch.begin();
 		draw(Art.bg, 0, 0);
 		
-		int posX = Space2.GAME_WIDTH - 128 - 20;
+		int posX = Constants.GAME_WIDTH - 128 - 20;
 		int posY = 20;
 
 		if (Math.sin(tick) >= 0) {
@@ -53,7 +53,7 @@ public class PlanetScreen extends Screen {
 			draw(Art.planet_128, posX, posY);
 		}
 		
-		drawRectangle(6, 6, Space2.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
+		drawRectangle(6, 6, Constants.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
 		drawBigString(mPlanet.getName(), 12, 12);
 		
 		drawCharacteristics(6, 32);
