@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.PlanetModel;
+import com.mojang.metagun.model.PlayerModel;
 import com.mojang.metagun.model.SystemModel;
 
 public class GameService {
@@ -14,9 +15,14 @@ public class GameService {
 	private List<SystemModel> mSystems;
 	private List<PlanetModel> mPlanets;
 
+	private ArrayList<PlayerModel> mPlayers;
+
+	private PlayerModel mPlayer;
+
 	private GameService() {
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new ArrayList<PlanetModel>();
+		mPlayers = new ArrayList<PlayerModel>();
 	}
 	
 	public List<SystemModel> getSystems () {
@@ -32,12 +38,19 @@ public class GameService {
 
 	public void initDebug () {
 		
+		mPlayer = new PlayerModel("me");
+		mPlayers.add(new PlayerModel("player-1"));
+		mPlayers.add(new PlayerModel("player-2"));
+		mPlayers.add(new PlayerModel("player-3"));
+		mPlayers.add(mPlayer);
+		
 		{
 			SystemModel system = new SystemModel("Archer", (int)(Math.random() * 800), (int)(Math.random() * 400));
 			addPlanet(system, new PlanetModel());
 			addPlanet(system, new PlanetModel());
 			addPlanet(system, new PlanetModel());
 			mSystems.add(system);
+			mPlayers.get(0).addSystem(system);
 		}
 
 		{
@@ -46,6 +59,7 @@ public class GameService {
 			addPlanet(system, new PlanetModel());
 			addPlanet(system, new PlanetModel());
 			mSystems.add(system);
+			mPlayers.get(1).addSystem(system);
 		}
 
 		{
@@ -54,6 +68,7 @@ public class GameService {
 			addPlanet(system, new PlanetModel());
 			addPlanet(system, new PlanetModel());
 			mSystems.add(system);
+			mPlayers.get(2).addSystem(system);
 		}
 
 		{
@@ -62,6 +77,7 @@ public class GameService {
 			addPlanet(system, new PlanetModel());
 			addPlanet(system, new PlanetModel());
 			mSystems.add(system);
+			mPlayers.get(3).addSystem(system);
 		}
 
 		{
@@ -127,6 +143,14 @@ public class GameService {
 
 	public List<PlanetModel> getPlanets () {
 		return mPlanets;
+	}
+
+	public PlayerModel getPlayer () {
+		return mPlayer;
+	}
+
+	public List<PlayerModel> getPlayers () {
+		return mPlayers;
 	}
 
 }

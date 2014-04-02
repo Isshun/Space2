@@ -26,8 +26,6 @@ public class Space2 implements ApplicationListener {
 	@Override
 	public void create () {
 		
-		GameService.getInstance().initDebug();
-		
 		Art.load();
 		Sound.load();
 		Gdx.input.setInputProcessor(input);
@@ -37,6 +35,9 @@ public class Space2 implements ApplicationListener {
 		Gdx.graphics.setContinuousRendering(false);
 		Gdx.graphics.requestRendering();
 		mScreens = new LinkedList<Screen>();
+		
+		GameService.getInstance().initDebug();
+
 		setScreen(new SpaceScreen());
 	}
 

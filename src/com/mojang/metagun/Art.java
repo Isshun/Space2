@@ -37,6 +37,7 @@ public class Art {
 	public static TextureRegion res_food;
 	public static TextureRegion[][] bigText;
 	public static TextureRegion[][] planets;
+	public static TextureRegion[] flags;
 	public static TextureRegion flag_planets;
 	public static TextureRegion flag_relations;
 	public static TextureRegion map;
@@ -66,6 +67,18 @@ public class Art {
 		player1 = split("res/player.png", 16, 32);
 		player2 = split("res/player.png", 16, 32, true);
 		walls = split("res/walls.png", 10, 10);
+		flags = new TextureRegion[10];
+		flags[0] = load("res/flag_0_16.png", 24, 16);
+		flags[1] = load("res/flag_1_16.png", 24, 16);
+		flags[2] = load("res/flag_2_16.png", 24, 16);
+		flags[3] = load("res/flag_3_16.png", 24, 16);
+		flags[4] = load("res/flag_4_16.png", 24, 16);
+		flags[5] = load("res/flag_5_16.png", 24, 16);
+		flags[6] = load("res/flag_0_16.png", 24, 16);
+		flags[7] = load("res/flag_0_16.png", 24, 16);
+		flags[8] = load("res/flag_0_16.png", 24, 16);
+		flags[9] = load("res/flag_0_16.png", 24, 16);
+		
 		gremlins = split("res/gremlins.png", 30, 30);
 		buttons = split("res/buttons.png", 32, 32);
 		shot = new TextureRegion(guys[0][0].getTexture(), 3, 27, 2, 2);

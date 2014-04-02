@@ -66,7 +66,8 @@ public class SpaceScreen extends Screen {
 		drawString("Cycle:  42", Constants.GAME_WIDTH - 64 - 4, posY + 49);
 		
 		for (SystemModel system : systems) {
-			drawRectangle(MAP_POS_X + system.getX() / 20, MAP_POS_Y + system.getY() / 20, 1, 1, Color.rgba8888(1, 0, 0, 1));
+			int color = system.getOwner() != null ? system.getOwner().getColor() : Color.rgba8888(1, 0, 0, 1);
+			drawRectangle(MAP_POS_X + system.getX() / 20, MAP_POS_Y + system.getY() / 20, 1, 1, color);
 		}
 	}
 

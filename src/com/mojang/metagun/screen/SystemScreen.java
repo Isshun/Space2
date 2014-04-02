@@ -4,6 +4,7 @@ package com.mojang.metagun.screen;
 import java.util.List;
 
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.Gdx;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
@@ -19,7 +20,6 @@ public class SystemScreen extends Screen {
 	private static final int PLANET_SPACING = 64;
 	private static final int PLANET_SIZE = 42;
 
-	private int time = 0;
 	private SystemModel mSystem;
 	private double tick;
 	private boolean mTouch;
@@ -36,7 +36,16 @@ public class SystemScreen extends Screen {
 		mSpriteBatch.begin();
 		draw(Art.bg, 0, 0);
 		draw(Art.sun, -64, Constants.GAME_HEIGHT / 2 - 64);
-		drawString(mSystem.getName(), 8, Constants.GAME_HEIGHT / 2 + 64 + 8);
+		
+		drawRectangle(6, 6, Constants.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
+		drawBigString(mSystem.getName(), 12, 12);
+
+		if (mSystem.getOwner() != null) {
+			draw(mSystem.getOwner().getFlag(), 4, 32);
+			drawString(String.format("%s (%s)", mSystem.getOwner().getName(), mSystem.getOwner().getRelation()), 30, 32);
+		} else {
+			drawString("Free", 12, 32);
+		}
 
 		List<PlanetModel> planets = mSystem.getPlanets();
 		int pos = 0;

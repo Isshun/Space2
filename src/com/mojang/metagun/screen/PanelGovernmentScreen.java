@@ -41,7 +41,7 @@ public class PanelGovernmentScreen extends Screen {
 		draw(Art.res_science, START_X + SPACING_X * 5, 3);
 		draw(Art.res_culture, START_X + SPACING_X * 6, 3);
 		
-		List<PlanetModel> planets = GameService.getInstance().getPlanets();
+		List<PlanetModel> planets = GameService.getInstance().getPlayer().getPlanets();
 		Collections.sort(planets, new Comparator<PlanetModel>() {
 			@Override
 			public int compare (PlanetModel p1, PlanetModel p2) {

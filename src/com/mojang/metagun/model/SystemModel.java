@@ -9,6 +9,7 @@ public class SystemModel {
 	private int 		mPosX;
 	private int 		mPosY;
 	private List<PlanetModel> mPlanets;
+	private PlayerModel mOwner;
 
 	public SystemModel (String name, int x, int y) {
 		mPlanets = new ArrayList<PlanetModel>();
@@ -36,6 +37,14 @@ public class SystemModel {
 	public void addPlanet (PlanetModel planet) {
 		planet.setSystem(this, mPlanets.size());
 		mPlanets.add(planet);
+	}
+
+	public PlayerModel getOwner() {
+		return mOwner;
+	}
+	
+	public void setOwner (PlayerModel owner) {
+		mOwner = owner;
 	}
 
 }
