@@ -48,9 +48,28 @@ public class Art {
 	public static TextureRegion ic_satisfaction;
 	public static TextureRegion ic_construction_16;
 	public static TextureRegion bt_debug;
+	public static TextureRegion ship_big;
+	public static TextureRegion ship_32;
+	public static TextureRegion ship_64;
+	public static TextureRegion ship_128;
+	public static TextureRegion bg_1;
+	public static TextureRegion shield;
+	public static TextureRegion ic_attack_32;
+	public static TextureRegion ic_info_32;
 
 	public static void load () {
-		bg = load("res/background.png", 320, 240);
+		ship_big = load("res/ship7.png", 128, 87);
+		ship = load("res/ship.png", 16, 16);
+		ship_32 = load("res/ship_1_32.png", 32, 32);
+		ship_64 = load("res/ship_1_64.png", 64, 64);
+		ship_128 = load("res/ship_1_128.png", 128, 128);
+		
+		shield = load("res/shield.png", 32, 32);
+		ic_attack_32 = load("res/ic_attack_32.png", 32, 32);
+		ic_info_32 = load("res/ic_info_32.png", 32, 32);
+
+		bg = load("res/simple_space.png", 960, 540);
+		bg_1 = load("res/bg_1.png", 377, 264);
 		map = load("res/map.png", 64, 56);
 		system = load("res/system.png", 22, 22);
 		bt_planets = load("res/flag_planets.png", 32, 42);
@@ -67,7 +86,6 @@ public class Art {
 		sun = load("res/sun.png", 128, 128);
 		level = new Pixmap(Gdx.files.internal("res/levels.png"));
 		titleScreen = load("res/titlescreen.png", 320, 740);
-		ship = load("res/ship.png", 16, 16);
 		guys = split("res/guys.png", 6, 6);
 		bigText = split("res/guys.png", 12, 12);
 		player1 = split("res/player.png", 16, 32);

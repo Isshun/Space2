@@ -159,4 +159,16 @@ public class PlanetModel {
 		return mSize;
 	}
 
+	public void setClassification (int classIndex) {
+		for (PlanetClassModel c: PlanetClassModel.sClass) {
+			if (c.id == classIndex) {
+				mClass = c;
+			}
+		}
+	}
+
+	public void setSize (int size) {
+		mSize = size;
+	}
+
 }

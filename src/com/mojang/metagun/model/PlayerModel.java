@@ -14,9 +14,11 @@ public class PlayerModel {
 	private Color					mColor;
 	private List<SystemModel> 	mSystems;
 	private List<PlanetModel> 	mPlanets;
+	private List<FleetModel> 	mFleets;
 	
 	public PlayerModel(String name) {
 		mName = name;
+		mFleets = new ArrayList<FleetModel>();
 		mFlag = Art.flags[(int)(Math.random() * 9)];
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new ArrayList<PlanetModel>();
@@ -53,6 +55,15 @@ public class PlayerModel {
 
 	public String getRelation () {
 		return "war";
+	}
+
+	public List<FleetModel> getfleets () {
+		return mFleets;
+	}
+
+	public void addFleet (FleetModel fleet) {
+		fleet.setOwner(this);
+		mFleets.add(fleet);
 	}
 	
 }

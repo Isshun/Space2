@@ -8,11 +8,12 @@ public class FleetModel {
 	private PlayerModel mOwner;
 	private double mSpeed;
 	private TravelModel mTravel;
+	private String mName;
 
-	public FleetModel (PlayerModel owner) {
-		mOwner = owner;
+	public FleetModel () {
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
+		mName = "f1";
 	}
 
 	public double getSpeed () {
@@ -36,6 +37,38 @@ public class FleetModel {
 			return (int)(mTravel.getLength() / mSpeed);
 		}
 		return -1;
+	}
+
+	public void setOwner (PlayerModel owner) {
+		mOwner = owner;
+	}
+
+	public String getName () {
+		return mName;
+	}
+
+	public void setName (String name) {
+		mName = name;
+	}
+
+	public String getLocationName () {
+		return "go to nowhere asdsadasdsad";
+	}
+
+	public int getNbShip () {
+		return mShips.size();
+	}
+
+	public int getPower () {
+		return 42;
+	}
+
+	public int getDefense () {
+		return 42;
+	}
+
+	public List<ShipModel> getShip () {
+		return mShips;
 	}
 
 }

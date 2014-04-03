@@ -34,7 +34,7 @@ public class Game implements ApplicationListener {
 		Gdx.graphics.requestRendering();
 		mScreens = new LinkedList<Screen>();
 		
-		GameService.getInstance().initDebug();
+		GameService.getInstance().initDebug(0);
 
 		setScreen(new SpaceScreen());
 	}

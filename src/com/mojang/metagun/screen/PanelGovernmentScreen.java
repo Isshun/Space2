@@ -73,7 +73,7 @@ public class PanelGovernmentScreen extends Screen {
 
 	@Override
 	public void onTouch (int x, int y) {
-		List<PlanetModel> planets = GameService.getInstance().getPlanets();
+		List<PlanetModel> planets = mPlayer.getPlanets();
 		List<PlanetModel> colonized = new ArrayList<PlanetModel>();
 		for (PlanetModel planet : planets) {
 			if (planet.getPeople() > 0) {

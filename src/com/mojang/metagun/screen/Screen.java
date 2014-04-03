@@ -18,11 +18,13 @@ import com.badlogic.gdx.math.Matrix4;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.Game;
+import com.mojang.metagun.model.PlayerModel;
+import com.mojang.metagun.service.GameService;
 import com.mojang.metagun.ui.View;
 
 public abstract class Screen {
 	private static final int 		TOUCH_INTERVAL = 32;
-	public static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\< "};
+	public static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\<    ()"};
 	protected static Random 		sRandom = new Random();
 	private Game 						mGame;
 	private SpriteBatch 				mSpriteBatch;
@@ -34,14 +36,16 @@ public abstract class Screen {
 	private int 						mLastTouchX;
 	private int 						mLastTouchY;
 	private List<View>				mViews;
+	protected PlayerModel 			mPlayer;
 
 	public void removed () {
 		mSpriteBatch.dispose();
 	}
 
 	public final void init (Game game) {
-		this.mGame = game;
-		this.mTime = Constants.TOUCH_RECOVERY / 2;
+		mPlayer = GameService.getInstance().getPlayer();
+		mGame = game;
+		mTime = Constants.TOUCH_RECOVERY / 2;
 		mViews = new ArrayList<View>();
 		mBackHistory = 0;
 		mTouch = -1;
@@ -132,20 +136,22 @@ public abstract class Screen {
 		mSpriteBatch.draw(region, x, y, width, region.getRegionHeight());
 	}
 
-	public void drawString (String string, int x, int y) {
-		drawString(string, x, y, null);
+	public void drawString (String string, int x, int y, int truncate) {
+		drawString(string, x, y, truncate, null);
 	}
 	
 	public void drawString (String string, int x, int y, Color color) {
+		drawString(string, x, y, Integer.MAX_VALUE, color);
+	}
+	
+	public void drawString (String string, int x, int y) {
+		drawString(string, x, y, Integer.MAX_VALUE, null);
+	}
+	
+	public void drawString (String string, int x, int y, int truncate, Color color) {
 		string = string.toUpperCase();
-		for (int i = 0; i < string.length(); i++) {
+		for (int i = 0; i < Math.min(string.length(), truncate); i++) {
 			char ch = string.charAt(i);
-			if (ch == '(') {
-				draw(Art.guys[18][10], x + i * 6, y, color);
-			}
-			if (ch == ')') {
-				draw(Art.guys[19][10], x + i * 6, y, color);
-			}
 			for (int ys = 0; ys < CHARS.length; ys++) {
 				int xs = CHARS[ys].indexOf(ch);
 				if (xs >= 0) {
@@ -153,18 +159,16 @@ public abstract class Screen {
 				}
 			}
 		}
+
+		if (string.length() >= truncate) {
+			draw(Art.guys[20][10], x + truncate * 6, y, color);
+		}
 	}
 
 	public void drawBigString (String string, int x, int y) {
 		string = string.toUpperCase();
 		for (int i = 0; i < string.length(); i++) {
 			char ch = string.charAt(i);
-			if (ch == '(') {
-				draw(Art.guys[18][10], x + i * 12, y);
-			}
-			if (ch == ')') {
-				draw(Art.guys[19][10], x + i * 12, y);
-			}
 			for (int ys = 0; ys < CHARS.length; ys++) {
 				int xs = CHARS[ys].indexOf(ch);
 				if (xs >= 0) {

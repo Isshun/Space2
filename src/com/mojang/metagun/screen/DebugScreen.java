@@ -1,6 +1,8 @@
 package com.mojang.metagun.screen;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mojang.metagun.Constants;
+import com.mojang.metagun.service.GameService;
 
 public class DebugScreen extends Screen {
 
@@ -12,8 +14,11 @@ public class DebugScreen extends Screen {
 
 	@Override
 	public void onTouch (int x, int y) {
-		// TODO Auto-generated method stub
-
+		if (x < Constants.GAME_WIDTH / 2) {
+			GameService.getInstance().initDebug(-1);
+		} else {
+			GameService.getInstance().initDebug(1);
+		}
 	}
 
 	@Override
@@ -24,7 +29,7 @@ public class DebugScreen extends Screen {
 
 	@Override
 	public void onRender (SpriteBatch spriteBatch) {
-		drawString("DEBUG", 4, 4);
+		drawString("map index: " + GameService.getInstance().mMapIndex, 4, 4);
 	}
 
 }

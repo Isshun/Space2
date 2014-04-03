@@ -30,7 +30,8 @@ public class SpaceScreen extends Screen {
 
 	@Override
 	protected void onCreate () {
-		
+
+		// Button debug
 		ImageView btDebug = new ImageView(Art.bt_debug, 82, 6);
 		btDebug.setOnClickListener(new OnClickListener() {
 			@Override
@@ -40,24 +41,37 @@ public class SpaceScreen extends Screen {
 		});
 		addView(btDebug);
 		addView(new TextView("DEBUG", 84, 40));
+
+		// Button armada
+		ImageView btArmada = new ImageView(Art.bt_debug, 120, 6);
+		btArmada.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				addScreen(new PanelArmadaScreen());
+			}
+		});
+		addView(btArmada);
+		addView(new TextView("ARMADA", 122, 40));
 	}
 
 	@Override
 	public void onRender (SpriteBatch spriteBatch) {
-		int posX = mPosX / 2 % 320;
-		int posY = mPosY / 2 % 240;
-		
+		int posX = mPosX / 8;
+		int posY = mPosY / 8;
+
 		draw(Art.bg, posX - 320, posY - 240);
-		draw(Art.bg, posX, posY - 240);
-		draw(Art.bg, posX + 320, posY - 240);
 
-		draw(Art.bg, posX - 320, posY);
-		draw(Art.bg, posX, posY);
-		draw(Art.bg, posX + 320, posY);
-
-		draw(Art.bg, posX - 320, posY + 240);
-		draw(Art.bg, posX, posY + 240);
-		draw(Art.bg, posX + 320, posY + 240);
+//		draw(Art.bg, posX - 320, posY - 240);
+//		draw(Art.bg, posX, posY - 240);
+//		draw(Art.bg, posX + 320, posY - 240);
+//
+//		draw(Art.bg, posX - 320, posY);
+//		draw(Art.bg, posX, posY);
+//		draw(Art.bg, posX + 320, posY);
+//
+//		draw(Art.bg, posX - 320, posY + 240);
+//		draw(Art.bg, posX, posY + 240);
+//		draw(Art.bg, posX + 320, posY + 240);
 
 		// Draw travel lines
 		List<TravelModel> travels = GameService.getInstance().getTraveLines();
