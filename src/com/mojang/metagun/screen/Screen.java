@@ -6,9 +6,11 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
@@ -74,6 +76,15 @@ public abstract class Screen {
 		pixmap.dispose();
 	}
 	
+	public void draw (TextureRegion region, int x, int y, Color color) {
+		Sprite sprite = new Sprite(region);
+		sprite.setPosition(x, y);
+		if (color != null) {
+			sprite.setColor(color);
+		}
+		sprite.draw(mSpriteBatch);
+	}
+
 	public void draw (TextureRegion region, int x, int y) {
 		int width = region.getRegionWidth();
 		if (width < 0) width = -width;
@@ -81,19 +92,23 @@ public abstract class Screen {
 	}
 
 	public void drawString (String string, int x, int y) {
+		drawString(string, x, y, null);
+	}
+	
+	public void drawString (String string, int x, int y, Color color) {
 		string = string.toUpperCase();
 		for (int i = 0; i < string.length(); i++) {
 			char ch = string.charAt(i);
 			if (ch == '(') {
-				draw(Art.guys[18][10], x + i * 6, y);
+				draw(Art.guys[18][10], x + i * 6, y, color);
 			}
 			if (ch == ')') {
-				draw(Art.guys[19][10], x + i * 6, y);
+				draw(Art.guys[19][10], x + i * 6, y, color);
 			}
 			for (int ys = 0; ys < CHARS.length; ys++) {
 				int xs = CHARS[ys].indexOf(ch);
 				if (xs >= 0) {
-					draw(Art.guys[xs][ys + 9], x + i * 6, y);
+					draw(Art.guys[xs][ys + 9], x + i * 6, y, color);
 				}
 			}
 		}

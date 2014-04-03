@@ -47,4 +47,8 @@ public class SystemModel {
 		mOwner = owner;
 	}
 
+	public int getDistance (SystemModel s) {
+		return (int)Math.sqrt(Math.pow(Math.abs(mPosX - s.getX()), 2) + Math.pow(Math.abs(mPosY - s.getY()), 2));
+	}
+
 }

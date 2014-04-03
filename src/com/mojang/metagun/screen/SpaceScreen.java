@@ -18,7 +18,7 @@ import com.mojang.metagun.service.GameService;
 public class SpaceScreen extends Screen {
 	private static final int MAP_POS_X = Constants.GAME_WIDTH - 64 - 6;
 	private static final int MAP_POS_Y = 6;
-	
+
 	private int mPosX;
 	private int mPosY;
 
@@ -42,12 +42,12 @@ public class SpaceScreen extends Screen {
 		draw(Art.bg, posX + 320, posY + 240);
 
 		// Draw travel lines
-		List<TravelModel> travels = GameService.getInstance().getTravels();
+		List<TravelModel> travels = GameService.getInstance().getTraveLines();
 		for (TravelModel travel : travels) {
 			int length = (int)Math.sqrt(Math.pow(Math.abs(travel.getFrom().getX() - travel.getTo().getX()), 2) + Math.pow(Math.abs(travel.getFrom().getY() - travel.getTo().getY()), 2));
-			Pixmap pixmap = new Pixmap(length, 1, Format.RGBA8888);
-			pixmap.setColor(Color.rgba8888(1, 0, 0, 1));
-			pixmap.fillRectangle(0, 0, length, 1);
+			Pixmap pixmap = new Pixmap(length, 2, Format.RGBA8888);
+			pixmap.setColor(Color.rgba8888(1, 1, 1, 0.65f));
+			pixmap.fillRectangle(0, 0, length, 2);
 			Texture pixmaptex = new Texture(pixmap);
 			Sprite line = new Sprite(pixmaptex);
 			line.setRotation(travel.getAngle());
@@ -61,7 +61,7 @@ public class SpaceScreen extends Screen {
 		for (SystemModel system : systems) {
 			draw(Art.system, mPosX + system.getX(), mPosY + system.getY());
 			String name = system.getName();
-			drawString(name, mPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mPosY + system.getY() + Constants.SYSTEM_SIZE + 6);
+			drawString(name, mPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mPosY + system.getY() + Constants.SYSTEM_SIZE + 6, Color.RED);
 		}
 
 		// Draws travel ships
@@ -99,6 +99,13 @@ public class SpaceScreen extends Screen {
 	@Override
 	public void onTouch (int x, int y) {
 
+//		if (x < 32 && y < 32) {
+//			GameService.getInstance().dump();
+//			GameService.getInstance().getSystems().clear();
+//		} else {
+//			GameService.getInstance().addSystem(mPosX + x, mPosY + y);
+//		}
+		
 		// bt government
 		if (x >= 6 && x <= 6 + 32 && y >= 2 && y <= 44) {
 			addScreen(new PanelGovernmentScreen());
@@ -118,7 +125,6 @@ public class SpaceScreen extends Screen {
 		if (travel != null) {
 			addScreen(new TravelScreen(travel));
 		}
-		List<TravelModel> travels = GameService.getInstance().getTravels();
 
 	}
 
