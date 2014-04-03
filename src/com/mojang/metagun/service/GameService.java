@@ -116,9 +116,6 @@ public class GameService {
 				mTravelLines.add(new TravelModel(s, s3));
 			}
 		}
-//		addRandomSystem(0, null);
-//		for (int i = 0; i < 12; i++) {
-//		}
 		
 		FleetModel f1 = new FleetModel(mPlayer);
 		f1.addShip(new ShipModel());
@@ -133,6 +130,14 @@ public class GameService {
 		mTravelLines.get((int)(Math.random() * mTravelLines.size())).addFleet(f1);
 		mTravelLines.get((int)(Math.random() * mTravelLines.size())).addFleet(f2);
 		mTravelLines.get((int)(Math.random() * mTravelLines.size())).addFleet(f3);
+		
+		// Create home worlds
+		int offset = mSystems.size() / mPlayers.size();
+		int i = 0;
+		for (PlayerModel player: mPlayers) {
+			player.addSystem(mSystems.get(i));
+			i += offset;
+		}
 		
 //		mTravels.add(new TravelModel(f1, mSystems.get(0), mSystems.get(4)));
 //		mTravels.add(new TravelModel(f2, mSystems.get(1), mSystems.get(5)));
@@ -198,7 +203,6 @@ public class GameService {
 		addPlanet(system, new PlanetModel());
 		addPlanet(system, new PlanetModel());
 		mSystems.add(system);
-		mPlayers.get(0).addSystem(system);
 	}
 	
 	private void addPlanet (SystemModel system, PlanetModel p) {

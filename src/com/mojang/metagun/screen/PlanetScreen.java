@@ -2,6 +2,7 @@
 package com.mojang.metagun.screen;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.PlanetModel;
@@ -24,8 +25,7 @@ public class PlanetScreen extends Screen {
 	}
 
 	@Override
-	public void render () {
-		mSpriteBatch.begin();
+	public void onRender (SpriteBatch spriteBatch) {
 		draw(Art.bg, 0, 0);
 		
 		int posX = Constants.GAME_WIDTH - 128 - 20;
@@ -48,8 +48,6 @@ public class PlanetScreen extends Screen {
 		
 		drawCharacteristics(6, 32);
 		drawInfos(6, 84);
-		
-		mSpriteBatch.end();
 	}
 
 	private void drawCharacteristics (int posX, int posY) {
@@ -95,6 +93,12 @@ public class PlanetScreen extends Screen {
 
 	@Override
 	public void onMove (int offsetX, int offsetY) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onCreate () {
 		// TODO Auto-generated method stub
 		
 	}

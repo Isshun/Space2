@@ -11,7 +11,7 @@ public class PlayerModel {
 	
 	private String 				mName;
 	private TextureRegion 		mFlag;
-	private int						mColor;
+	private Color					mColor;
 	private List<SystemModel> 	mSystems;
 	private List<PlanetModel> 	mPlanets;
 	
@@ -20,7 +20,7 @@ public class PlayerModel {
 		mFlag = Art.flags[(int)(Math.random() * 9)];
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new ArrayList<PlanetModel>();
-		mColor = Color.rgba8888((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
+		mColor = new Color((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
 	}
 
 	public void addSystem (SystemModel system) {
@@ -39,7 +39,7 @@ public class PlayerModel {
 		return mSystems;
 	}
 
-	public int getColor() {
+	public Color getColor() {
 		return mColor;
 	}
 

@@ -1,10 +1,11 @@
 
 package com.mojang.metagun.screen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -17,13 +18,14 @@ import com.badlogic.gdx.math.Matrix4;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.Game;
+import com.mojang.metagun.ui.View;
 
 public abstract class Screen {
 	private static final int 		TOUCH_INTERVAL = 32;
-	private static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\< "};
+	public static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\< "};
 	protected static Random 		sRandom = new Random();
 	private Game 						mGame;
-	public SpriteBatch 				mSpriteBatch;
+	private SpriteBatch 				mSpriteBatch;
 	private int 						mTime;
 	private int 						mBackHistory;
 	private int 						mTouch;
@@ -31,6 +33,7 @@ public abstract class Screen {
 	private int 						mTouchY;
 	private int 						mLastTouchX;
 	private int 						mLastTouchY;
+	private List<View>				mViews;
 
 	public void removed () {
 		mSpriteBatch.dispose();
@@ -39,6 +42,7 @@ public abstract class Screen {
 	public final void init (Game game) {
 		this.mGame = game;
 		this.mTime = Constants.TOUCH_RECOVERY / 2;
+		mViews = new ArrayList<View>();
 		mBackHistory = 0;
 		mTouch = -1;
 		Matrix4 projection = new Matrix4();
@@ -46,7 +50,11 @@ public abstract class Screen {
 
 		mSpriteBatch = new SpriteBatch(100);
 		mSpriteBatch.setProjectionMatrix(projection);
+		
+		onCreate();
 	}
+
+	protected abstract void onCreate ();
 
 	protected void addScreen (Screen screen) {
 		mGame.addScreen(screen);
@@ -56,6 +64,10 @@ public abstract class Screen {
 		mGame.setScreen(screen);
 	}
 
+	protected void addView(View v) {
+		mViews.add(v);
+	}
+	
 //	public void drawLine(int fromX, int fromY, int toX, int toY, int color) {
 //		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
 //		pixmap.setColor(color);
@@ -76,12 +88,41 @@ public abstract class Screen {
 		pixmap.dispose();
 	}
 	
+	public void drawRectangle(int x, int y, int width, int height, Color color) {
+		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
+		pixmap.setColor(color);
+		pixmap.fillRectangle(0, 0, 32, 32);
+		Texture pixmaptex = new Texture(pixmap);
+		TextureRegion region = new TextureRegion(pixmaptex);
+		mSpriteBatch.draw(region, x, y, width, height);
+		pixmap.dispose();
+	}
+
+	protected void drawRectangle (int x, int y, int width, int height, Color color, int angle) {
+		Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
+		pixmap.setColor(color);
+		pixmap.fillRectangle(0, 0, width, height);
+		Texture pixmaptex = new Texture(pixmap);
+		Sprite line = new Sprite(pixmaptex);
+		line.setRotation(angle);
+		line.setPosition(x, y);
+		line.draw(mSpriteBatch);
+		pixmap.dispose();
+	}
+
 	public void draw (TextureRegion region, int x, int y, Color color) {
 		Sprite sprite = new Sprite(region);
 		sprite.setPosition(x, y);
 		if (color != null) {
 			sprite.setColor(color);
 		}
+		sprite.draw(mSpriteBatch);
+	}
+
+	protected void draw (TextureRegion region, int x, int y, int angle) {
+		Sprite sprite = new Sprite(region);
+		sprite.setRotation(angle);
+		sprite.setPosition(x, y);
 		sprite.draw(mSpriteBatch);
 	}
 
@@ -133,8 +174,19 @@ public abstract class Screen {
 		}
 	}
 
-	public abstract void render ();
+	public void render () {
+		mSpriteBatch.begin();
+		
+		onRender(mSpriteBatch);
 
+		for (View view: mViews) {
+			view.draw(mSpriteBatch);
+		}
+
+		mSpriteBatch.end();
+	}
+
+	public abstract void onRender(SpriteBatch spriteBatch);
 	public abstract void onTouch(int x, int y);
 	public abstract void onMove(int offsetX, int offsetY);
 
@@ -171,6 +223,11 @@ public abstract class Screen {
 				return;
 			}
 			if (Math.abs(mTouchX - mLastTouchX) < 5  && Math.abs(mTouchY - mLastTouchY) < 5 &&  mTouch + TOUCH_INTERVAL > mTime) {
+				for (View view: mViews) {
+					if (view.isClickable() && view.contains(mTouchX, mTouchY)) {
+						view.click();
+					}
+				}
 				onTouch(mTouchX, mTouchY);
 			}
 			mTouch = -1;

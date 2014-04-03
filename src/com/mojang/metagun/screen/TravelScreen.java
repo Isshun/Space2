@@ -1,6 +1,7 @@
 
 package com.mojang.metagun.screen;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.model.FleetModel;
 import com.mojang.metagun.model.TravelModel;
 
@@ -17,9 +18,7 @@ public class TravelScreen extends Screen {
 	}
 
 	@Override
-	public void render () {
-		mSpriteBatch.begin();
-		
+	public void onRender (SpriteBatch spriteBatch) {		
 		int posY = 6;
 		drawString("from: " + mTravel.getFrom().getName(), 6, posY);
 		
@@ -33,8 +32,6 @@ public class TravelScreen extends Screen {
 			posY += 12;
 			drawString("ETA: " + mFleet.getETA(), 6, posY);
 		}
-		
-		mSpriteBatch.end();
 	}
 
 	@Override
@@ -47,6 +44,12 @@ public class TravelScreen extends Screen {
 	public void onMove (int offsetX, int offsetY) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	protected void onCreate () {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

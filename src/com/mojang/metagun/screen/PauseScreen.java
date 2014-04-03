@@ -1,6 +1,7 @@
 
 package com.mojang.metagun.screen;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 
 public class PauseScreen extends Screen {
@@ -14,10 +15,9 @@ public class PauseScreen extends Screen {
 	}
 
 	@Override
-	public void render () {
+	public void onRender (SpriteBatch spriteBatch) {
 		parent.render();
 
-		mSpriteBatch.begin();
 		int xs = 0;
 		int ys = options.length;
 		for (int y = 0; y < options.length; y++) {
@@ -44,7 +44,6 @@ public class PauseScreen extends Screen {
 			}
 			drawString(options[y], xp + 6, yp + y * 6);
 		}
-		mSpriteBatch.end();
 	}
 
 	@Override
@@ -55,6 +54,12 @@ public class PauseScreen extends Screen {
 
 	@Override
 	public void onMove (int offsetX, int offsetY) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onCreate () {
 		// TODO Auto-generated method stub
 		
 	}

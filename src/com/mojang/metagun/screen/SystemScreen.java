@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.PlanetModel;
@@ -28,8 +28,7 @@ public class SystemScreen extends Screen {
 	}
 
 	@Override
-	public void render () {
-		mSpriteBatch.begin();
+	public void onRender (SpriteBatch spriteBatch) {
 		draw(Art.bg, 0, 0);
 		draw(Art.sun, -64, Constants.GAME_HEIGHT / 2 - 64);
 		
@@ -64,8 +63,6 @@ public class SystemScreen extends Screen {
 			
 			pos++;
 		}
-		
-		mSpriteBatch.end();
 	}
 
 	private void drawPlanet (PlanetModel planet, int posX, int posY) {
@@ -114,6 +111,12 @@ public class SystemScreen extends Screen {
 
 	@Override
 	public void onMove (int offsetX, int offsetY) {
+	}
+
+	@Override
+	protected void onCreate () {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -4,7 +4,6 @@ package com.mojang.metagun;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mojang.metagun.model.PlanetClassModel;
 
@@ -41,20 +40,22 @@ public class Art {
 	public static TextureRegion[][] bigText;
 	public static TextureRegion[][] planets;
 	public static TextureRegion[] flags;
-	public static TextureRegion flag_planets;
-	public static TextureRegion flag_relations;
+	public static TextureRegion bt_planets;
+	public static TextureRegion bt_relations;
 	public static TextureRegion map;
 	public static TextureRegion ship;
 	public static TextureRegion ic_people;
 	public static TextureRegion ic_satisfaction;
 	public static TextureRegion ic_construction_16;
+	public static TextureRegion bt_debug;
 
 	public static void load () {
 		bg = load("res/background.png", 320, 240);
 		map = load("res/map.png", 64, 56);
 		system = load("res/system.png", 22, 22);
-		flag_planets = load("res/flag_planets.png", 32, 42);
-		flag_relations = load("res/flag_relations.png", 32, 42);
+		bt_planets = load("res/flag_planets.png", 32, 42);
+		bt_relations = load("res/flag_relations.png", 32, 42);
+		bt_debug = load("res/bt_debug.png", 32, 42);
 		ic_money_12 = load("res/res_money.png", 12, 12);
 		res_food = load("res/res_food.png", 12, 12);
 		res_culture = load("res/res_culture.png", 12, 12);
