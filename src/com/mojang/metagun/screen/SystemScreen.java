@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
+import com.mojang.metagun.Game;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.SystemModel;
 
@@ -28,7 +29,7 @@ public class SystemScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch) {
+	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		draw(Art.bg, 0, 0);
 		draw(Art.sun, -64, Constants.GAME_HEIGHT / 2 - 64);
 		
@@ -55,7 +56,7 @@ public class SystemScreen extends Screen {
 				x = PLANET_REVOLUTION;
 				y = 0;
 			} else {
-				Gdx.graphics.requestRendering();
+				Game.requestRendering();
 			}
 			int posX = x + PLANET_SPACING * pos;
 			int posY = Constants.GAME_HEIGHT / 2 - 21 + y;
@@ -115,8 +116,7 @@ public class SystemScreen extends Screen {
 
 	@Override
 	protected void onCreate () {
-		// TODO Auto-generated method stub
-		
+		System.out.println("System pos:" + mSystem.getX() + ", " + mSystem.getY());
 	}
 
 }

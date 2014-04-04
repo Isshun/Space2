@@ -10,7 +10,7 @@ import com.mojang.metagun.service.GameService;
 public class PanelRealtionScreen extends Screen {
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch) {
+	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		draw(Art.bg, 0, 0);
 
 		List<PlayerModel> players = GameService.getInstance().getPlayers();

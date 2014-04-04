@@ -1,5 +1,9 @@
 package com.mojang.metagun.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class PlanetModel {
 	private String mName;
 	private double mInitialTick;
@@ -14,8 +18,10 @@ public class PlanetModel {
 	private double mBaseMoney;
 	private double mSatisfaction;
 	private int mSize;
+	private List<ShipModel>	mBuilds;
 
 	public PlanetModel () {
+		mBuilds = new ArrayList<ShipModel>();
 		mClass = getRandomPlanetClass();
 		mSize = (int)(Math.random() * 5);
 		mPeople = 1;
@@ -84,7 +90,7 @@ public class PlanetModel {
 		switch (nb) {
 		case 1: return "I";
 		case 2: return "II";
-		case 3: return "II";
+		case 3: return "III";
 		case 4: return "IV";
 		case 5: return "V";
 		case 6: return "VI";
@@ -169,6 +175,22 @@ public class PlanetModel {
 
 	public void setSize (int size) {
 		mSize = size;
+	}
+
+	public void addBuild (ShipModel sc) {
+		System.out.println("Add build: " + sc.getClassName());
+		sc.setPlanet(this);
+		mBuilds.add(sc);
+	}
+
+	public List<ShipModel> getBuilds () {
+		return mBuilds;
+	}
+
+	public void update () {
+		if (mBuilds.size() > 0 && mBuilds.get(0).build(mBaseBuild * mPeople)) {
+			mBuilds.remove(0);
+		}
 	}
 
 }

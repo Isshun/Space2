@@ -7,6 +7,9 @@ import java.util.List;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
+import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.screen.PauseScreen;
 import com.mojang.metagun.screen.Screen;
 import com.mojang.metagun.screen.SpaceScreen;
@@ -21,6 +24,10 @@ public class Game implements ApplicationListener {
 	private final boolean started = false;
 	private float accum = 0;
 	private boolean mMenuIsOpen;
+	private int mCycle;
+	private double mGameTime;
+
+	private static boolean sNeedRendering;
 
 	@Override
 	public void create () {
@@ -36,7 +43,23 @@ public class Game implements ApplicationListener {
 		
 		GameService.getInstance().initDebug(0);
 
-		setScreen(new SpaceScreen());
+		if (Constants.GAME_WIDTH > 480) {
+			
+		}
+		
+		if (Constants.GAME_WIDTH < 380 || Constants.GAME_HEIGHT < 240) {
+			setScreen(new ErrorScreen(ErrorScreen.RESOLUTION_NOT_SUPPORTED));
+		} else {
+			setScreen(new SpaceScreen());
+		}
+		
+		Timer timer = new Timer();
+		timer.scheduleTask(new Task() {
+			@Override
+			public void run () {
+				update();
+			}
+		}, Constants.UPDATE_INTERVAL, Constants.UPDATE_INTERVAL);
 	}
 
 	@Override
@@ -52,7 +75,7 @@ public class Game implements ApplicationListener {
 	public void setScreen (Screen newScreen) {
 		if (screen != null) screen.removed();
 		screen = newScreen;
-		if (screen != null) screen.init(this);
+		if (screen != null) screen.init(this, (int)mGameTime);
 	}
 
 	public void addScreen (Screen newScreen) {
@@ -60,18 +83,34 @@ public class Game implements ApplicationListener {
 		setScreen(newScreen);
 	}
 
+	public boolean isTop (Screen screen) {
+		return mScreens.getLast() != screen;
+	}
+
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		accum += Gdx.graphics.getDeltaTime();
+		mGameTime += (accum * 1000);
 		while (accum > 1.0f / 60.0f) {
 			screen.tick();
 			accum -= 1.0f / 60.0f;
 		}
-		screen.render();
+		screen.render((int)mGameTime, mCycle);
 // batch.begin();
 // font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
 // batch.end();
+	}
+
+	void update () {
+		System.out.println("update");
+		
+		List<PlanetModel> planets = GameService.getInstance().getPlanets();
+		for (PlanetModel planet: planets) {
+			planet.update();
+		}
+
+		mCycle++;	
 	}
 
 	@Override
@@ -99,5 +138,10 @@ public class Game implements ApplicationListener {
 
 	public List<Screen> getHistoryScreen () {
 		return mScreens;
+	}
+
+	public static void requestRendering () {
+		//Gdx.graphics.requestRendering();
+		sNeedRendering = true;
 	}
 }

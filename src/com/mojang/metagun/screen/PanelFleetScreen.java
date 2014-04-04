@@ -41,7 +41,7 @@ public class PanelFleetScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch) {
+	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		draw(Art.bg_1, 0, 0);
 		
 		drawBigString(String.format("%s (%d/%d/%d)", mFleet.getName(), (int)mTotInd, (int)mAttInd, (int)mDefInd), 6, 6);
@@ -49,27 +49,7 @@ public class PanelFleetScreen extends Screen {
 
 		ShipModel ship = mFleet.getShip().get(mSelected);
 		
-		drawBigString(String.valueOf((int)ship.getIndice()), 220, 130);
-//		draw(Art.ic_info_32, 215, 120);
-		drawString("class:      " + ship.getClassName(), 256, 120);
-		drawString("mass:           " + ship.getMass(), 256, 120 + 12 * 1);
-		drawString("crew:         " + ship.getCrew() + "/" + ship.getTotalCrew(), 256, 120 + 12 * 2);
-		
-		drawRectangle(213, 156, 157, 1, Color.rgba8888(1, 1, 1, 0.65f));
-
-		drawBigString(String.valueOf((int)ship.getAttackIndice()), 220, 172);
-//		draw(Art.ic_attack_32, 215, 162);
-		drawString("pow. phaser:    " + (int)ship.getPhaserPower(), 256, 126 + 12 * 3);
-		drawString("pow. torpedo:   " + (int)ship.getTorpedoPower(), 256, 126 + 12 * 4);
-		drawString("speed:           " + (int)ship.getVelocity(), 256, 126 + 12 * 5);
-
-		drawRectangle(213, 198, 157, 1, Color.rgba8888(1, 1, 1, 0.65f));
-		
-		drawBigString(String.valueOf((int)ship.getDefenseIndice()), 220, 214);
-//		draw(Art.shield, 215, 204);
-		drawString("hull:       " + ship.getHull() + "/" + ship.getTotalHull(), 256, 132 + 12 * 6);
-		drawString("armory:          " + (int)ship.getArmory(), 256, 132 + 12 * 7);
-		drawString("shield:          " + (int)ship.getShieldPower(), 256, 132 + 12 * 8);
+		drawShipInfo(ship, Constants.GAME_WIDTH - 180, Constants.GAME_HEIGHT - 150);
 		
 		//drawRectangle(6, 32, 183, 600, Color.rgba8888(0.85f, 0.85f, 1, 0.45f)); 
 		
@@ -99,6 +79,32 @@ public class PanelFleetScreen extends Screen {
 			
 			i++;
 		}
+	}
+
+	private void drawShipInfo (ShipModel ship, int posX, int posY) {
+		drawBigString(String.valueOf((int)ship.getIndice()), posX + 6, posY + 16);
+//		draw(Art.ic_info_32, 215, 120);
+		drawString("class:      " + ship.getClassName(),posX + 42, posY);
+		drawString("mass:           " + ship.getMass(), posX + 42, posY + 12 * 1);
+		drawString("crew:         " + ship.getCrew() + "/" + ship.getTotalCrew(), posX + 42, posY + 12 * 2);
+		drawString("special:       " + ship.getSpecialDeviceName(), posX + 42, posY + 12 * 3);
+		
+		drawRectangle(posX, posY + 48, 157, 1, Color.rgba8888(1, 1, 1, 0.65f));
+
+		drawBigString(String.valueOf((int)ship.getAttackIndice()), posX + 6, posY + 64);
+//		draw(Art.ic_attack_32, 215, 162);
+		drawString("pow. phaser:    " + (int)ship.getPhaserPower(), posX + 42, posY + 18 + 12 * 3);
+		drawString("pow. torpedo:   " + (int)ship.getTorpedoPower(), posX + 42, posY + 18 + 12 * 4);
+		drawString("speed:           " + (int)ship.getVelocity(), posX + 42, posY + 18 + 12 * 5);
+
+		drawRectangle(posX, posY + 90, 157, 1, Color.rgba8888(1, 1, 1, 0.65f));
+		
+		drawBigString(String.valueOf((int)ship.getDefenseIndice()), posX + 6, posY + 106);
+//		draw(Art.shield, 215, 204);
+		drawString("hull:       " + ship.getHull() + "/" + ship.getTotalHull(), posX + 42, posY + 24 + 12 * 6);
+		drawString("armory:          " + (int)ship.getArmory(), posX + 42, posY + 24 + 12 * 7);
+		drawString("shield:          " + (int)ship.getShieldPower(), posX + 42, posY + 24 + 12 * 8);
+		
 	}
 
 	@Override

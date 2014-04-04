@@ -25,7 +25,7 @@ public class PanelGovernmentScreen extends Screen {
 	}
 	
 	@Override
-	public void onRender (SpriteBatch spriteBatch) {
+	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		draw(Art.bg, 0, 0);
 
 		draw(Art.ic_people, START_X, 3);

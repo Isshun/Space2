@@ -18,7 +18,7 @@ public class TravelScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch) {		
+	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {		
 		int posY = 6;
 		drawString("from: " + mTravel.getFrom().getName(), 6, posY);
 		

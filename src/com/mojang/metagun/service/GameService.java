@@ -8,6 +8,7 @@ import com.mojang.metagun.model.FleetModel;
 import com.mojang.metagun.model.PlanetClassModel;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.PlayerModel;
+import com.mojang.metagun.model.ShipClassModel;
 import com.mojang.metagun.model.ShipModel;
 import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.model.TravelModel;
@@ -23,7 +24,7 @@ public class GameService {
 		{{284, 201},{168, 346},{513, 392},{607, 262},{295, 389},{445, 291},{700, 442},{532, 544},{378, 505},{381, 468},{156, 525},{371, 581},{775, 602},{512, 221},{854, 200},{726, 311},{631, 380},{852, 452}},
 		{{356, 170},{836, 175},{791, 383},{508, 402},{663, 188},{649, 478},{308, 494},{204, 584},{397, 615},{477, 646},{494, 517},{347, 343},{557, 282},{672, 336},{809, 540},{606, 541},{505, 150},{280, 300},{929, 277},{648, 40},{952, 430},{200, 447}},
 		{{420, 246},{493, 329},{400, 368},{329, 355},{285, 292},{365, 175},{634, 183},{666, 380},{468, 392},{404, 494},{324, 475},{232, 390},{183, 297},{220, 191},{440, 114},{619, 338},{571, 471},{856, 545},{691, 266},{781, 454},{647, 548},{527, 601},{554, 180}},
-		{{305, 120},{681, 12},{612, 95},{510, 85},{589, 210},{483, 207},{391, 166},{328, 304},{465, 356},{518, 365},{653, 352},{761, 363},{620, 478},{473, 451},{413, 385},{279, 505},{208, 496},{146, 342},{472, 481},{533, 532},{341, 565},{693, 632},{664, 564},{512, 618},{862, 472},{750, 492},{820, 201},{736, 75},{838, 42},{920, 247},{705, 145},{877, 224}},
+		{{265, 160},{681, 12},{612, 95},{510, 85},{589, 210},{483, 207},{391, 166},{328, 304},{465, 326},{528, 415},{653, 352},{761, 363},{620, 478},{413, 385},{279, 460},{208, 496},{146, 342},{462, 491},{533, 532},{341, 565},{693, 632},{664, 564},{512, 618},{862, 432},{750, 492},{810, 231},{700, 281},{736, 75},{838, 42},{920, 280},{705, 145},{877, 190}},
 		{{642, 395},{735, 389},{758, 509},{607, 566},{473, 464},{561, 342},{588, 470},{762, 287},{925, 462},{894, 642},{731, 676},{476, 706},{707, 285},{451, 306},{511, 573},{268, 584},{372, 451},{402, 596},{832, 397},{496, 189},{893, 274},{348, 335},{183, 440}},
 		{{580, 380},{620, 600},{715, 463},{430, 470},{621, 658},{653, 463},{464, 536},{309, 591},{387, 544},{399, 628},{337, 499},{396, 413},{703, 394},{807, 388},{678, 542},{675, 673},{649, 760},{499, 746},{577, 730},{424, 798},{465, 402},{487, 453},{342, 420}},
 		{{699, 271},{531, 414},{673, 509},{616, 389},{460, 223},{393, 459},{527, 640},{890, 665},{712, 641},{864, 282},{582, 180},{907, 503},{209, 369},{382, 609}},
@@ -41,6 +42,8 @@ public class GameService {
 	private List<SystemModel> mSystems;
 	private List<PlanetModel> mPlanets;
 
+	private List<ShipClassModel> mShipClasses;
+
 	private ArrayList<PlayerModel> mPlayers;
 
 	private PlayerModel mPlayer;
@@ -54,6 +57,7 @@ public class GameService {
 		mPlanets = new ArrayList<PlanetModel>();
 		mPlayers = new ArrayList<PlayerModel>();
 		mTravelLines = new ArrayList<TravelModel>();
+		mShipClasses = new ArrayList<ShipClassModel>();
 	}
 	
 	public List<SystemModel> getSystems () {
@@ -71,7 +75,25 @@ public class GameService {
 		mSystems.clear();
 		mPlanets.clear();
 		mPlayers.clear();
+		mShipClasses.clear();
 		mTravelLines.clear();
+		
+		{
+			ShipClassModel sc = new ShipClassModel("Fighter");
+			mShipClasses.add(sc);
+		}
+		{
+			ShipClassModel sc = new ShipClassModel("Defender");
+			mShipClasses.add(sc);
+		}
+		{
+			ShipClassModel sc = new ShipClassModel("Cruiser");
+			mShipClasses.add(sc);
+		}
+		{
+			ShipClassModel sc = new ShipClassModel("Explorer");
+			mShipClasses.add(sc);
+		}
 		
 		mPlayer = new PlayerModel("me");
 		mPlayers.add(new PlayerModel("player-1"));
@@ -83,7 +105,7 @@ public class GameService {
 		if (mapChange != 0) {
 			mMapIndex += mapChange;
 		} else {
-			mMapIndex = (int)(Math.random() * sMap.length);
+			mMapIndex = 4;//(int)(Math.random() * sMap.length);
 		}
 		int map[][] = sMap[mMapIndex];
 		for (int[] s : map) {
@@ -130,41 +152,42 @@ public class GameService {
 		}
 		
 		// Create fleets
+		ShipClassModel sc = mShipClasses.get(0);
 		for (PlayerModel player: mPlayers) {
 			{
 				FleetModel fleet = new FleetModel();
 				fleet.setName("f1");
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
 				player.addFleet(fleet);
 			}
 			{
 				FleetModel fleet = new FleetModel();
 				fleet.setName("f2");
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
 				player.addFleet(fleet);
 			}
 			{
 				FleetModel fleet = new FleetModel();
 				fleet.setName("f3");
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
-				fleet.addShip(new ShipModel());
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
+				fleet.addShip(new ShipModel(sc));
 				player.addFleet(fleet);
 			}
 		}
@@ -291,6 +314,10 @@ public class GameService {
 			}
 		}
 		System.out.println("},");
+	}
+
+	public List<ShipClassModel> getShipClasses () {
+		return mShipClasses;
 	}
 
 }

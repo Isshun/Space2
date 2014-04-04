@@ -23,12 +23,12 @@ import com.mojang.metagun.service.GameService;
 import com.mojang.metagun.ui.View;
 
 public abstract class Screen {
-	private static final int 		TOUCH_INTERVAL = 32;
+	private static final int 		TOUCH_INTERVAL = 250;
 	public static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\<    ()"};
 	protected static Random 		sRandom = new Random();
 	private Game 						mGame;
-	private SpriteBatch 				mSpriteBatch;
-	private int 						mTime;
+	protected SpriteBatch 			mSpriteBatch;
+	private int 						mScreenTime;
 	private int 						mBackHistory;
 	private int 						mTouch;
 	private int 						mTouchX;
@@ -37,16 +37,27 @@ public abstract class Screen {
 	private int 						mLastTouchY;
 	private List<View>				mViews;
 	protected PlayerModel 			mPlayer;
+	protected Screen 					mParent;
+	protected int 						mCycle;
+	private int mGameTime;
+	private int mGameTimeAtStart;
+
+	public Screen() {
+		mViews = new ArrayList<View>();
+	}
 
 	public void removed () {
 		mSpriteBatch.dispose();
 	}
 
-	public final void init (Game game) {
+	public final void init (Game game, int gameTime) {
+		System.out.println("Screen init");
+		
+		mGameTime = gameTime;
+		mGameTimeAtStart = gameTime;
 		mPlayer = GameService.getInstance().getPlayer();
 		mGame = game;
-		mTime = Constants.TOUCH_RECOVERY / 2;
-		mViews = new ArrayList<View>();
+		mScreenTime = Constants.TOUCH_RECOVERY / 2;
 		mBackHistory = 0;
 		mTouch = -1;
 		Matrix4 projection = new Matrix4();
@@ -60,12 +71,20 @@ public abstract class Screen {
 
 	protected abstract void onCreate ();
 
+	public boolean isTop () {
+		return mGame.isTop(this);
+	}
+	
 	protected void addScreen (Screen screen) {
 		mGame.addScreen(screen);
 	}
 
 	protected void setScreen (Screen screen) {
 		mGame.setScreen(screen);
+	}
+
+	protected void back () {
+		mGame.goBack();		
 	}
 
 	protected void addView(View v) {
@@ -178,10 +197,18 @@ public abstract class Screen {
 		}
 	}
 
-	public void render () {
+	public void render (int gameTime, int cycle) {
+		mScreenTime = gameTime - mGameTimeAtStart;
+		mGameTime = gameTime;
+		mCycle = cycle;
+		
+		if (mParent != null) {
+			mParent.render(gameTime, cycle);
+		}
+		
 		mSpriteBatch.begin();
 		
-		onRender(mSpriteBatch);
+		onRender(mSpriteBatch, mGameTime, mScreenTime);
 
 		for (View view: mViews) {
 			view.draw(mSpriteBatch);
@@ -190,30 +217,30 @@ public abstract class Screen {
 		mSpriteBatch.end();
 	}
 
-	public abstract void onRender(SpriteBatch spriteBatch);
+	public abstract void onRender(SpriteBatch spriteBatch, int gameTime, int screenTime);
 	public abstract void onTouch(int x, int y);
 	public abstract void onMove(int offsetX, int offsetY);
 
 	public void tick () {
-		mTime++;
+//		System.out.println(mScreenTime + ", " + Constants.TOUCH_RECOVERY);
 		
-		if (mTime < Constants.TOUCH_RECOVERY) {
+		if (mScreenTime < Constants.TOUCH_RECOVERY) {
 			return;
 		}
 
-		if (Gdx.input.getDeltaX() > 30) {
+		if (Gdx.input.isTouched() && Gdx.input.getDeltaX() > 30) {
 			mBackHistory = 4;
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.BACKSPACE)) {
 			mGame.goBack();
-			mTime = 0;
+			mScreenTime = 0;
 			return;
 		}
 
 		// Start touch
 		if (mTouch == -1 && Gdx.input.isTouched()) {
-			mTouch = mTime;
+			mTouch = mScreenTime;
 			mTouchX = mLastTouchX = Gdx.input.getX() * Constants.GAME_WIDTH / Gdx.graphics.getWidth();
 			mTouchY = mLastTouchY = Gdx.input.getY() * Constants.GAME_HEIGHT / Gdx.graphics.getHeight();
 		}
@@ -221,12 +248,12 @@ public abstract class Screen {
 		// Stop touch
 		else if (mTouch != -1 && !Gdx.input.isTouched()) {
 			if (mGame.getHistoryScreen().size() > 0 && mBackHistory > 0) {
-				mTime = 0;
+				mScreenTime = 0;
 				mBackHistory = 0;
 				mGame.goBack();
 				return;
 			}
-			if (Math.abs(mTouchX - mLastTouchX) < 5  && Math.abs(mTouchY - mLastTouchY) < 5 &&  mTouch + TOUCH_INTERVAL > mTime) {
+			if (Math.abs(mTouchX - mLastTouchX) < 5  && Math.abs(mTouchY - mLastTouchY) < 5 &&  mTouch + TOUCH_INTERVAL > mScreenTime) {
 				for (View view: mViews) {
 					if (view.isClickable() && view.contains(mTouchX, mTouchY)) {
 						view.click();
@@ -252,6 +279,22 @@ public abstract class Screen {
 			mLastTouchX = x;
 			mLastTouchY = y;
 		}
+	}
+
+	public void render (SpriteBatch spriteBatch) {
+		mSpriteBatch.begin();
+//		
+////		onRender(mSpriteBatch);
+//
+//		for (View view: mViews) {
+//			view.draw(mSpriteBatch);
+//		}
+//
+		mSpriteBatch.end();
+	}
+
+	public SpriteBatch getSpriteBatch () {
+		return mSpriteBatch;
 	}
 
 }

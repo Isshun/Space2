@@ -1,6 +1,7 @@
 
 package com.mojang.metagun.screen;
 
+import java.security.spec.MGF1ParameterSpec;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -55,7 +56,7 @@ public class SpaceScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch) {
+	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		int posX = mPosX / 8;
 		int posY = mPosY / 8;
 
@@ -131,7 +132,7 @@ public class SpaceScreen extends Screen {
 
 		draw(Art.map, Constants.GAME_WIDTH - 64 - 6, 6);
 		drawRectangle(Constants.GAME_WIDTH - 64 - 6 - mPosX / 20, 6 - mPosY / 20, 18, 12, Color.rgba8888(0.5f, 0.5f, 0.8f, 0.8f));
-		drawString("Cycle:  42", Constants.GAME_WIDTH - 64 - 4, posY + 49);
+		drawString("Cycle:  " + mCycle, Constants.GAME_WIDTH - 64 - 4, posY + 49);
 
 		// Mini-map
 		for (SystemModel system : systems) {

@@ -1,6 +1,8 @@
 
 package com.mojang.metagun.screen;
 
+import java.security.spec.MGF1ParameterSpec;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 
@@ -15,8 +17,8 @@ public class PauseScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch) {
-		parent.render();
+	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+		parent.render(gameTime, screenTime);
 
 		int xs = 0;
 		int ys = options.length;

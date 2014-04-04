@@ -7,6 +7,9 @@ import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.SystemModel;
+import com.mojang.metagun.ui.RectangleView;
+import com.mojang.metagun.ui.View;
+import com.mojang.metagun.ui.View.OnClickListener;
 
 public class PlanetScreen extends Screen {
 	private static final int PLANET_REVOLUTION = 100;
@@ -22,10 +25,28 @@ public class PlanetScreen extends Screen {
 	public PlanetScreen (SystemModel system, PlanetModel planet) {
 		mPlanet = planet;
 		mSystem = system;
+		
+		View btShip = new RectangleView(6, Constants.GAME_HEIGHT - 20, 100, 20, new Color(1, 0.5f, 0.5f, 0.5f));
+		btShip.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				addScreen(new PlanetBuildShipScreen(PlanetScreen.this, mPlanet));
+			}
+		});
+		addView(btShip);
+
+		View btStructure = new RectangleView(126, Constants.GAME_HEIGHT - 20, 100, 20, new Color(0.5f, 0.5f, 1, 0.5f));
+		btStructure.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				addScreen(new PlanetBuildStructureScreen(PlanetScreen.this, mPlanet));
+			}
+		});
+		addView(btStructure);
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch) {
+	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		draw(Art.bg, 0, 0);
 		
 		int posX = Constants.GAME_WIDTH - 128 - 20;
@@ -46,8 +67,13 @@ public class PlanetScreen extends Screen {
 		drawRectangle(6, 6, Constants.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
 		drawBigString(mPlanet.getName(), 12, 12);
 		
-		drawCharacteristics(6, 32);
-		drawInfos(6, 84);
+		if (isTop()) {
+			drawCharacteristics(6, 32);
+			drawInfos(6, 84);
+		}
+		
+		drawString("ship", 6, Constants.GAME_HEIGHT - 20);
+		drawString("structure", 126, Constants.GAME_HEIGHT - 20);
 	}
 
 	private void drawCharacteristics (int posX, int posY) {
@@ -87,8 +113,6 @@ public class PlanetScreen extends Screen {
 
 	@Override
 	public void onTouch (int x, int y) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -99,8 +123,6 @@ public class PlanetScreen extends Screen {
 
 	@Override
 	protected void onCreate () {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
