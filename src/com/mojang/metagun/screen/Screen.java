@@ -23,7 +23,7 @@ import com.mojang.metagun.service.GameService;
 import com.mojang.metagun.ui.View;
 
 public abstract class Screen {
-	private static final int 		TOUCH_INTERVAL = 250;
+	private static final int 		TOUCH_INTERVAL = 750;
 	public static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\<    ()"};
 	protected static Random 		sRandom = new Random();
 	private Game 						mGame;
@@ -253,6 +253,7 @@ public abstract class Screen {
 				mGame.goBack();
 				return;
 			}
+			System.out.println("interval: " + (mTouch + TOUCH_INTERVAL) + " > " + mScreenTime);
 			if (Math.abs(mTouchX - mLastTouchX) < 5  && Math.abs(mTouchY - mLastTouchY) < 5 &&  mTouch + TOUCH_INTERVAL > mScreenTime) {
 				for (View view: mViews) {
 					if (view.isClickable() && view.contains(mTouchX, mTouchY)) {

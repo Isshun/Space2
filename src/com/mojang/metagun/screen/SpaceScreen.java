@@ -113,7 +113,7 @@ public class SpaceScreen extends Screen {
 	}
 
 	private void drawSystem (SystemModel system) {
-		draw(Art.system, mPosX + system.getX(), mPosY + system.getY());
+		draw(Art.system[system.getType()], mPosX + system.getX(), mPosY + system.getY());
 		String name = system.getName();
 		PlayerModel owner = system.getOwner();
 		if (owner != null) {

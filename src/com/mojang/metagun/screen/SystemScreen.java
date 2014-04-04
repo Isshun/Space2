@@ -13,7 +13,7 @@ import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.SystemModel;
 
 public class SystemScreen extends Screen {
-	private static final int PLANET_REVOLUTION = 100;
+	private static final int PLANET_REVOLUTION = 130;
 	private static final int PLANET_SPACING = 64;
 	private static final int PLANET_SIZE = 42;
 
@@ -31,7 +31,7 @@ public class SystemScreen extends Screen {
 	@Override
 	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		draw(Art.bg, 0, 0);
-		draw(Art.sun, -64, Constants.GAME_HEIGHT / 2 - 64);
+		draw(Art.sun[mSystem.getType()], -156, Constants.GAME_HEIGHT / 2 - 128);
 		
 		if (mSystem.getOwner() != null) {
 			Color color = new Color(mSystem.getOwner().getColor());

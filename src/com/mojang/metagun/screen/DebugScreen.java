@@ -45,7 +45,7 @@ public class DebugScreen extends Screen {
 		}
 		int i = 0;
 		for (ShipModel build: builds) {
-			drawString("build: " + build.getPlanet().getName() + "(" + build.getBuildRemain() + ")", 200, 4 + 10 * i++);
+			drawString("build: " + build.getClassName() + " (" + build.getPlanet().getName() + " / " + build.getBuildRemain() + ")", 200, 4 + 10 * i++);
 		}
 
 	}

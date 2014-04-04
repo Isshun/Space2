@@ -36,19 +36,25 @@ public class PlanetBuildShipScreen extends Screen {
 	@Override
 	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 100, new Color(0.2f, 0.2f, 0.2f, 0.85f));
+
+		drawString("Design", 4, POS_Y + 5);
+		drawRectangle(Constants.GAME_WIDTH / 3, POS_Y, 1, 200, new Color(0, 0, 0, 0.45f));
+		drawString("Spacedock", Constants.GAME_WIDTH / 3 + 5, POS_Y + 5);
+		drawRectangle(Constants.GAME_WIDTH / 3 * 2, POS_Y, 1, 200, new Color(0, 0, 0, 0.45f));
+		drawString("In orbit", Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + 5);
 		
 		List<ShipClassModel> classes = GameService.getInstance().getShipClasses();
 		int i = 0;
 		for (ShipClassModel sc: classes) {
-			drawString(sc.getName(), 0, POS_Y + 6 + i * LINE_INTERVAL);
+			drawString(sc.getName(), 4, POS_Y + 18 + i * LINE_INTERVAL);
 			i++;
 		}
 
 		List<ShipModel> builds = mPlanet.getBuilds();
 		int j = 0;
 		for (ShipModel sc: builds) {
-			drawString(sc.getClassName(), Constants.GAME_WIDTH / 2, POS_Y + 6 + j * LINE_INTERVAL);
-			drawString(String.valueOf(sc.getBuildRemain()), Constants.GAME_WIDTH / 2 + 80, POS_Y + 6 + j * LINE_INTERVAL);
+			drawString(sc.getClassName(), Constants.GAME_WIDTH / 3 + 5, POS_Y + 18 + j * LINE_INTERVAL);
+			drawString(String.valueOf(sc.getBuildRemain()), Constants.GAME_WIDTH / 3 + 120, POS_Y + 18 + j * LINE_INTERVAL);
 			j++;
 		}
 
@@ -56,16 +62,16 @@ public class PlanetBuildShipScreen extends Screen {
 
 	@Override
 	public void onTouch (int x, int y) {
-		if (y > POS_Y) {
+		if (y > POS_Y + 18) {
 			List<ShipClassModel> classes = GameService.getInstance().getShipClasses();
-			int index = (y - POS_Y) / LINE_INTERVAL;
+			int index = (y - POS_Y - 18) / LINE_INTERVAL;
 			if (x < Constants.GAME_WIDTH / 2 && index < classes.size()) {
 				mPlanet.addBuild(new ShipModel(classes.get(index)));
 			}
 			if (x > Constants.GAME_WIDTH / 2) {
 				System.out.println("remove build");
 			}
-		} else {
+		} else if (y < POS_Y) {
 			back();
 		}
 	}

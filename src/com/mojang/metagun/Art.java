@@ -30,8 +30,8 @@ public class Art {
 
 	public static TextureRegion winScreen1;
 	public static TextureRegion winScreen2;
-	public static TextureRegion system;
-	public static TextureRegion sun;
+	public static TextureRegion[] system;
+	public static TextureRegion sun[];
 	public static TextureRegion ic_money_12;
 	public static TextureRegion res_culture;
 	public static TextureRegion ic_construction_12;
@@ -71,7 +71,16 @@ public class Art {
 		bg = load("res/simple_space.png", 960, 540);
 		bg_1 = load("res/bg_1.png", 377, 264);
 		map = load("res/map.png", 64, 56);
-		system = load("res/system.png", 22, 22);
+		system = new TextureRegion[4];
+		system[0] = load("res/system_0.png", 22, 22);
+		system[1] = load("res/system_1.png", 22, 22);
+		system[2] = load("res/system_2.png", 22, 22);
+		system[3] = load("res/system_3.png", 22, 22);
+		sun = new TextureRegion[4];
+		sun[0] = load("res/sun_0_256.png", 256, 256);
+		sun[1] = load("res/sun_1_256.png", 256, 256);
+		sun[2] = load("res/sun_2_256.png", 256, 256);
+		sun[3] = load("res/sun_3_256.png", 256, 256);
 		bt_planets = load("res/flag_planets.png", 32, 42);
 		bt_relations = load("res/flag_relations.png", 32, 42);
 		bt_debug = load("res/bt_debug.png", 32, 42);
@@ -83,7 +92,6 @@ public class Art {
 		res_science = load("res/res_science.png", 12, 12);
 		ic_people = load("res/ic_people.png", 12, 12);
 		ic_satisfaction = load("res/ic_satisfaction.png", 12, 12);
-		sun = load("res/sun.png", 128, 128);
 		level = new Pixmap(Gdx.files.internal("res/levels.png"));
 		titleScreen = load("res/titlescreen.png", 320, 740);
 		guys = split("res/guys.png", 6, 6);

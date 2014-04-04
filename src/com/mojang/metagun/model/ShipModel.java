@@ -21,13 +21,14 @@ public class ShipModel {
 	private double 	mTorpedoPower;
 	private int 		mTotalBuild;
 	private int			mBuild;
-	private PlanetModel mPlanet;
-
-	private SystemModel mSystem;
+	private PlanetModel		mPlanet;
+	private SystemModel 		mSystem;
+	private ShipClassModel 	mShipClass;
 	
-	public ShipModel(ShipClassModel shipClassModel) {
+	public ShipModel(ShipClassModel shipClass) {
 		mSpeed = 42;
 		mMass = (int)(Math.random() * 100);
+		mShipClass = shipClass;
 		mArmory = (int)(Math.random() * 100);
 		mShieldPower = (int)(Math.random() * 100);
 		mTotalBuild = 42;
@@ -54,7 +55,7 @@ public class ShipModel {
 	public double 			getPhaserPower () { return mPhaserPower; }
 	public double 			getTorpedoPower () { return mTorpedoPower; }
 	public double 			getVelocity () { return mSpeed; }
-	public String 			getClassName () { return "fighter"; }
+	public String 			getClassName () { return mShipClass.getName(); }
 	public double 			getShieldPower () { return mShieldPower; }
 	public double 			getArmory () { return mArmory; }
 	public String 			getSpecialDeviceName () { return "none"; }
