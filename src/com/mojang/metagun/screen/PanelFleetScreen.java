@@ -8,6 +8,10 @@ import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.FleetModel;
 import com.mojang.metagun.model.ShipModel;
+import com.mojang.metagun.model.SystemModel;
+import com.mojang.metagun.service.GameService;
+import com.mojang.metagun.ui.TextView;
+import com.mojang.metagun.ui.View.OnClickListener;
 
 public class PanelFleetScreen extends Screen {
 
@@ -17,10 +21,10 @@ public class PanelFleetScreen extends Screen {
 	private static final int GRID_COLUMNS = 4;
 	private static final int GRID_CONTENT_WIDTH = GRID_WIDTH - GRID_PADDING - GRID_PADDING;
 	private static final int GRID_CONTENT_HEIGHT = GRID_HEIGHT - GRID_PADDING - GRID_PADDING;
-	private static final int START_Y = 32;
+	private static final int START_Y = 36;
 	private static final int START_X = 5;
 	
-	private FleetModel mFleet;
+	FleetModel mFleet;
 	private int mSelected;
 	private double mTotInd;
 	private double mAttInd;
@@ -29,7 +33,7 @@ public class PanelFleetScreen extends Screen {
 	public PanelFleetScreen (FleetModel fleet) {
 		mFleet = fleet;
 		
-		for (ShipModel ship: mFleet.getShip()) {
+		for (ShipModel ship: mFleet.getShips()) {
 			mTotInd += ship.getIndice();
 			mAttInd += ship.getAttackIndice();
 			mDefInd += ship.getDefenseIndice();
@@ -38,6 +42,18 @@ public class PanelFleetScreen extends Screen {
 
 	@Override
 	protected void onCreate () {
+		List<SystemModel> systems = GameService.getInstance().getSystems();
+		int i = 0;
+		for (final SystemModel system: systems) {
+			TextView text = new TextView(system.getName(), 4, 200 + i++ * 12);
+			text.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick () {
+					mFleet.go(system);
+				}
+			});
+			addView(text);
+		}
 	}
 
 	@Override
@@ -45,17 +61,19 @@ public class PanelFleetScreen extends Screen {
 		draw(Art.bg_1, 0, 0);
 		
 		drawBigString(String.format("%s (%d/%d/%d)", mFleet.getName(), (int)mTotInd, (int)mAttInd, (int)mDefInd), 6, 6);
+
+		// Draw location
+		drawString(mFleet.getLocationName(), 6, 24);
+
 		draw(Art.ship_big, Constants.GAME_WIDTH - 132, 12);
 
-		ShipModel ship = mFleet.getShip().get(mSelected);
-		
-		drawShipInfo(ship, Constants.GAME_WIDTH - 180, Constants.GAME_HEIGHT - 150);
+		drawShipInfo(Constants.GAME_WIDTH - 180, Constants.GAME_HEIGHT - 150);
 		
 		//drawRectangle(6, 32, 183, 600, Color.rgba8888(0.85f, 0.85f, 1, 0.45f)); 
 		
-		List<ShipModel> ships = mFleet.getShip();
+		List<ShipModel> ships = mFleet.getShips();
 		int i = 0;
-		for (ShipModel shipModel : ships) {
+		for (ShipModel ship : ships) {
 			
 			if (i == mSelected) {
 				drawRectangle(
@@ -73,7 +91,7 @@ public class PanelFleetScreen extends Screen {
 			drawRectangle(
 				START_X + 7 + GRID_PADDING + (i % GRID_COLUMNS) * GRID_WIDTH,
 				START_Y + 40 + GRID_PADDING + (int)(i / GRID_COLUMNS) * GRID_HEIGHT,
-				GRID_CONTENT_WIDTH - 14,
+				(int)((GRID_CONTENT_WIDTH - 14) * ship.getHullRatio()),
 				2,
 				Color.rgba8888(0, 1, 0, 1));
 			
@@ -81,7 +99,14 @@ public class PanelFleetScreen extends Screen {
 		}
 	}
 
-	private void drawShipInfo (ShipModel ship, int posX, int posY) {
+	private void drawShipInfo (int posX, int posY) {
+		mSelected = Math.min(mSelected, mFleet.getShips().size() - 1);
+		if (mSelected == -1) {
+			return;
+		}
+		
+		ShipModel ship = mFleet.getShips().get(mSelected);
+
 		drawBigString(String.valueOf((int)ship.getIndice()), posX + 6, posY + 16);
 //		draw(Art.ic_info_32, 215, 120);
 		drawString("class:      " + ship.getClassName(),posX + 42, posY);
@@ -101,7 +126,7 @@ public class PanelFleetScreen extends Screen {
 		
 		drawBigString(String.valueOf((int)ship.getDefenseIndice()), posX + 6, posY + 106);
 //		draw(Art.shield, 215, 204);
-		drawString("hull:       " + ship.getHull() + "/" + ship.getTotalHull(), posX + 42, posY + 24 + 12 * 6);
+		drawString("hull:       " + ship.getHull() + "/" + ship.getHullBase(), posX + 42, posY + 24 + 12 * 6);
 		drawString("armory:          " + (int)ship.getArmory(), posX + 42, posY + 24 + 12 * 7);
 		drawString("shield:          " + (int)ship.getShieldPower(), posX + 42, posY + 24 + 12 * 8);
 		
@@ -121,6 +146,12 @@ public class PanelFleetScreen extends Screen {
 	public void onMove (int offsetX, int offsetY) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onLongTouch (int x, int y) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

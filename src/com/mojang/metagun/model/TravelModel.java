@@ -3,7 +3,7 @@ package com.mojang.metagun.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TravelModel {
+public class TravelModel implements ILocation {
 	private SystemModel 			mFrom;
 	private SystemModel 			mTo;
 	private int 					mLength;
@@ -54,5 +54,16 @@ public class TravelModel {
 
 	public int getNbFleet () {
 		return mFleets.size();
+	}
+
+	@Override
+	public String getName () {
+		return mFrom.getName() + " to " + mTo.getName();
+	}
+
+	@Override
+	public void removeFleet (FleetModel fleet) {
+		// TODO Auto-generated method stub
+		
 	}
 }

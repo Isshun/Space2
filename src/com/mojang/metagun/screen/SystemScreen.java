@@ -13,8 +13,8 @@ import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.SystemModel;
 
 public class SystemScreen extends Screen {
-	private static final int PLANET_REVOLUTION = 130;
-	private static final int PLANET_SPACING = 64;
+	private static final int PLANET_REVOLUTION = 120;
+	private static final int PLANET_SPACING = 70;
 	private static final int PLANET_SIZE = 42;
 
 	private SystemModel mSystem;
@@ -22,10 +22,23 @@ public class SystemScreen extends Screen {
 	private boolean mTouch;
 	private int mTouchX;
 	private int mTouchY;
+	private int mPlanetRevolution;
 
 	public SystemScreen (SystemModel system) {
 		System.out.println("Open system: " + system.getName());
 		mSystem = system;
+		switch (mSystem.getType()) {
+		case 0:
+		case 2:
+			mPlanetRevolution = PLANET_REVOLUTION;
+			break;
+		case 1:
+			mPlanetRevolution = PLANET_REVOLUTION - 40;
+			break;
+		default:
+			mPlanetRevolution = PLANET_REVOLUTION;
+			break;
+		}
 	}
 
 	@Override
@@ -49,17 +62,17 @@ public class SystemScreen extends Screen {
 		int pos = 0;
 		for (PlanetModel planet: planets) {
 
-			double init = planet.getInitialTick();
-			int x = (int)(Math.cos(init + tick) * 100);
-			int y = (int)(Math.sin(init + tick) * 100);
-			if (tick > 1 || y > 0) {
-				x = PLANET_REVOLUTION;
-				y = 0;
-			} else {
-				Game.requestRendering();
-			}
-			int posX = x + PLANET_SPACING * pos;
-			int posY = Constants.GAME_HEIGHT / 2 - 21 + y;
+//			double init = planet.getInitialTick();
+//			int x = (int)(Math.cos(init + tick) * 100);
+//			int y = (int)(Math.sin(init + tick) * 100);
+//			if (tick > 1 || y > 0) {
+//				x = mPlanetRevolution;
+//				y = 0;
+//			} else {
+//				Game.requestRendering();
+//			}
+			int posX = mPlanetRevolution + PLANET_SPACING * pos;
+			int posY = Constants.GAME_HEIGHT / 2 - 21 + 0;
 			drawPlanet(planet, posX, posY);
 			
 			pos++;
@@ -101,8 +114,8 @@ public class SystemScreen extends Screen {
 	@Override
 	public void onTouch (int x, int y) {
 		if (Math.abs(y - Constants.GAME_HEIGHT / 2) <= PLANET_SIZE / 2) {
-			if ((x - PLANET_REVOLUTION) % PLANET_SPACING <= PLANET_SIZE) {
-				int pos = (x - PLANET_REVOLUTION) / PLANET_SPACING;
+			if ((x - mPlanetRevolution) % PLANET_SPACING <= PLANET_SIZE) {
+				int pos = (x - mPlanetRevolution) / PLANET_SPACING;
 				if (mSystem.getPlanets().size() > pos) {
 					addScreen(new PlanetScreen(mSystem, mSystem.getPlanets().get(pos)));
 				}
@@ -117,6 +130,12 @@ public class SystemScreen extends Screen {
 	@Override
 	protected void onCreate () {
 		System.out.println("System pos:" + mSystem.getX() + ", " + mSystem.getY());
+	}
+
+	@Override
+	public void onLongTouch (int x, int y) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

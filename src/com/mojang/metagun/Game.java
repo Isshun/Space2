@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.mojang.metagun.model.PlanetModel;
+import com.mojang.metagun.screen.ErrorScreen;
 import com.mojang.metagun.screen.PauseScreen;
 import com.mojang.metagun.screen.Screen;
 import com.mojang.metagun.screen.SpaceScreen;
@@ -91,10 +92,12 @@ public class Game implements ApplicationListener {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		accum += Gdx.graphics.getDeltaTime();
-		mGameTime += (accum * 1000);
+		//mGameTime += (accum * 1000);
+		//System.out.println("" + accum);
 		while (accum > 1.0f / 60.0f) {
-			screen.tick();
+			screen.tick((int)mGameTime, mCycle);
 			accum -= 1.0f / 60.0f;
+			mGameTime += (1.0f / 60.0f * 1000);
 		}
 		screen.render((int)mGameTime, mCycle);
 // batch.begin();
@@ -103,8 +106,6 @@ public class Game implements ApplicationListener {
 	}
 
 	void update () {
-		System.out.println("update");
-		
 		List<PlanetModel> planets = GameService.getInstance().getPlanets();
 		for (PlanetModel planet: planets) {
 			planet.update();
@@ -121,19 +122,22 @@ public class Game implements ApplicationListener {
 	public void dispose () {
 	}
 
-	public void goBack () {
+	public Screen goBack () {
 		System.out.println("Go back");
 		Screen s = mScreens.pollLast();
 		if (s != null) {
 			setScreen(s);
 		} else {
 			if (mMenuIsOpen) {
-				setScreen(new PauseScreen(screen));
+				s = new PauseScreen(screen);
+				setScreen(s);
 			} else {
-				setScreen(new SpaceScreen());
+				s = new SpaceScreen();
+				setScreen(s);
 			}
 			mMenuIsOpen = !mMenuIsOpen;
 		}
+		return s;
 	}
 
 	public List<Screen> getHistoryScreen () {

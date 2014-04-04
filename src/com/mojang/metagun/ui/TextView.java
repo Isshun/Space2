@@ -18,17 +18,18 @@ public class TextView extends View {
 	public TextView (String text, int x, int y, Color color) {
 		super(x, y);
 
-		mWidth = text.length() * 3;
-		mHeight = 4;
+		mWidth = text.length() * 6;
+		mHeight = 6;
 		mText = text.toUpperCase();
 		mColor = color;
+		mPadding = 2;
 	}
 
 	public TextView (String text, int x, int y) {
 		super(x, y);
 
-		mWidth = text.length() * 3;
-		mHeight = 4;
+		mWidth = text.length() * 6;
+		mHeight = 6;
 		mText = text.toUpperCase();
 	}
 

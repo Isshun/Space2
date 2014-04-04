@@ -40,4 +40,10 @@ public class PlanetBuildStructureScreen extends Screen {
 
 	}
 
+	@Override
+	public void onLongTouch (int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

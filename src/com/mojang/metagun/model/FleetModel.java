@@ -5,15 +5,16 @@ import java.util.List;
 
 public class FleetModel {
 	private List<ShipModel>	mShips;
-	private PlayerModel mOwner;
-	private double mSpeed;
-	private TravelModel mTravel;
-	private String mName;
+	private PlayerModel 		mOwner;
+	private double 			mSpeed;
+	private TravelModel 		mTravel;
+	private String 			mName;
+	private ILocation			mLocation;
 
 	public FleetModel () {
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
-		mName = "f1";
+		mName = "no-name";
 	}
 
 	public double getSpeed () {
@@ -52,7 +53,7 @@ public class FleetModel {
 	}
 
 	public String getLocationName () {
-		return "go to nowhere asdsadasdsad";
+		return mLocation.getName();
 	}
 
 	public int getNbShip () {
@@ -67,8 +68,28 @@ public class FleetModel {
 		return 42;
 	}
 
-	public List<ShipModel> getShip () {
+	public List<ShipModel> getShips () {
 		return mShips;
+	}
+
+	public void setLocation (PlanetModel planet) {
+		if (mLocation != null) {
+			mLocation.removeFleet(this);
+		}
+		mLocation = planet;
+		planet.addFleet(this);
+	}
+
+	public void go (SystemModel system) {
+		System.out.println("Go to " + system.getName());
+		
+		if (system.moveTo(this)) {
+			setLocation(system.getCapital());
+		}
+	}
+
+	public PlayerModel getOwner () {
+		return mOwner;
 	}
 
 }

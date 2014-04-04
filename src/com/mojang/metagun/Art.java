@@ -56,6 +56,8 @@ public class Art {
 	public static TextureRegion shield;
 	public static TextureRegion ic_attack_32;
 	public static TextureRegion ic_info_32;
+	public static TextureRegion dock;
+	public static TextureRegion bt_space_map;
 
 	public static void load () {
 		ship_big = load("res/ship7.png", 128, 87);
@@ -65,6 +67,7 @@ public class Art {
 		ship_128 = load("res/ship_1_128.png", 128, 128);
 		
 		shield = load("res/shield.png", 32, 32);
+		dock = load("res/dock_16.png", 16, 16);
 		ic_attack_32 = load("res/ic_attack_32.png", 32, 32);
 		ic_info_32 = load("res/ic_info_32.png", 32, 32);
 
@@ -84,6 +87,7 @@ public class Art {
 		bt_planets = load("res/flag_planets.png", 32, 42);
 		bt_relations = load("res/flag_relations.png", 32, 42);
 		bt_debug = load("res/bt_debug.png", 32, 42);
+		bt_space_map = load("res/map.png", 24, 16);
 		ic_money_12 = load("res/res_money.png", 12, 12);
 		res_food = load("res/res_food.png", 12, 12);
 		res_culture = load("res/res_culture.png", 12, 12);

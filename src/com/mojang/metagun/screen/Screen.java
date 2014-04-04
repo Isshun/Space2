@@ -23,8 +23,11 @@ import com.mojang.metagun.service.GameService;
 import com.mojang.metagun.ui.View;
 
 public abstract class Screen {
-	private static final int 		TOUCH_INTERVAL = 750;
+	private static final int 		TOUCH_INTERVAL = 1000;
+	private static final int 		LONG_TOUCH_INTERVAL = 750;
+	
 	public static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\<    ()"};
+	
 	protected static Random 		sRandom = new Random();
 	private Game 						mGame;
 	protected SpriteBatch 			mSpriteBatch;
@@ -39,8 +42,10 @@ public abstract class Screen {
 	protected PlayerModel 			mPlayer;
 	protected Screen 					mParent;
 	protected int 						mCycle;
-	private int mGameTime;
-	private int mGameTimeAtStart;
+	private int 						mGameTime;
+	private int 						mGameTimeAtStart;
+	private boolean mIsMoving;
+	private int mLongTouch;
 
 	public Screen() {
 		mViews = new ArrayList<View>();
@@ -60,6 +65,7 @@ public abstract class Screen {
 		mScreenTime = Constants.TOUCH_RECOVERY / 2;
 		mBackHistory = 0;
 		mTouch = -1;
+		mLongTouch = -1;
 		Matrix4 projection = new Matrix4();
 		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
 
@@ -83,8 +89,8 @@ public abstract class Screen {
 		mGame.setScreen(screen);
 	}
 
-	protected void back () {
-		mGame.goBack();		
+	protected Screen back () {
+		return mGame.goBack();
 	}
 
 	protected void addView(View v) {
@@ -219,17 +225,30 @@ public abstract class Screen {
 
 	public abstract void onRender(SpriteBatch spriteBatch, int gameTime, int screenTime);
 	public abstract void onTouch(int x, int y);
+	public abstract void onLongTouch(int x, int y);
 	public abstract void onMove(int offsetX, int offsetY);
 
-	public void tick () {
+	public void tick (int gameTime, int cycle) {
+		mScreenTime = gameTime - mGameTimeAtStart;
+
 //		System.out.println(mScreenTime + ", " + Constants.TOUCH_RECOVERY);
 		
 		if (mScreenTime < Constants.TOUCH_RECOVERY) {
 			return;
 		}
 
-		if (Gdx.input.isTouched() && Gdx.input.getDeltaX() > 30) {
-			mBackHistory = 4;
+		if (!mIsMoving && Gdx.input.isTouched() && Gdx.input.getDeltaX() > 30) {
+			onPrev();
+			mGameTimeAtStart = mGameTime;
+			return;
+			//mBackHistory = 4;
+		}
+
+		if (!mIsMoving && Gdx.input.isTouched() && Gdx.input.getDeltaX() < -30) {
+			onNext();
+			mGameTimeAtStart = mGameTime;
+			return;
+			//mBackHistory = 4;
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.BACKSPACE)) {
@@ -240,33 +259,57 @@ public abstract class Screen {
 
 		// Start touch
 		if (mTouch == -1 && Gdx.input.isTouched()) {
+			System.out.println("start touch: " + mGameTime);
 			mTouch = mScreenTime;
+			mLongTouch = -1;
 			mTouchX = mLastTouchX = Gdx.input.getX() * Constants.GAME_WIDTH / Gdx.graphics.getWidth();
 			mTouchY = mLastTouchY = Gdx.input.getY() * Constants.GAME_HEIGHT / Gdx.graphics.getHeight();
 		}
 		
+		// Stop long touch
+		else if (mLongTouch != -1 && !Gdx.input.isTouched()) {
+			System.out.println("stop long touch: " + mGameTime);
+			mTouch = -1;
+			mLongTouch = -1;
+		}
+		
 		// Stop touch
-		else if (mTouch != -1 && !Gdx.input.isTouched()) {
+		else if (mLongTouch == -1 && mTouch != -1 && !Gdx.input.isTouched()) {
+			System.out.println("stop touch: " + mGameTime);
 			if (mGame.getHistoryScreen().size() > 0 && mBackHistory > 0) {
 				mScreenTime = 0;
 				mBackHistory = 0;
+				mIsMoving = false;
 				mGame.goBack();
 				return;
 			}
-			System.out.println("interval: " + (mTouch + TOUCH_INTERVAL) + " > " + mScreenTime);
 			if (Math.abs(mTouchX - mLastTouchX) < 5  && Math.abs(mTouchY - mLastTouchY) < 5 &&  mTouch + TOUCH_INTERVAL > mScreenTime) {
 				for (View view: mViews) {
 					if (view.isClickable() && view.contains(mTouchX, mTouchY)) {
 						view.click();
+						mTouch = -1;
+						mGameTimeAtStart = mGameTime;
+						return;
 					}
 				}
 				onTouch(mTouchX, mTouchY);
 			}
+
 			mTouch = -1;
 		}
 		
 		// Move
 		if (mTouch != -1 && Gdx.input.isTouched()) {
+			// Long touch
+			if (Math.abs(mTouchX - mLastTouchX) < 5  && Math.abs(mTouchY - mLastTouchY) < 5 &&  mTouch + LONG_TOUCH_INTERVAL < mScreenTime) {
+				System.out.println("Long touch: " + mGameTime);
+				mLongTouch = mScreenTime;
+				mGameTimeAtStart = mGameTime;
+				onLongTouch(mTouchX, mTouchY);
+				return;
+			}
+
+			mIsMoving = true;
 			int x = Gdx.input.getX() * Constants.GAME_WIDTH / Gdx.graphics.getWidth();
 			int y = Gdx.input.getY() * Constants.GAME_HEIGHT / Gdx.graphics.getHeight();
 			
@@ -280,6 +323,12 @@ public abstract class Screen {
 			mLastTouchX = x;
 			mLastTouchY = y;
 		}
+	}
+
+	protected void onPrev () {
+	}
+
+	protected void onNext () {
 	}
 
 	public void render (SpriteBatch spriteBatch) {

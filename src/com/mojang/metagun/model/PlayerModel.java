@@ -15,6 +15,7 @@ public class PlayerModel {
 	private List<SystemModel> 	mSystems;
 	private List<PlanetModel> 	mPlanets;
 	private List<FleetModel> 	mFleets;
+	private PlanetModel mHome;
 	
 	public PlayerModel(String name) {
 		mName = name;
@@ -26,6 +27,10 @@ public class PlayerModel {
 	}
 
 	public void addSystem (SystemModel system) {
+		if (mHome == null) {
+			mHome = system.getCapital();
+		}
+		
 		mSystems.add(system);
 		system.setOwner(this);
 		for (PlanetModel planet: system.getPlanets()) {
@@ -64,6 +69,38 @@ public class PlayerModel {
 	public void addFleet (FleetModel fleet) {
 		fleet.setOwner(this);
 		mFleets.add(fleet);
+	}
+
+	public PlanetModel getHome () {
+		return mHome;
+	}
+
+	public void colonize (PlanetModel planet) {
+		if (planet.isFree() && (planet.getSystem().isFree() || planet.getSystem().getOwner() == this)) {
+			System.out.println("Colonize: " + planet.getName());
+			
+			planet.setOwner(this);
+			planet.setPeople(1);
+			mPlanets.add(planet);
+			
+			// Set capital
+			if (planet.getSystem().getOwner() == null) {
+				planet.getSystem().setOwner(this);
+				planet.getSystem().setCapital(planet);
+			}
+
+			
+			if (!mSystems.contains(planet.getSystem())) {
+				addSystem(planet.getSystem());
+			}
+		}
+	}
+
+	public int getRelation (PlayerModel otherPlayer) {
+		if (otherPlayer.equals(this)) {
+			return RelationModel.RELATION_ALLY;
+		}
+		return RelationModel.RELATION_WAR;
 	}
 	
 }

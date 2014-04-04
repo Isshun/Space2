@@ -1,7 +1,6 @@
-package com.mojang.metagun;
+package com.mojang.metagun.screen;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mojang.metagun.screen.Screen;
 import com.mojang.metagun.ui.TextView;
 
 public class ErrorScreen extends Screen {
@@ -35,6 +34,12 @@ public class ErrorScreen extends Screen {
 	public void onMove (int offsetX, int offsetY) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onLongTouch (int x, int y) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

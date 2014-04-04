@@ -16,7 +16,7 @@ public class ShipModel {
 	private int 		mCrew;
 	private int 		mTotalCrew;
 	private int 		mHull;
-	private int 		mTotalHull;
+	private int 		mHullBase;
 	private double 	mPhaserPower;
 	private double 	mTorpedoPower;
 	private int 		mTotalBuild;
@@ -31,14 +31,13 @@ public class ShipModel {
 		mShipClass = shipClass;
 		mArmory = (int)(Math.random() * 100);
 		mShieldPower = (int)(Math.random() * 100);
-		mTotalBuild = 42;
+		mTotalBuild = shipClass.getBuildValue();
 		mGlobalIndice = (int)(Math.random() * 100);
 		mAttackIndice = (int)(Math.random() * 100);
 		mDefenseIndice = (int)(Math.random() * 100);
 		mCrew = (int)(Math.random() * 100);
 		mTotalCrew = 100;
-		mHull = (int)(Math.random() * 250);
-		mTotalHull = 250;
+		mHull = mHullBase = 250;
 		mPhaserPower = (int)(Math.random() * 100);
 		mTorpedoPower = (int)(Math.random() * 100);
 	}
@@ -51,7 +50,8 @@ public class ShipModel {
 	public int 				getCrew () { return mCrew; }
 	public int 				getTotalCrew () { return mTotalCrew; }
 	public int 				getHull () { return mHull; }
-	public int 				getTotalHull () { return mTotalHull; }
+	public int 				getHullBase () { return mHullBase; }
+	public double			getHullRatio () { return (double)mHull / mHullBase; }
 	public double 			getPhaserPower () { return mPhaserPower; }
 	public double 			getTorpedoPower () { return mTorpedoPower; }
 	public double 			getVelocity () { return mSpeed; }
@@ -71,5 +71,18 @@ public class ShipModel {
 	public void setPlanet (PlanetModel planet) {
 		mPlanet = planet;
 		mSystem = planet.getSystem();
+	}
+
+	public int getBuildETA () {
+		return (int)(getBuildRemain() / (mPlanet.getBuild())) + 1;
+	}
+
+	public double damage (double damage) {
+		if (mHull < damage) {
+			mHull = 0;
+			return damage - mHull;
+		}
+		mHull -= damage;
+		return damage;
 	}
 }

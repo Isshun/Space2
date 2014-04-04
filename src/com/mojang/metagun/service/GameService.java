@@ -80,18 +80,22 @@ public class GameService {
 		
 		{
 			ShipClassModel sc = new ShipClassModel("Fighter");
+			sc.setBuildValue(100);
 			mShipClasses.add(sc);
 		}
 		{
 			ShipClassModel sc = new ShipClassModel("Defender");
+			sc.setBuildValue(200);
 			mShipClasses.add(sc);
 		}
 		{
 			ShipClassModel sc = new ShipClassModel("Cruiser");
+			sc.setBuildValue(800);
 			mShipClasses.add(sc);
 		}
 		{
 			ShipClassModel sc = new ShipClassModel("Explorer");
+			sc.setBuildValue(60);
 			mShipClasses.add(sc);
 		}
 		
@@ -150,12 +154,21 @@ public class GameService {
 				mTravelLines.add(new TravelModel(s, s3));
 			}
 		}
-		
+
+		// Create home worlds
+		int offset = mSystems.size() / mPlayers.size();
+		int i = 0;
+		for (PlayerModel player: mPlayers) {
+			player.colonize(mSystems.get(i).getRicherPlanet());
+			i += offset;
+		}
+
 		// Create fleets
 		ShipClassModel sc = mShipClasses.get(0);
 		for (PlayerModel player: mPlayers) {
 			{
 				FleetModel fleet = new FleetModel();
+				fleet.setLocation(player.getHome());
 				fleet.setName("f1");
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
@@ -172,6 +185,7 @@ public class GameService {
 			}
 			{
 				FleetModel fleet = new FleetModel();
+				fleet.setLocation(player.getHome());
 				fleet.setName("f2");
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
@@ -182,6 +196,7 @@ public class GameService {
 			}
 			{
 				FleetModel fleet = new FleetModel();
+				fleet.setLocation(player.getHome());
 				fleet.setName("f3");
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
@@ -192,13 +207,6 @@ public class GameService {
 			}
 		}
 		
-		// Create home worlds
-		int offset = mSystems.size() / mPlayers.size();
-		int i = 0;
-		for (PlayerModel player: mPlayers) {
-			player.addSystem(mSystems.get(i));
-			i += offset;
-		}
 	}
 //
 //	private void addRandomSystem (int level, SystemModel parent) {
@@ -257,9 +265,10 @@ public class GameService {
 			mSystems.add(system);
 		} else {
 			SystemModel system = new SystemModel(name, posX, posY);
-			addPlanet(system, new PlanetModel());
-			addPlanet(system, new PlanetModel());
-			addPlanet(system, new PlanetModel());
+			int length = (int)(Math.random() * 5 + 1);
+			for (int i = 0; i < length; i++) {
+				addPlanet(system, new PlanetModel());
+			}
 			mSystems.add(system);
 		}
 	}

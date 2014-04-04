@@ -17,6 +17,7 @@ public class PlanetClassModel {
 	public static final int CLASS_P = 12;
 	public static final int CLASS_T = 13;
 	public static final int CLASS_Y = 14;
+	public static final int CLASS_Z = 15;
 	
 	public int id;
 	public int rand;
@@ -39,7 +40,8 @@ public class PlanetClassModel {
 		new PlanetClassModel(CLASS_N,					2,		"Sulfurique",		null, 		"N", 	"S"),
 		new PlanetClassModel(CLASS_P,					2,		"Hostile",			"Glaciated","P", 	"H"),
 		new PlanetClassModel(CLASS_T,					2,		"Gas Giant",		null, 		"T", 	"G"),
-		new PlanetClassModel(CLASS_Y,					1,		"Deamon",			null, 		"Y", 	"Y")
+		new PlanetClassModel(CLASS_Y,					1,		"Deamon",			null, 		"Y", 	"Y"),
+		new PlanetClassModel(CLASS_Z,					1,		"Artificial",		null, 		"Z", 	"Z")
 	};
 
 	public PlanetClassModel (int classification, int rand, String name, String subName, String STShortName, String humanShortName) {

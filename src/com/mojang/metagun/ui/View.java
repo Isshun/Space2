@@ -13,6 +13,7 @@ public abstract class View {
 	protected int 				mPosY;
 	protected int 				mWidth;
 	protected int 				mHeight;
+	protected int mPadding;
 	private OnClickListener mOnClickListener;
 	
 	public View (int x, int y) {
@@ -25,13 +26,17 @@ public abstract class View {
 	}
 
 	public boolean contains (int x, int y) {
-		return x >= mPosX && x <= mPosX + mWidth && y >= mPosY && y <= mPosY + mHeight;
+		return x >= mPosX - mPadding && x <= mPosX + mWidth + mPadding && y >= mPosY - mPadding && y <= mPosY + mHeight + mPadding;
 	}
 
 	public void click () {
 		if (mOnClickListener != null) {
 			mOnClickListener.onClick();
 		}
+	}
+	
+	public int getPadding() {
+		return mPadding;
 	}
 
 	public abstract void draw (SpriteBatch spriteBatch);

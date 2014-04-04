@@ -65,4 +65,10 @@ public class PauseScreen extends Screen {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void onLongTouch (int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
 }

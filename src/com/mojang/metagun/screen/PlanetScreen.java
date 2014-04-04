@@ -1,12 +1,15 @@
 
 package com.mojang.metagun.screen;
 
+import java.util.List;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.SystemModel;
+import com.mojang.metagun.ui.ImageView;
 import com.mojang.metagun.ui.RectangleView;
 import com.mojang.metagun.ui.View;
 import com.mojang.metagun.ui.View.OnClickListener;
@@ -18,7 +21,7 @@ public class PlanetScreen extends Screen {
 	private static final int PLANET_SIZE = 42;
 
 	private int time = 0;
-	private PlanetModel mPlanet;
+	PlanetModel mPlanet;
 	private double tick;
 	private SystemModel mSystem;
 
@@ -49,20 +52,46 @@ public class PlanetScreen extends Screen {
 	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		draw(Art.bg, 0, 0);
 		
-		int posX = Constants.GAME_WIDTH - 128 - 20;
-		int posY = 20;
-
-		if (Math.sin(tick) >= 0) {
-			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], posX, posY);
-		}
-
-		int moonPosX = posX + 128 / 2 + (int)(Math.cos(tick) * 80) - 16;
-		int moonPosY = posY + 128 / 2 + (int)(Math.sin(tick) * 32) - 16;
-		draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_32], moonPosX, moonPosY);
+		int planetX = Constants.GAME_WIDTH - 128 - 40;
+		int planetY = 40;
 		
-		if (Math.sin(tick) < 0) {
-			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], posX, posY);
+		int nbShip = mPlanet.getOrbit().size();
+		if (nbShip > 0) {
+			double interval = (4.05 + 0.85) / nbShip;
+			boolean isPlanetDrew = false;
+			for (double i = -3.14; i < 3.14; i += interval) {
+				// Planet
+				if (i > 0 && !isPlanetDrew) {
+					isPlanetDrew = true;
+					draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], planetX, planetY);
+				}
+				// Ships in orbit
+				if (i < -2.23 || i > -0.85) {
+					int shipX = planetX + 128 / 2 + (int)(Math.cos(i) * 90) - 8;
+					int shipY = planetY + 128 / 2 + (int)(Math.sin(i) * 40) - 8;
+					draw(Art.ship, shipX, shipY);
+				}
+			}
+		} else {
+			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], planetX, planetY);
 		}
+		
+		int shipX = planetX - 128 / 2;
+		int shipY = planetY;
+		draw(Art.dock, shipX, shipY);
+
+		
+//		if (Math.sin(tick) >= 0) {
+//			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], posX, posY);
+//		}
+
+//		int moonPosX = posX + 128 / 2 + (int)(Math.cos(tick) * 80) - 16;
+//		int moonPosY = posY + 128 / 2 + (int)(Math.sin(tick) * 32) - 16;
+//		draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_32], moonPosX, moonPosY);
+//		
+//		if (Math.sin(tick) < 0) {
+//			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], posX, posY);
+//		}
 		
 		drawRectangle(6, 6, Constants.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
 		drawBigString(mPlanet.getName(), 12, 12);
@@ -112,6 +141,20 @@ public class PlanetScreen extends Screen {
 	}
 
 	@Override
+	public void onNext () {
+		List<PlanetModel> planets = mSystem.getPlanets();
+		int index = planets.indexOf(mPlanet);
+		mPlanet = planets.get(Math.min(index + 1, planets.size() - 1));
+	}
+
+	@Override
+	public void onPrev () {
+		List<PlanetModel> planets = mSystem.getPlanets();
+		int index = planets.indexOf(mPlanet);
+		mPlanet = planets.get(Math.max(index - 1, 0));
+	}
+
+	@Override
 	public void onTouch (int x, int y) {
 	}
 
@@ -123,6 +166,12 @@ public class PlanetScreen extends Screen {
 
 	@Override
 	protected void onCreate () {
+	}
+
+	@Override
+	public void onLongTouch (int x, int y) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

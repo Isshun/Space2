@@ -19,6 +19,7 @@ public class PanelRealtionScreen extends Screen {
 			draw(player.getFlag(), 4, 4 + i * 20);
 			drawRectangle(20, 4 + i * 20, 8, 8, player.getColor());
 			drawString(player.getName(), 30, 6 + i * 20);
+			drawString(player.getHome().getName(), 120, 6 + i * 20);
 			i++;
 		}
 	}
@@ -37,6 +38,12 @@ public class PanelRealtionScreen extends Screen {
 
 	@Override
 	protected void onCreate () {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLongTouch (int x, int y) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -66,4 +66,10 @@ public class PanelArmadaScreen extends Screen {
 
 	}
 
+	@Override
+	public void onLongTouch (int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

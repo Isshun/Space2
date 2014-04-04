@@ -66,6 +66,7 @@ public class PanelGovernmentScreen extends Screen {
 				drawString(String.valueOf((int)planet.getMoney()), START_X + 2 + SPACING_X * 4, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				drawString(String.valueOf((int)planet.getScience()), START_X + 2 + SPACING_X * 5, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				drawString(String.valueOf((int)planet.getCulture()), START_X + 2 + SPACING_X * 6, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				draw(Art.bt_space_map, START_X + 2 + SPACING_X * 7, START_Y + 2 + i * (LINE_HEIGHT + 1));
 				i++;
 			}
 		}
@@ -83,7 +84,16 @@ public class PanelGovernmentScreen extends Screen {
 		if (y > START_Y) {
 			int pos = (y - 22) / (LINE_HEIGHT + 1);
 			if (colonized.size() > pos) {
-				addScreen(new PlanetScreen(colonized.get(pos).getSystem(), colonized.get(pos)));
+				PlanetModel planet = colonized.get(pos);
+
+				if (x > START_X + 2 + SPACING_X * 7 && x < START_X + 2 + SPACING_X * 7 + 32) {
+					Screen s = back();
+					if (s instanceof SpaceScreen) {
+						((SpaceScreen)s).gotoPos(planet.getX(), planet.getY());
+					}
+				} else {
+					addScreen(new PlanetScreen(planet.getSystem(), planet));
+				}
 			}
 		} else {
 			if (x > START_X) {
@@ -103,6 +113,12 @@ public class PanelGovernmentScreen extends Screen {
 
 	@Override
 	protected void onCreate () {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLongTouch (int x, int y) {
 		// TODO Auto-generated method stub
 		
 	}

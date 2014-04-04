@@ -28,6 +28,7 @@ public class SpaceScreen extends Screen {
 
 	private int mPosX;
 	private int mPosY;
+	private SystemModel mSelected;
 
 	@Override
 	protected void onCreate () {
@@ -82,8 +83,8 @@ public class SpaceScreen extends Screen {
 				mPosX - length / 2 + Constants.SYSTEM_SIZE / 2 + travel.getX(),
 				mPosY + Constants.SYSTEM_SIZE / 2 + travel.getY(),
 				length,
-				2,
-				new Color(1, 1, 1, 0.65f),
+				1,
+				new Color(0.8f, 0.8f, 1, 0.55f),
 				travel.getAngle());
 //			Pixmap pixmap = new Pixmap(length, 2, Format.RGBA8888);
 //			pixmap.setColor(Color.rgba8888(1, 1, 1, 0.65f));
@@ -121,6 +122,12 @@ public class SpaceScreen extends Screen {
 		} else {
 			drawString(name, mPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mPosY + system.getY() + Constants.SYSTEM_SIZE + 6, Color.WHITE);
 		}
+		
+		if (system.equals(mSelected)) {
+			drawRectangle(mPosX + system.getX() + 16, mPosY + system.getY() - 4, 16, 16, Color.RED);
+		}
+		
+		draw(Art.ship, mPosX + system.getX() + 16, mPosY + system.getY() - 4);
 	}
 
 	private void drawInterface (List<SystemModel> systems, int posX, int posY) {
@@ -177,5 +184,15 @@ public class SpaceScreen extends Screen {
 	public void onMove (int offsetX, int offsetY) {
 		mPosX += offsetX;
 		mPosY += offsetY;
+	}
+
+	public void gotoPos (int x, int y) {
+		mPosX = - x + Constants.GAME_WIDTH / 2;
+		mPosY = - y + Constants.GAME_HEIGHT / 2;
+	}
+
+	@Override
+	public void onLongTouch (int x, int y) {
+		mSelected = GameService.getInstance().getSystemAtPos(x - mPosX, y - mPosY);
 	}
 }
