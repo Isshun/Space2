@@ -98,7 +98,7 @@ public class PlayerModel {
 
 	public int getRelation (PlayerModel otherPlayer) {
 		if (otherPlayer.equals(this)) {
-			return RelationModel.RELATION_ALLY;
+			return RelationModel.RELATION_ME;
 		}
 		return RelationModel.RELATION_WAR;
 	}

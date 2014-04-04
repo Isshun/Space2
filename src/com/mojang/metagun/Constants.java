@@ -13,7 +13,7 @@ public class Constants {
 	public static final int GAME_HEIGHT = 320;
 	public static final int SCREEN_SCALE = 2;
 	public static final int SYSTEM_SIZE = 22;
-	public static final int TOUCH_RECOVERY = 250;
+	public static final int TOUCH_RECOVERY = 500;
 	public static final int UPDATE_INTERVAL = 1;
 
 }

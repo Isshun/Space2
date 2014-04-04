@@ -1,21 +1,24 @@
 package com.mojang.metagun.model;
 
+import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.metagun.service.FightService;
 
 public class SystemModel implements ILocation {
-	private String 	mName;
-	private int 		mPosX;
-	private int 		mPosY;
-	private List<PlanetModel> mPlanets;
-	private PlayerModel mOwner;
-	private int 		mType;
-	private PlanetModel mCapital;
+	private String 				mName;
+	private int 					mPosX;
+	private int 					mPosY;
+	private List<PlanetModel> 	mPlanets;
+	private PlayerModel 			mOwner;
+	private int 					mType;
+	private PlanetModel 			mCapital;
+	private List<FleetModel> 	mFleets;
 
 	public SystemModel (String name, int x, int y) {
 		mPlanets = new ArrayList<PlanetModel>();
+		mFleets = new ArrayList<FleetModel>();
 		mName = name;
 		mPosX = x;
 		mPosY = y;
@@ -91,14 +94,12 @@ public class SystemModel implements ILocation {
 
 	@Override
 	public void removeFleet (FleetModel fleet) {
-		// TODO Auto-generated method stub
-		
+		mFleets.remove(fleet);
 	}
 
 	@Override
 	public void addFleet (FleetModel fleet) {
-		// TODO Auto-generated method stub
-		
+		mFleets.add(fleet);
 	}
 	
 	public int attack(FleetModel fleet) {
@@ -113,7 +114,8 @@ public class SystemModel implements ILocation {
 
 	public boolean moveTo (FleetModel fleet) {
 		if (hasHostileForce(fleet.getOwner())) {
-			return attack(fleet) == FightService.ATTACKER_WIN;
+			int winner = attack(fleet);
+			return winner == FightService.ATTACKER_WIN;
 		}
 		return true;
 	}
@@ -131,6 +133,10 @@ public class SystemModel implements ILocation {
 
 	public void setCapital (PlanetModel capital) {
 		mCapital = capital;
+	}
+
+	public List<FleetModel> getFleets () {
+		return mFleets;
 	}
 
 }

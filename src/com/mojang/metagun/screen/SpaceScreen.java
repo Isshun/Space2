@@ -1,16 +1,10 @@
 
 package com.mojang.metagun.screen;
 
-import java.security.spec.MGF1ParameterSpec;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.PlayerModel;
@@ -19,7 +13,6 @@ import com.mojang.metagun.model.TravelModel;
 import com.mojang.metagun.service.GameService;
 import com.mojang.metagun.ui.ImageView;
 import com.mojang.metagun.ui.TextView;
-import com.mojang.metagun.ui.View;
 import com.mojang.metagun.ui.View.OnClickListener;
 
 public class SpaceScreen extends Screen {
@@ -29,6 +22,8 @@ public class SpaceScreen extends Screen {
 	private int mPosX;
 	private int mPosY;
 	private SystemModel mSelected;
+	private SystemModel mActionSystem;
+	private SpaceActionScreen mActionScreen;
 
 	@Override
 	protected void onCreate () {
@@ -114,6 +109,10 @@ public class SpaceScreen extends Screen {
 	}
 
 	private void drawSystem (SystemModel system) {
+		if (system.equals(mActionSystem)) {
+			drawRectangle(mPosX + system.getX(), mPosY + system.getY(), 22, 22, Color.RED);
+		}
+		
 		draw(Art.system[system.getType()], mPosX + system.getX(), mPosY + system.getY());
 		String name = system.getName();
 		PlayerModel owner = system.getOwner();
@@ -122,12 +121,13 @@ public class SpaceScreen extends Screen {
 		} else {
 			drawString(name, mPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mPosY + system.getY() + Constants.SYSTEM_SIZE + 6, Color.WHITE);
 		}
-		
-		if (system.equals(mSelected)) {
-			drawRectangle(mPosX + system.getX() + 16, mPosY + system.getY() - 4, 16, 16, Color.RED);
+
+		if (system.getFleets().size() > 0) {
+			if (system.equals(mSelected)) {
+				drawRectangle(mPosX + system.getX() + 16, mPosY + system.getY() - 4, 16, 16, Color.RED);
+			}
+			draw(Art.ship, mPosX + system.getX() + 16, mPosY + system.getY() - 4);
 		}
-		
-		draw(Art.ship, mPosX + system.getX() + 16, mPosY + system.getY() - 4);
 	}
 
 	private void drawInterface (List<SystemModel> systems, int posX, int posY) {
@@ -161,23 +161,33 @@ public class SpaceScreen extends Screen {
 		// bt government
 		if (x >= 6 && x <= 6 + 32 && y >= 2 && y <= 44) {
 			addScreen(new PanelGovernmentScreen());
+			return;
 		}
 		
 		// bt relations
 		if (x >= 44 && x <= 44 + 32 && y >= 2 && y <= 44) {
 			addScreen(new PanelRealtionScreen());
+			return;
 		}
 		
 		SystemModel system = GameService.getInstance().getSystemAtPos(x - mPosX, y - mPosY);
 		if (system != null) {
-			addScreen(new SystemScreen(system));
+			if (mSelected != null && mSelected != system) {
+				mActionSystem = system;
+				mActionScreen.setActionSystem(system);
+			} else {
+				addScreen(new SystemScreen(system));
+			}
+			return;
 		}
 		
 		TravelModel travel = GameService.getInstance().getTravelAtPos(x - mPosX, y - mPosY);
 		if (travel != null) {
 			addScreen(new TravelScreen(travel));
+			return;
 		}
 
+		mSelected = null;
 	}
 
 	@Override
@@ -194,5 +204,7 @@ public class SpaceScreen extends Screen {
 	@Override
 	public void onLongTouch (int x, int y) {
 		mSelected = GameService.getInstance().getSystemAtPos(x - mPosX, y - mPosY);
+		mActionScreen = new SpaceActionScreen(this, mSelected);
+		addScreen(mActionScreen);
 	}
 }

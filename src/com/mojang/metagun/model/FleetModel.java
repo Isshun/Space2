@@ -86,6 +86,15 @@ public class FleetModel {
 		if (system.moveTo(this)) {
 			setLocation(system.getCapital());
 		}
+		
+		// Remove casualties
+		List<FleetModel> destroyed = new ArrayList<FleetModel>();
+		for (FleetModel f: system.getFleets()) {
+			if (f.getNbShip() == 0) {
+				destroyed.add(f);
+			}
+		}
+		system.getFleets().removeAll(destroyed);
 	}
 
 	public PlayerModel getOwner () {

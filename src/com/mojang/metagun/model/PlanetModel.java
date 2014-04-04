@@ -254,11 +254,13 @@ public class PlanetModel implements ILocation {
 	@Override
 	public void removeFleet (FleetModel fleet) {
 		mOrbit.remove(fleet);
+		mSystem.removeFleet(fleet);
 	}
 
 	@Override
 	public void addFleet (FleetModel fleet) {
 		mOrbit.add(fleet);
+		mSystem.addFleet(fleet);
 	}
 
 	public int attack (FleetModel attacker) {

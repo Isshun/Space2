@@ -23,8 +23,8 @@ import com.mojang.metagun.service.GameService;
 import com.mojang.metagun.ui.View;
 
 public abstract class Screen {
-	private static final int 		TOUCH_INTERVAL = 1000;
-	private static final int 		LONG_TOUCH_INTERVAL = 750;
+	private static final int 		TOUCH_INTERVAL = 750;
+	private static final int 		LONG_TOUCH_INTERVAL = 500;
 	
 	public static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\<    ()"};
 	
@@ -62,7 +62,7 @@ public abstract class Screen {
 		mGameTimeAtStart = gameTime;
 		mPlayer = GameService.getInstance().getPlayer();
 		mGame = game;
-		mScreenTime = Constants.TOUCH_RECOVERY / 2;
+		mScreenTime = 0;//Constants.TOUCH_RECOVERY / 2;
 		mBackHistory = 0;
 		mTouch = -1;
 		mLongTouch = -1;
@@ -231,7 +231,7 @@ public abstract class Screen {
 	public void tick (int gameTime, int cycle) {
 		mScreenTime = gameTime - mGameTimeAtStart;
 
-//		System.out.println(mScreenTime + ", " + Constants.TOUCH_RECOVERY);
+//		System.out.println("tick: " + mScreenTime + ", " + Constants.TOUCH_RECOVERY);
 		
 		if (mScreenTime < Constants.TOUCH_RECOVERY) {
 			return;
