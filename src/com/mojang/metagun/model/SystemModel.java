@@ -1,12 +1,12 @@
 package com.mojang.metagun.model;
 
-import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.metagun.service.FightService;
 
 public class SystemModel implements ILocation {
+	private static int 			sCount;
 	private String 				mName;
 	private int 					mPosX;
 	private int 					mPosY;
@@ -15,8 +15,10 @@ public class SystemModel implements ILocation {
 	private int 					mType;
 	private PlanetModel 			mCapital;
 	private List<FleetModel> 	mFleets;
+	private int 					mId;
 
 	public SystemModel (String name, int x, int y) {
+		mId = sCount++;
 		mPlanets = new ArrayList<PlanetModel>();
 		mFleets = new ArrayList<FleetModel>();
 		mName = name;
@@ -137,6 +139,10 @@ public class SystemModel implements ILocation {
 
 	public List<FleetModel> getFleets () {
 		return mFleets;
+	}
+
+	public int getId () {
+		return mId;
 	}
 
 }

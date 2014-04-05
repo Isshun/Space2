@@ -154,6 +154,8 @@ public class GameService {
 				mTravelLines.add(new TravelModel(s, s3));
 			}
 		}
+		
+//		PathFinder finder = new AStarPathFinder(, 500, true, nodes);
 
 		// Create home worlds
 		int offset = mSystems.size() / mPlayers.size();
@@ -169,7 +171,7 @@ public class GameService {
 			{
 				FleetModel fleet = new FleetModel();
 				fleet.setLocation(player.getHome());
-				fleet.setName("f1");
+				fleet.setName(player.equals(mPlayer) ? "Alpha" : player.getName());
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
@@ -186,7 +188,7 @@ public class GameService {
 			{
 				FleetModel fleet = new FleetModel();
 				fleet.setLocation(player.getHome());
-				fleet.setName("f2");
+				fleet.setName(player.equals(mPlayer) ? "Beta" : player.getName());
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
@@ -197,7 +199,7 @@ public class GameService {
 			{
 				FleetModel fleet = new FleetModel();
 				fleet.setLocation(player.getHome());
-				fleet.setName("f3");
+				fleet.setName(player.equals(mPlayer) ? "Omega" : player.getName());
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));

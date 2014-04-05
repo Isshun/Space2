@@ -15,6 +15,7 @@ import com.mojang.metagun.screen.PauseScreen;
 import com.mojang.metagun.screen.Screen;
 import com.mojang.metagun.screen.SpaceScreen;
 import com.mojang.metagun.service.GameService;
+import com.mojang.metagun.service.PathResolver;
 
 public class Game implements ApplicationListener {
 	private static final long serialVersionUID = 1L;
@@ -36,6 +37,24 @@ public class Game implements ApplicationListener {
 		Art.load();
 		Sound.load();
 		running = true;
+		
+		double r1 = 320f / Gdx.graphics.getHeight();
+		double r2 = 480f / Gdx.graphics.getWidth();
+		System.out.println("window ratio: " + r1 + ", " + r2);
+
+		int ratio = 1;
+		for (int i = 2; i < 10; i++) {
+			System.out.println("window i: " + (Gdx.graphics.getWidth() / i));
+			if ((Gdx.graphics.getWidth() / i) > 400) {
+				ratio = i;
+			}
+		}
+		
+		Constants.GAME_WIDTH = (int)(Gdx.graphics.getWidth() / ratio);
+		Constants.GAME_HEIGHT = (int)(Gdx.graphics.getHeight() / ratio);
+		
+		System.out.println("window: " + Constants.GAME_WIDTH + " x " + Constants.GAME_HEIGHT);
+
 		Gdx.input.setCatchBackKey(true);
 		Gdx.input.setCatchMenuKey(true);
 		Gdx.graphics.setContinuousRendering(false);
@@ -44,6 +63,8 @@ public class Game implements ApplicationListener {
 		
 		GameService.getInstance().initDebug(0);
 
+		PathResolver.getInstance().getPath(GameService.getInstance().getPlayers().get(0).getHome().getSystem(), GameService.getInstance().getPlayer().getHome().getSystem());
+		
 		if (Constants.GAME_WIDTH > 480) {
 			
 		}

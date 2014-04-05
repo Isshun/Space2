@@ -8,11 +8,13 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.mojang.metagun.Art;
@@ -44,8 +46,12 @@ public abstract class Screen {
 	protected int 						mCycle;
 	private int 						mGameTime;
 	private int 						mGameTimeAtStart;
-	private boolean mIsMoving;
-	private int mLongTouch;
+	private boolean 					mIsMoving;
+	private int 						mLongTouch;
+	protected SpriteCache 			mSystemSprite;
+	protected int 						mCacheId;
+	protected int 						mPosX;
+	protected int 						mPosY;
 
 	public Screen() {
 		mViews = new ArrayList<View>();
@@ -118,6 +124,10 @@ public abstract class Screen {
 	}
 	
 	public void drawRectangle(int x, int y, int width, int height, Color color) {
+		drawRectangle(null, x, y, width, height, color);
+	}
+	
+	public void drawRectangle(SpriteCache cache, int x, int y, int width, int height, Color color) {
 		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
 		pixmap.setColor(color);
 		pixmap.fillRectangle(0, 0, 32, 32);
@@ -128,6 +138,10 @@ public abstract class Screen {
 	}
 
 	protected void drawRectangle (int x, int y, int width, int height, Color color, int angle) {
+		drawRectangle(null, x, y, width, height, color, angle);
+	}
+	
+	protected void drawRectangle (SpriteCache cache, int x, int y, int width, int height, Color color, int angle) {
 		Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
 		pixmap.setColor(color);
 		pixmap.fillRectangle(0, 0, width, height);
@@ -135,17 +149,25 @@ public abstract class Screen {
 		Sprite line = new Sprite(pixmaptex);
 		line.setRotation(angle);
 		line.setPosition(x, y);
-		line.draw(mSpriteBatch);
+		if (cache != null) {
+			cache.add(line);
+		} else {
+			line.draw(mSpriteBatch);
+		}
 		pixmap.dispose();
 	}
 
-	public void draw (TextureRegion region, int x, int y, Color color) {
+	public void draw (SpriteCache cache, TextureRegion region, int x, int y, Color color) {
 		Sprite sprite = new Sprite(region);
 		sprite.setPosition(x, y);
 		if (color != null) {
 			sprite.setColor(color);
 		}
-		sprite.draw(mSpriteBatch);
+		if (cache != null) {
+			cache.add(sprite);
+		} else {
+			sprite.draw(mSpriteBatch);
+		}
 	}
 
 	protected void draw (TextureRegion region, int x, int y, int angle) {
@@ -162,31 +184,35 @@ public abstract class Screen {
 	}
 
 	public void drawString (String string, int x, int y, int truncate) {
-		drawString(string, x, y, truncate, null);
+		drawString(null, string, x, y, truncate, null);
 	}
 	
+	public void drawString (SpriteCache cache, String string, int x, int y, Color color) {
+		drawString(cache, string, x, y, Integer.MAX_VALUE, color);
+	}
+
 	public void drawString (String string, int x, int y, Color color) {
-		drawString(string, x, y, Integer.MAX_VALUE, color);
+		drawString(null, string, x, y, Integer.MAX_VALUE, color);
 	}
 	
 	public void drawString (String string, int x, int y) {
-		drawString(string, x, y, Integer.MAX_VALUE, null);
+		drawString(null, string, x, y, Integer.MAX_VALUE, null);
 	}
 	
-	public void drawString (String string, int x, int y, int truncate, Color color) {
+	public void drawString (SpriteCache cache, String string, int x, int y, int truncate, Color color) {
 		string = string.toUpperCase();
 		for (int i = 0; i < Math.min(string.length(), truncate); i++) {
 			char ch = string.charAt(i);
 			for (int ys = 0; ys < CHARS.length; ys++) {
 				int xs = CHARS[ys].indexOf(ch);
 				if (xs >= 0) {
-					draw(Art.guys[xs][ys + 9], x + i * 6, y, color);
+					draw(cache, Art.guys[xs][ys + 9], x + i * 6, y, color);
 				}
 			}
 		}
 
 		if (string.length() >= truncate) {
-			draw(Art.guys[20][10], x + truncate * 6, y, color);
+			draw(cache, Art.guys[20][10], x + truncate * 6, y, color);
 		}
 	}
 
@@ -204,6 +230,8 @@ public abstract class Screen {
 	}
 
 	public void render (int gameTime, int cycle) {
+		long time = System.currentTimeMillis();
+		
 		mScreenTime = gameTime - mGameTimeAtStart;
 		mGameTime = gameTime;
 		mCycle = cycle;
@@ -221,6 +249,25 @@ public abstract class Screen {
 		}
 
 		mSpriteBatch.end();
+		
+		
+//		Gdx.gl.glClearColor(0.4f, 0.4f, 0.4f, 1);  
+//		Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);  
+
+		if (mSystemSprite != null) {
+			Gdx.gl.glEnable(GL30.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+	
+			Matrix4 projection = new Matrix4();
+			projection.setToOrtho(-mPosX, Constants.GAME_WIDTH - mPosX, Constants.GAME_HEIGHT - mPosY, -mPosY, -1, 1);
+	
+			mSystemSprite.setProjectionMatrix(projection);  
+			mSystemSprite.begin();  
+			mSystemSprite.draw(mCacheId);  
+			mSystemSprite.end();  
+		}
+		
+		System.out.println("time: " + (System.currentTimeMillis() - time) + "ms");
 	}
 
 	public abstract void onRender(SpriteBatch spriteBatch, int gameTime, int screenTime);
@@ -331,20 +378,20 @@ public abstract class Screen {
 	protected void onNext () {
 	}
 
-	public void render (SpriteBatch spriteBatch) {
-		mSpriteBatch.begin();
-//		
-////		onRender(mSpriteBatch);
+//	public void render (SpriteBatch spriteBatch) {
+//		mSpriteBatch.begin();
+////		
+//////		onRender(mSpriteBatch);
+////
+////		for (View view: mViews) {
+////			view.draw(mSpriteBatch);
+////		}
+////
+//		mSpriteBatch.end();
+//	}
 //
-//		for (View view: mViews) {
-//			view.draw(mSpriteBatch);
-//		}
-//
-		mSpriteBatch.end();
-	}
-
-	public SpriteBatch getSpriteBatch () {
-		return mSpriteBatch;
-	}
+//	public SpriteBatch getSpriteBatch () {
+//		return mSpriteBatch;
+//	}
 
 }

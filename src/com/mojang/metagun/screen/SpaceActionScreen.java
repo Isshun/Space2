@@ -44,12 +44,14 @@ public class SpaceActionScreen extends Screen {
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 100, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
-		drawString("Selected:", 4, POS_Y + 5);
-		drawString(mSelectedSystem.getName(), Constants.GAME_WIDTH / 2 - mSelectedSystem.getName().length() * 6 - 5, POS_Y + 5);
-		int i = 0;
-		for (FleetModel fleet: mSelectedSystem.getFleets()) {
-			if (fleet.getOwner().equals(GameService.getInstance().getPlayer())) {
-				drawString(fleet.getName(), 4, POS_Y + 20 + i++ * 12);
+		if (mSelectedSystem != null) {
+			drawString("Selected:", 4, POS_Y + 5);
+			drawString(mSelectedSystem.getName(), Constants.GAME_WIDTH / 2 - mSelectedSystem.getName().length() * 6 - 5, POS_Y + 5);
+			int i = 0;
+			for (FleetModel fleet: mSelectedSystem.getFleets()) {
+				if (fleet.getOwner().equals(GameService.getInstance().getPlayer())) {
+					drawString(fleet.getName(), 4, POS_Y + 20 + i++ * 12);
+				}
 			}
 		}
 

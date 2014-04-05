@@ -9,9 +9,11 @@ package com.mojang.metagun;
 //Nexus 4 					1280 x 768 	1.6	320ppi
 
 public class Constants {
-	public static final int GAME_WIDTH = 480;
-	public static final int GAME_HEIGHT = 320;
-	public static final int SCREEN_SCALE = 2;
+//	public static int GAME_WIDTH = 480;
+//	public static int GAME_HEIGHT = 320;
+	public static int GAME_WIDTH = 1280 / 2;
+	public static int GAME_HEIGHT = 780 / 2;
+	public static final int SCREEN_SCALE = 1;
 	public static final int SYSTEM_SIZE = 22;
 	public static final int TOUCH_RECOVERY = 500;
 	public static final int UPDATE_INTERVAL = 1;
