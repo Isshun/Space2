@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
@@ -42,6 +43,7 @@ public class SpaceScreen extends Screen {
 	private int 					mCurrentTravelCacheId;
 
 	public SpaceScreen () {
+		mParalax = Art.bg;
 		mCurrentTravelCache = new SpriteCache(100, true);
 		mCurrentTravelCacheId = -1;
 	}
@@ -96,70 +98,63 @@ public class SpaceScreen extends Screen {
 
 	@Override
 	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
-		int posX = mPosX / 8;
-		int posY = mPosY / 8;
 
-		draw(Art.bg, posX - 320, posY - 240);
-
-//		draw(Art.bg, posX - 320, posY - 240);
-//		draw(Art.bg, posX, posY - 240);
-//		draw(Art.bg, posX + 320, posY - 240);
-//
-//		draw(Art.bg, posX - 320, posY);
-//		draw(Art.bg, posX, posY);
-//		draw(Art.bg, posX + 320, posY);
-//
-//		draw(Art.bg, posX - 320, posY + 240);
-//		draw(Art.bg, posX, posY + 240);
-//		draw(Art.bg, posX + 320, posY + 240);
-
-		// Draw systems
-		if (mSystemSprite == null) {
-
-			mSystemSprite = new SpriteCache(1000, true);
-			mSystemSprite.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			
-			mSystemSprite.beginCache();
-			
-			// Draw travel lines
-			List<TravelModel> travels = GameService.getInstance().getTraveLines();
-			for (TravelModel travel : travels) {
+		// Draw travel lines
+		List<TravelModel> travels = GameService.getInstance().getTraveLines();
+		for (TravelModel travel : travels) {
+			int length = (int)Math.sqrt(Math.pow(Math.abs(travel.getFrom().getX() - travel.getTo().getX()), 2) + Math.pow(Math.abs(travel.getFrom().getY() - travel.getTo().getY()), 2));
+			drawRectangle(
+				mDeprecatedPosX - length / 2 + Constants.SYSTEM_SIZE / 2 + travel.getX(),
+				mDeprecatedPosY + Constants.SYSTEM_SIZE / 2 + travel.getY(),
+				length,
+				1,
+				new Color(0.8f, 0.8f, 1, 0.55f),
+				travel.getAngle());
+		}
+		
+		// Draw selected travel path
+		if (mTravelPath != null) {
+			for (TravelModel travel : mTravelPath) {
 				int length = (int)Math.sqrt(Math.pow(Math.abs(travel.getFrom().getX() - travel.getTo().getX()), 2) + Math.pow(Math.abs(travel.getFrom().getY() - travel.getTo().getY()), 2));
-				drawRectangle(mSystemSprite,
-					mPosX - length / 2 + Constants.SYSTEM_SIZE / 2 + travel.getX(),
-					mPosY + Constants.SYSTEM_SIZE / 2 + travel.getY(),
+				drawRectangle(
+					mDeprecatedPosX - length / 2 + Constants.SYSTEM_SIZE / 2 + travel.getX(),
+					mDeprecatedPosY - 1 + Constants.SYSTEM_SIZE / 2 + travel.getY(),
 					length,
-					1,
-					new Color(0.8f, 0.8f, 1, 0.55f),
+					2,
+					new Color(0.75f, 0.9f, 0, 0.95f),
 					travel.getAngle());
 			}
-			
-			// Draw system
-			List<SystemModel> systems = GameService.getInstance().getSystems();
-			for (SystemModel system : systems) {
-				drawSystem(system);
+			for (SystemModel system: mSystemPath) {
+				if (system != mSelected) {
+					draw(Art.system_selected[system.getType()], mDeprecatedPosX + system.getX(), mDeprecatedPosY + system.getY());
+				}
 			}
 			
-			mCacheId = mSystemSprite.endCache();
+			draw(Art.system_selected[mSelected.getType()], mDeprecatedPosX + mSelected.getX(), mDeprecatedPosY + mSelected.getY());
 		}
 		
-		// Draw selection
-		if (mCurrentTravelCacheId == -1 && (mTravelPath != null || mSelected != null)) {
-			drawSelected();
+		// Draw selected system
+		else if (mSelected != null) {
+			draw(Art.system_selected[mSelected.getType()], mDeprecatedPosX + mSelected.getX(), mDeprecatedPosY + mSelected.getY());
 		}
-		
+
+		// Draw system
 		List<SystemModel> systems = GameService.getInstance().getSystems();
+		for (SystemModel system : systems) {
+			drawSystem(system);
+		}
+
+		// Draw fleets
 		for (SystemModel system: systems) {
 			if (system.getFleets().size() > 0) {
 				if (system.equals(mSelected)) {
 					//drawRectangle(mSystemSprite, mPosX + system.getX() + 16, mPosY + system.getY() - 4, 16, 16, Color.RED);
 				}
-				draw(Art.ship, mPosX + system.getX() + 16, mPosY + system.getY() - 4);
+				draw(Art.ship, mDeprecatedPosX + system.getX() + 16, mDeprecatedPosY + system.getY() - 4);
 			}
 		}
 		
 		
-		draw(mCurrentTravelCache, mCurrentTravelCacheId);
 
 //		// Draws travel ships
 //		for (TravelModel travel : travels) {
@@ -172,47 +167,19 @@ public class SpaceScreen extends Screen {
 //		drawInterface(systems, 6, 6);
 	}
 
-	private void drawSelected () {
-		mCurrentTravelCache.beginCache();
-		
-		// Draw travel paths
-		if (mTravelPath != null) {
-			for (TravelModel travel : mTravelPath) {
-				int length = (int)Math.sqrt(Math.pow(Math.abs(travel.getFrom().getX() - travel.getTo().getX()), 2) + Math.pow(Math.abs(travel.getFrom().getY() - travel.getTo().getY()), 2));
-				drawRectangle(mCurrentTravelCache,
-					0 - length / 2 + Constants.SYSTEM_SIZE / 2 + travel.getX(),
-					0 - 1 + Constants.SYSTEM_SIZE / 2 + travel.getY(),
-					length,
-					3,
-					new Color(0.75f, 0.9f, 0, 0.95f),
-					travel.getAngle());
-			}
-			for (SystemModel system: mSystemPath) {
-				mCurrentTravelCache.add(Art.system_selected, 0 + system.getX(), 0 + system.getY());
-			}
-		}
-		
-		// Draw selected
-		else if (mSelected != null) {
-			mCurrentTravelCache.add(Art.system_selected, 0 + mSelected.getX(), 0 + mSelected.getY());
-		}
-		
-		mCurrentTravelCacheId = mCurrentTravelCache.endCache();
-	}
-
 	private void drawSystem (SystemModel system) {
 		if (system.equals(mActionSystem)) {
-			drawRectangle(mSystemSprite, mPosX + system.getX(), mPosY + system.getY(), 22, 22, Color.RED);
+			drawRectangle(mDeprecatedPosX + system.getX(), mDeprecatedPosY + system.getY(), 22, 22, Color.RED);
 		}
 		
-		mSystemSprite.add(Art.system[system.getType()], mPosX + system.getX(), mPosY + system.getY());
+		draw(Art.system[system.getType()], mDeprecatedPosX + system.getX(), mDeprecatedPosY + system.getY());
 
 		String name = system.getName();
 		PlayerModel owner = system.getOwner();
 		if (owner != null) {
-			drawString(mSystemSprite, name, mPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mPosY + system.getY() + Constants.SYSTEM_SIZE + 6, owner.getColor());
+			drawString(name, mDeprecatedPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mDeprecatedPosY + system.getY() + Constants.SYSTEM_SIZE + 6, owner.getColor());
 		} else {
-			drawString(mSystemSprite, name, mPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mPosY + system.getY() + Constants.SYSTEM_SIZE + 6, Color.WHITE);
+			drawString(name, mDeprecatedPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mDeprecatedPosY + system.getY() + Constants.SYSTEM_SIZE + 6, Color.WHITE);
 		}
 	}
 
@@ -224,7 +191,7 @@ public class SpaceScreen extends Screen {
 		drawString("RELS.", posX + 40, posY + 34);
 
 		draw(Art.map, Constants.GAME_WIDTH - 64 - 6, 6);
-		drawRectangle(Constants.GAME_WIDTH - 64 - 6 - mPosX / 20, 6 - mPosY / 20, 18, 12, Color.rgba8888(0.5f, 0.5f, 0.8f, 0.8f));
+		drawRectangle(Constants.GAME_WIDTH - 64 - 6 - mDeprecatedPosX / 20, 6 - mDeprecatedPosY / 20, 18, 12, Color.rgba8888(0.5f, 0.5f, 0.8f, 0.8f));
 		drawString("Cycle:  " + mCycle, Constants.GAME_WIDTH - 64 - 4, posY + 49);
 
 //		// Mini-map
@@ -246,7 +213,7 @@ public class SpaceScreen extends Screen {
 		
 		// Selected mode
 		if (mSelected != null) {
-			SystemModel system = GameService.getInstance().getSystemAtPos(x - mPosX, y - mPosY);
+			SystemModel system = GameService.getInstance().getSystemAtPos(x - mRealPosX, y - mRealPosY);
 			if (system != null && mSelected != system) {
 				mActionSystem = system;
 				mActionScreen.setActionSystem(system);
@@ -268,13 +235,13 @@ public class SpaceScreen extends Screen {
 				return;
 			}
 			
-			SystemModel system = GameService.getInstance().getSystemAtPos(x - mPosX, y - mPosY);
+			SystemModel system = GameService.getInstance().getSystemAtPos(x - mRealPosX, y - mRealPosY);
 			if (system != null) {
 				addScreen(new SystemScreen(system));
 				return;
 			}
 			
-			TravelModel travel = GameService.getInstance().getTravelAtPos(x - mPosX, y - mPosY);
+			TravelModel travel = GameService.getInstance().getTravelAtPos(x - mRealPosX, y - mRealPosY);
 			if (travel != null) {
 				addScreen(new TravelScreen(travel));
 				return;
@@ -284,37 +251,42 @@ public class SpaceScreen extends Screen {
 
 	@Override
 	public void onMove (int offsetX, int offsetY) {
-		mPosX += offsetX;
-		mPosY += offsetY;
+		mRealPosX += offsetX;
+		mRealPosY += offsetY;
+		mParalaxNotified = true;
 	}
 
 	public void gotoPos (int x, int y) {
-		mPosX = - x + Constants.GAME_WIDTH / 2;
-		mPosY = - y + Constants.GAME_HEIGHT / 2;
+		mRealPosX = - x + Constants.GAME_WIDTH / 2;
+		mRealPosY = - y + Constants.GAME_HEIGHT / 2;
 	}
 
 	@Override
 	public void onLongTouch (int x, int y) {
-		mSelected = GameService.getInstance().getSystemAtPos(x - mPosX, y - mPosY);
-		mActionScreen = new SpaceActionScreen(this, mSelected);
-		addScreen(mActionScreen);
-		
-		mBtArmada.setVisibility(View.GONE);
-		mBtDebug.setVisibility(View.GONE);
-		mBtPlanets.setVisibility(View.GONE);
-		mBtRelations.setVisibility(View.GONE);
+		SystemModel selected = GameService.getInstance().getSystemAtPos(x - mRealPosX, y - mRealPosY);
+		if (selected != null) {
+			setSelected(selected);
+			mActionScreen = new SpaceActionScreen(this, mSelected);
+			addScreen(mActionScreen);
+			
+			mBtArmada.setVisibility(View.GONE);
+			mBtDebug.setVisibility(View.GONE);
+			mBtPlanets.setVisibility(View.GONE);
+			mBtRelations.setVisibility(View.GONE);
+			
+			notifyChange();
+		}
 	}
 
 	public void setTravelPath (List<TravelModel> travelPath, List<SystemModel> systemPath) {
 		mTravelPath = travelPath;
 		mSystemPath = systemPath;
-		mCurrentTravelCache.clear();
-		mCurrentTravelCacheId = -1;
+		notifyChange();
 	}
 
 	public void setSelected (SystemModel selected) {
 		mSelected = selected;
-		mCurrentTravelCache.clear();
-		mCurrentTravelCacheId = -1;
+		notifyChange();
 	}
+
 }

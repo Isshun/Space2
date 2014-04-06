@@ -48,13 +48,21 @@ public abstract class Screen {
 	private int 						mGameTimeAtStart;
 	private boolean 					mIsMoving;
 	private int 						mLongTouch;
-	protected SpriteCache 			mSystemSprite;
-	protected int 						mCacheId;
-	protected int 						mPosX;
-	protected int 						mPosY;
+	private SpriteCache 				mSpriteCache;
+	private int 						mSpriteCacheId;
+	protected int 						mDeprecatedPosX;
+	protected int 						mDeprecatedPosY;
+	protected int 						mRealPosX;
+	protected int 						mRealPosY;
+	private boolean 					mIsChangeNotified;
+	protected TextureRegion 		mParalax;
+	protected boolean					mParalaxNotified;
 
 	public Screen() {
 		mViews = new ArrayList<View>();
+		mIsChangeNotified = true;
+		mParalaxNotified = true;
+		mSpriteCache = new SpriteCache(1000, true);
 	}
 
 	public void removed () {
@@ -123,7 +131,8 @@ public abstract class Screen {
 		pixmap.fillRectangle(0, 0, 32, 32);
 		Texture pixmaptex = new Texture(pixmap);
 		TextureRegion region = new TextureRegion(pixmaptex);
-		mSpriteBatch.draw(region, x, y, width, height);
+		mSpriteCache.add(region, x, y, width, height);
+		//mSpriteBatch.draw(region, x, y, width, height);
 		pixmap.dispose();
 	}
 	
@@ -131,13 +140,17 @@ public abstract class Screen {
 		drawRectangle(null, x, y, width, height, color);
 	}
 	
-	public void drawRectangle(SpriteCache cache, int x, int y, int width, int height, Color color) {
+	public void drawRectangle(SpriteBatch bacth, int x, int y, int width, int height, Color color) {
 		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
 		pixmap.setColor(color);
 		pixmap.fillRectangle(0, 0, 32, 32);
 		Texture pixmaptex = new Texture(pixmap);
 		TextureRegion region = new TextureRegion(pixmaptex);
-		mSpriteBatch.draw(region, x, y, width, height);
+		if (bacth != null) {
+			bacth.draw(region, x, y, width, height);
+		} else {
+			mSpriteCache.add(region, x, y, width, height);
+		}
 		pixmap.dispose();
 	}
 
@@ -145,7 +158,7 @@ public abstract class Screen {
 		drawRectangle(null, x, y, width, height, color, angle);
 	}
 	
-	protected void drawRectangle (SpriteCache cache, int x, int y, int width, int height, Color color, int angle) {
+	protected void drawRectangle (SpriteBatch bacth, int x, int y, int width, int height, Color color, int angle) {
 		Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
 		pixmap.setColor(color);
 		pixmap.fillRectangle(0, 0, width, height);
@@ -153,24 +166,28 @@ public abstract class Screen {
 		Sprite line = new Sprite(pixmaptex);
 		line.setRotation(angle);
 		line.setPosition(x, y);
-		if (cache != null) {
-			cache.add(line);
+		if (bacth != null) {
+			line.draw(bacth);
 		} else {
-			line.draw(mSpriteBatch);
+			mSpriteCache.add(line);
 		}
 		pixmap.dispose();
 	}
-
-	public void draw (SpriteCache cache, TextureRegion region, int x, int y, Color color) {
+	
+	public void draw (SpriteBatch batch, TextureRegion region, int x, int y) {
+		draw(batch, region, x, y, null);
+	}
+	
+	public void draw (SpriteBatch batch, TextureRegion region, int x, int y, Color color) {
 		Sprite sprite = new Sprite(region);
 		sprite.setPosition(x, y);
 		if (color != null) {
 			sprite.setColor(color);
 		}
-		if (cache != null) {
-			cache.add(sprite);
+		if (batch != null) {
+			sprite.draw(batch);
 		} else {
-			sprite.draw(mSpriteBatch);
+			mSpriteCache.add(sprite);
 		}
 	}
 
@@ -178,66 +195,51 @@ public abstract class Screen {
 		Sprite sprite = new Sprite(region);
 		sprite.setRotation(angle);
 		sprite.setPosition(x, y);
-		sprite.draw(mSpriteBatch);
+		//sprite.draw(mSpriteBatch);
+		mSpriteCache.add(sprite);
 	}
 
 	public void draw (TextureRegion region, int x, int y) {
 		int width = region.getRegionWidth();
 		if (width < 0) width = -width;
-		mSpriteBatch.draw(region, x, y, width, region.getRegionHeight());
-	}
-
-	/**
-	 * Draw SpriteCache
-	 * 
-	 * @param cache 
-	 * @param cacheId
-	 */
-	public void draw (SpriteCache cache, int cacheId) {
-		if (cache != null && cacheId != -1) {
-			Gdx.gl.glEnable(GL30.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
-	
-			Matrix4 projection = new Matrix4();
-			projection.setToOrtho(-mPosX, Constants.GAME_WIDTH - mPosX, Constants.GAME_HEIGHT - mPosY, -mPosY, -1, 1);
-	
-			cache.setProjectionMatrix(projection);  
-			cache.begin();  
-			cache.draw(cacheId);  
-			cache.end();
-		}
+		//mSpriteBatch.draw(region, x, y, width, region.getRegionHeight());
+		mSpriteCache.add(region, x, y, width, region.getRegionHeight());
 	}
 
 	public void drawString (String string, int x, int y, int truncate) {
 		drawString(null, string, x, y, truncate, null);
 	}
-	
-	public void drawString (SpriteCache cache, String string, int x, int y, Color color) {
-		drawString(cache, string, x, y, Integer.MAX_VALUE, color);
+
+	public void drawString (SpriteBatch batch, String string, int x, int y, Color color) {
+		drawString(batch, string, x, y, Integer.MAX_VALUE, color);
 	}
 
 	public void drawString (String string, int x, int y, Color color) {
 		drawString(null, string, x, y, Integer.MAX_VALUE, color);
+	} 
+	
+	public void drawString (SpriteBatch batch, String string, int x, int y) {
+		drawString(batch, string, x, y, Integer.MAX_VALUE, null);
 	}
 	
 	public void drawString (String string, int x, int y) {
 		drawString(null, string, x, y, Integer.MAX_VALUE, null);
 	}
 	
-	public void drawString (SpriteCache cache, String string, int x, int y, int truncate, Color color) {
+	public void drawString (SpriteBatch batch, String string, int x, int y, int truncate, Color color) {
 		string = string.toUpperCase();
 		for (int i = 0; i < Math.min(string.length(), truncate); i++) {
 			char ch = string.charAt(i);
 			for (int ys = 0; ys < CHARS.length; ys++) {
 				int xs = CHARS[ys].indexOf(ch);
 				if (xs >= 0) {
-					draw(cache, Art.guys[xs][ys + 9], x + i * 6, y, color);
+					draw(batch, Art.guys[xs][ys + 9], x + i * 6, y, color);
 				}
 			}
 		}
 
 		if (string.length() >= truncate) {
-			draw(cache, Art.guys[20][10], x + truncate * 6, y, color);
+			draw(batch, Art.guys[20][10], x + truncate * 6, y, color);
 		}
 	}
 
@@ -260,27 +262,40 @@ public abstract class Screen {
 		mScreenTime = gameTime - mGameTimeAtStart;
 		mGameTime = gameTime;
 		mCycle = cycle;
-		
+
+		if (mParalax != null) {
+			mSpriteBatch.begin();
+			draw(mSpriteBatch, mParalax, mRealPosX / 8 - 320, mRealPosY / 8 - 240);
+			mSpriteBatch.end();
+			mParalaxNotified = false;
+		}
+
 		if (mParent != null) {
 			mParent.render(gameTime, cycle, renderTime);
 		}
 		
-		mSpriteBatch.begin();
-		onRender(mSpriteBatch, mGameTime, mScreenTime);
-		mSpriteBatch.end();
+		if (mIsChangeNotified) {
+			mSpriteCache.clear();
+			mSpriteCache.beginCache();
+			onRender(mSpriteBatch, mGameTime, mScreenTime);
+			mSpriteCacheId = mSpriteCache.endCache();
+			mIsChangeNotified = false;
+		}
 
 		// Cache
-		if (mSystemSprite != null) {
+		if (mSpriteCache != null) {
 			Gdx.gl.glEnable(GL30.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+
+			//mSpriteCache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	
 			Matrix4 projection = new Matrix4();
-			projection.setToOrtho(-mPosX, Constants.GAME_WIDTH - mPosX, Constants.GAME_HEIGHT - mPosY, -mPosY, -1, 1);
+			projection.setToOrtho(-mRealPosX, Constants.GAME_WIDTH - mRealPosX, Constants.GAME_HEIGHT - mRealPosY, -mRealPosY, -1, 1);
 	
-			mSystemSprite.setProjectionMatrix(projection);  
-			mSystemSprite.begin();  
-			mSystemSprite.draw(mCacheId);  
-			mSystemSprite.end();
+			mSpriteCache.setProjectionMatrix(projection);  
+			mSpriteCache.begin();  
+			mSpriteCache.draw(mSpriteCacheId);  
+			mSpriteCache.end();
 		}
 		
 		// UI
@@ -291,7 +306,7 @@ public abstract class Screen {
 			}
 		}
 
-		drawString(String.valueOf(renderTime), 0, 0);
+		drawString(mSpriteBatch, String.valueOf(renderTime), 0, 0);
 
 		mSpriteBatch.end();
 		
@@ -408,6 +423,10 @@ public abstract class Screen {
 	}
 
 	protected void onNext () {
+	}
+	
+	protected void notifyChange () {
+		mIsChangeNotified = true;
 	}
 
 //	public void render (SpriteBatch spriteBatch) {

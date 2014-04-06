@@ -58,7 +58,8 @@ public class Art {
 	public static TextureRegion ic_info_32;
 	public static TextureRegion dock;
 	public static TextureRegion bt_space_map;
-	public static TextureRegion system_selected;
+	public static TextureRegion[] system_selected;
+	public static TextureRegion system_selected_origin;
 
 	public static void load () {
 		ship_big = load("res/ship7.png", 128, 87);
@@ -85,7 +86,12 @@ public class Art {
 		sun[1] = load("res/sun_1_256.png", 256, 256);
 		sun[2] = load("res/sun_2_256.png", 256, 256);
 		sun[3] = load("res/sun_3_256.png", 256, 256);
-		system_selected = load("res/system_3_selected.png", 22, 22);
+		system_selected = new TextureRegion[4];
+		system_selected[0] = load("res/system_3_selected.png", 22, 22);
+		system_selected[1] = load("res/system_1_selected.png", 22, 22);
+		system_selected[2] = load("res/system_3_selected.png", 22, 22);
+		system_selected[3] = load("res/system_3_selected.png", 22, 22);
+		system_selected_origin = load("res/system_selected_origin.png", 22, 22);
 		bt_planets = load("res/flag_planets.png", 32, 42);
 		bt_relations = load("res/flag_relations.png", 32, 42);
 		bt_debug = load("res/bt_debug.png", 32, 42);
