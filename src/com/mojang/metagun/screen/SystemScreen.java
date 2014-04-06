@@ -13,8 +13,8 @@ import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.SystemModel;
 
 public class SystemScreen extends Screen {
-	private static final int PLANET_REVOLUTION = 120;
-	private static final int PLANET_SPACING = 70;
+	private static final int PLANET_REVOLUTION = 96;
+	private static final int PLANET_SPACING = 64;
 	private static final int PLANET_SIZE = 42;
 
 	private SystemModel mSystem;
@@ -116,7 +116,7 @@ public class SystemScreen extends Screen {
 		if (Math.abs(y - Constants.GAME_HEIGHT / 2) <= PLANET_SIZE / 2) {
 			if ((x - mPlanetRevolution) % PLANET_SPACING <= PLANET_SIZE) {
 				int pos = (x - mPlanetRevolution) / PLANET_SPACING;
-				if (mSystem.getPlanets().size() > pos) {
+				if (pos >= 0 && mSystem.getPlanets().size() > pos) {
 					addScreen(new PlanetScreen(mSystem, mSystem.getPlanets().get(pos)));
 				}
 			}

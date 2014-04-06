@@ -1,13 +1,17 @@
 package com.mojang.metagun.path;
 
+import com.mojang.metagun.model.SystemModel;
+
 public class Vertex {
 	  final private String id;
 	  final private String name;
+	  final private SystemModel system;
 	  
 	  
-	  public Vertex(String id, String name) {
+	  public Vertex(String id, String name, SystemModel system) {
 	    this.id = id;
 	    this.name = name;
+	    this.system = system;
 	  }
 	  public String getId() {
 	    return id;
@@ -15,6 +19,10 @@ public class Vertex {
 
 	  public String getName() {
 	    return name;
+	  }
+
+	  public SystemModel getSystem() {
+	    return system;
 	  }
 	  
 	  @Override

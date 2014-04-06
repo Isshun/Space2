@@ -6,28 +6,28 @@ import java.util.List;
 import com.mojang.metagun.service.FightService;
 
 public class PlanetModel implements ILocation {
-	private String mName;
-	private double mInitialTick;
-	private PlanetClassModel mClass;
-	private SystemModel mSystem;
-	private int mPos;
-	private int mPeople;
-	private double mBaseFood;
-	private double mBaseBuild;
-	private double mBaseCulture;
-	private double mBaseScience;
-	private double mBaseMoney;
-	private double mSatisfaction;
-	private int mSize;
-	private List<ShipModel>	mBuilds;
-	private List<FleetModel> mOrbit;
-	private FleetModel mDock;
-	private PlayerModel mOwner;
+	private String 				mName;
+	private double 				mInitialTick;
+	private PlanetClassModel 	mClass;
+	private SystemModel 			mSystem;
+	private int 					mPos;
+	private int 					mPeople;
+	private double 				mBaseFood;
+	private double 				mBaseBuild;
+	private double 				mBaseCulture;
+	private double 				mBaseScience;
+	private double 				mBaseMoney;
+	private double 				mSatisfaction;
+	private int 					mSize;
+	private List<ShipModel>		mBuilds;
+	private List<FleetModel> 	mOrbit;
+	private FleetModel 			mDock;
+	private PlayerModel 			mOwner;
 
 	public PlanetModel () {
 		mBuilds = new ArrayList<ShipModel>();
 		mOrbit = new ArrayList<FleetModel>();
-		mDock = new FleetModel();
+		mDock = new FleetModel("Dock");
 		mClass = getRandomPlanetClass();
 		mSize = (int)(Math.random() * 5);
 		mPeople = 1;

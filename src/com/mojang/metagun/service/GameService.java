@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.metagun.Constants;
+import com.mojang.metagun.model.DeviceModel;
+import com.mojang.metagun.model.DeviceModel.Device;
 import com.mojang.metagun.model.FleetModel;
+import com.mojang.metagun.model.NameGenerator;
 import com.mojang.metagun.model.PlanetClassModel;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.PlayerModel;
@@ -12,6 +15,7 @@ import com.mojang.metagun.model.ShipClassModel;
 import com.mojang.metagun.model.ShipModel;
 import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.model.TravelModel;
+import com.mojang.metagun.path.Vertex;
 
 public class GameService {
 	
@@ -79,22 +83,40 @@ public class GameService {
 		mTravelLines.clear();
 		
 		{
-			ShipClassModel sc = new ShipClassModel("Fighter");
+			ShipClassModel sc = new ShipClassModel("Fighter", 50);
+			sc.addDevice(DeviceModel.get(Device.PHASER_1));
+			sc.addDevice(DeviceModel.get(Device.PHASER_1));
+			sc.addDevice(DeviceModel.get(Device.PHASER_1));
+			sc.addDevice(DeviceModel.get(Device.PHASER_1));
+			sc.addDevice(DeviceModel.get(Device.HULL_1));
+			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.setBuildValue(100);
 			mShipClasses.add(sc);
 		}
 		{
-			ShipClassModel sc = new ShipClassModel("Defender");
+			ShipClassModel sc = new ShipClassModel("Defender", 50);
+			sc.addDevice(DeviceModel.get(Device.PHASER_1));
+			sc.addDevice(DeviceModel.get(Device.PHASER_1));
+			sc.addDevice(DeviceModel.get(Device.PHASER_1));
+			sc.addDevice(DeviceModel.get(Device.HULL_1));
+			sc.addDevice(DeviceModel.get(Device.HULL_1));
+			sc.addDevice(DeviceModel.get(Device.HULL_1));
+			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
+			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
+			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.setBuildValue(200);
 			mShipClasses.add(sc);
 		}
 		{
-			ShipClassModel sc = new ShipClassModel("Cruiser");
+			ShipClassModel sc = new ShipClassModel("Cruiser", 250);
 			sc.setBuildValue(800);
 			mShipClasses.add(sc);
 		}
 		{
-			ShipClassModel sc = new ShipClassModel("Explorer");
+			ShipClassModel sc = new ShipClassModel("Explorer", 50);
+			sc.addDevice(DeviceModel.get(Device.PHASER_1));
+			sc.addDevice(DeviceModel.get(Device.HULL_1));
+			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.setBuildValue(60);
 			mShipClasses.add(sc);
 		}
@@ -164,14 +186,14 @@ public class GameService {
 			player.colonize(mSystems.get(i).getRicherPlanet());
 			i += offset;
 		}
-
+		
 		// Create fleets
 		ShipClassModel sc = mShipClasses.get(0);
 		for (PlayerModel player: mPlayers) {
 			{
-				FleetModel fleet = new FleetModel();
+				FleetModel fleet = new FleetModel(NameGenerator.generate(NameGenerator.KLINGON, player.getfleets().size()));
 				fleet.setLocation(player.getHome());
-				fleet.setName(player.equals(mPlayer) ? "Alpha" : player.getName());
+				//fleet.setName(player.equals(mPlayer) ? "Alpha" : player.getName());
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
@@ -188,7 +210,7 @@ public class GameService {
 			{
 				FleetModel fleet = new FleetModel();
 				fleet.setLocation(player.getHome());
-				fleet.setName(player.equals(mPlayer) ? "Beta" : player.getName());
+				//fleet.setName(player.equals(mPlayer) ? "Beta" : player.getName());
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
@@ -199,7 +221,7 @@ public class GameService {
 			{
 				FleetModel fleet = new FleetModel();
 				fleet.setLocation(player.getHome());
-				fleet.setName(player.equals(mPlayer) ? "Omega" : player.getName());
+				//fleet.setName(player.equals(mPlayer) ? "Omega" : player.getName());
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
@@ -329,6 +351,34 @@ public class GameService {
 
 	public List<ShipClassModel> getShipClasses () {
 		return mShipClasses;
+	}
+
+	public List<TravelModel> getTravelPath (List<Vertex> path) {
+		List<TravelModel> travels = new ArrayList<TravelModel>();
+		
+		SystemModel s1 = null;
+		for (Vertex v: path) {
+			if (s1 == null) {
+				s1 = v.getSystem();
+			} else {
+				travels.add(getTravel(s1, v.getSystem()));
+				s1 = v.getSystem();
+			}
+		}
+		
+		return travels;
+	}
+
+	private TravelModel getTravel (SystemModel s1, SystemModel s2) {
+		for (TravelModel t: mTravelLines) {
+			if (t.getFrom().equals(s1) && t.getTo().equals(s2)) {
+				return t;
+			}
+			if (t.getTo().equals(s1) && t.getFrom().equals(s2)) {
+				return t;
+			}
+		}
+		return null;
 	}
 
 }

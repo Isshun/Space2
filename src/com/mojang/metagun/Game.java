@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.mojang.metagun.model.PlanetModel;
+import com.mojang.metagun.model.PlayerModel;
 import com.mojang.metagun.screen.ErrorScreen;
 import com.mojang.metagun.screen.PauseScreen;
 import com.mojang.metagun.screen.Screen;
@@ -31,6 +32,8 @@ public class Game implements ApplicationListener {
 
 	private static boolean sNeedRendering;
 
+	public static long sRender;
+
 	@Override
 	public void create () {
 		
@@ -45,7 +48,7 @@ public class Game implements ApplicationListener {
 		int ratio = 1;
 		for (int i = 2; i < 10; i++) {
 			System.out.println("window i: " + (Gdx.graphics.getWidth() / i));
-			if ((Gdx.graphics.getWidth() / i) > 400) {
+			if ((Gdx.graphics.getWidth() / i) > 600) {
 				ratio = i;
 			}
 		}
@@ -120,7 +123,7 @@ public class Game implements ApplicationListener {
 			accum -= 1.0f / 60.0f;
 			mGameTime += (1.0f / 60.0f * 1000);
 		}
-		screen.render((int)mGameTime, mCycle);
+		screen.render((int)mGameTime, mCycle, sRender);
 // batch.begin();
 // font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
 // batch.end();
@@ -130,6 +133,11 @@ public class Game implements ApplicationListener {
 		List<PlanetModel> planets = GameService.getInstance().getPlanets();
 		for (PlanetModel planet: planets) {
 			planet.update();
+		}
+
+		List<PlayerModel> players = GameService.getInstance().getPlayers();
+		for (PlayerModel player: players) {
+			player.update();
 		}
 
 		mCycle++;	

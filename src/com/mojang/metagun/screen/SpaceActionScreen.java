@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.Utils;
@@ -17,11 +18,14 @@ import com.mojang.metagun.model.RelationModel;
 import com.mojang.metagun.model.ShipClassModel;
 import com.mojang.metagun.model.ShipModel;
 import com.mojang.metagun.model.SystemModel;
+import com.mojang.metagun.model.TravelModel;
+import com.mojang.metagun.path.Vertex;
 import com.mojang.metagun.service.GameService;
+import com.mojang.metagun.service.PathResolver;
 
 public class SpaceActionScreen extends Screen {
 
-	private static final int 	POS_Y = Constants.GAME_HEIGHT - 100;
+	private static final int 	POS_Y = Constants.GAME_HEIGHT - 65;
 	private static final int 	LIST_START_Y = 19;
 	private static final int 	LINE_INTERVAL = 12;
 	
@@ -41,7 +45,7 @@ public class SpaceActionScreen extends Screen {
 
 	@Override
 	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
-		drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 100, new Color(0.2f, 0.2f, 0.2f, 0.85f));
+		drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 65, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
 		if (mSelectedSystem != null) {
@@ -86,9 +90,10 @@ public class SpaceActionScreen extends Screen {
 				List<FleetModel> cpyFleet = new ArrayList<FleetModel>(mSelectedSystem.getFleets());
 				for (FleetModel fleet: cpyFleet) {
 					if (fleet.getOwner().equals(GameService.getInstance().getPlayer())) {
-						fleet.go(mActionSystem);
+						fleet.setCourse(mActionSystem);
 					}
 				}
+				back();
 			}
 
 //			List<ShipClassModel> classes = GameService.getInstance().getShipClasses();
@@ -106,6 +111,12 @@ public class SpaceActionScreen extends Screen {
 	}
 
 	@Override
+	public void onBack () {
+		((SpaceScreen)mParent).setTravelPath(null, null);
+		((SpaceScreen)mParent).setSelected(null);
+	}
+	
+	@Override
 	public void onMove (int offsetX, int offsetY) {
 		mParent.onMove(offsetX, offsetY);
 	}
@@ -118,6 +129,21 @@ public class SpaceActionScreen extends Screen {
 
 	public void setActionSystem (SystemModel system) {
 		mActionSystem = system;
+		
+		if (mSelectedSystem != null && system != null) {
+			List<Vertex> path = PathResolver.getInstance().getPath(mSelectedSystem, system);
+			System.out.println("Path from " + mSelectedSystem.getName() + " to " + system.getName());
+			System.out.println("Path length: " + path.size());
+			List<TravelModel> travelPath = GameService.getInstance().getTravelPath(path);
+			List<SystemModel> systemPath = new ArrayList<SystemModel>();
+			for (Vertex v: path) {
+				systemPath.add(v.getSystem());
+			}
+			((SpaceScreen)mParent).setTravelPath(travelPath, systemPath);
+			for (TravelModel t: travelPath) {
+				System.out.println("travel from: " + t.getName());
+			}
+		}
 	}
 
 

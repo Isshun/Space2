@@ -102,5 +102,12 @@ public class PlayerModel {
 		}
 		return RelationModel.RELATION_WAR;
 	}
+
+	public void update () {
+		List<FleetModel> fleets = new ArrayList<FleetModel>(mFleets);
+		for (FleetModel fleet: fleets) {
+			fleet.move();
+		}
+	}
 	
 }

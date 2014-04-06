@@ -1,9 +1,15 @@
 package com.mojang.metagun.model;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import com.mojang.metagun.path.Vertex;
+import com.mojang.metagun.service.PathResolver;
+
 public class FleetModel {
+	private static int 		sCount;
+
 	private List<ShipModel>	mShips;
 	private PlayerModel 		mOwner;
 	private double 			mSpeed;
@@ -11,10 +17,18 @@ public class FleetModel {
 	private String 			mName;
 	private ILocation			mLocation;
 
+	private LinkedList<Vertex> mPath;
+
 	public FleetModel () {
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
-		mName = "no-name";
+		mName = NameGenerator.generate(NameGenerator.KLINGON, sCount++);
+	}
+
+	public FleetModel (String name) {
+		mSpeed = Double.MAX_VALUE;
+		mShips = new ArrayList<ShipModel>();
+		mName = name;
 	}
 
 	public double getSpeed () {
@@ -99,6 +113,24 @@ public class FleetModel {
 
 	public PlayerModel getOwner () {
 		return mOwner;
+	}
+
+	public void move () {
+		if (mPath != null && mPath.size() > 0) {
+			Vertex v = mPath.pollFirst();
+			go (v.getSystem());
+		}
+	}
+
+	public void setCourse (SystemModel goal) {
+		if (mLocation instanceof PlanetModel) {
+			LinkedList<Vertex> path = PathResolver.getInstance().getPath(((PlanetModel)mLocation).getSystem(), goal);
+			
+			if (path != null) {
+				mPath = path;
+				move();
+			}
+		}
 	}
 
 }

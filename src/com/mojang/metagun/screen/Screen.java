@@ -96,7 +96,11 @@ public abstract class Screen {
 	}
 
 	protected Screen back () {
+		onBack();
 		return mGame.goBack();
+	}
+
+	protected void onBack () {
 	}
 
 	protected void addView(View v) {
@@ -183,6 +187,27 @@ public abstract class Screen {
 		mSpriteBatch.draw(region, x, y, width, region.getRegionHeight());
 	}
 
+	/**
+	 * Draw SpriteCache
+	 * 
+	 * @param cache 
+	 * @param cacheId
+	 */
+	public void draw (SpriteCache cache, int cacheId) {
+		if (cache != null && cacheId != -1) {
+			Gdx.gl.glEnable(GL30.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+	
+			Matrix4 projection = new Matrix4();
+			projection.setToOrtho(-mPosX, Constants.GAME_WIDTH - mPosX, Constants.GAME_HEIGHT - mPosY, -mPosY, -1, 1);
+	
+			cache.setProjectionMatrix(projection);  
+			cache.begin();  
+			cache.draw(cacheId);  
+			cache.end();
+		}
+	}
+
 	public void drawString (String string, int x, int y, int truncate) {
 		drawString(null, string, x, y, truncate, null);
 	}
@@ -229,7 +254,7 @@ public abstract class Screen {
 		}
 	}
 
-	public void render (int gameTime, int cycle) {
+	public void render (int gameTime, int cycle, long renderTime) {
 		long time = System.currentTimeMillis();
 		
 		mScreenTime = gameTime - mGameTimeAtStart;
@@ -237,23 +262,14 @@ public abstract class Screen {
 		mCycle = cycle;
 		
 		if (mParent != null) {
-			mParent.render(gameTime, cycle);
+			mParent.render(gameTime, cycle, renderTime);
 		}
 		
 		mSpriteBatch.begin();
-		
 		onRender(mSpriteBatch, mGameTime, mScreenTime);
-
-		for (View view: mViews) {
-			view.draw(mSpriteBatch);
-		}
-
 		mSpriteBatch.end();
-		
-		
-//		Gdx.gl.glClearColor(0.4f, 0.4f, 0.4f, 1);  
-//		Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);  
 
+		// Cache
 		if (mSystemSprite != null) {
 			Gdx.gl.glEnable(GL30.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
@@ -264,10 +280,25 @@ public abstract class Screen {
 			mSystemSprite.setProjectionMatrix(projection);  
 			mSystemSprite.begin();  
 			mSystemSprite.draw(mCacheId);  
-			mSystemSprite.end();  
+			mSystemSprite.end();
 		}
 		
-		System.out.println("time: " + (System.currentTimeMillis() - time) + "ms");
+		// UI
+		mSpriteBatch.begin();
+		for (View view: mViews) {
+			if (view.isVisible()) {
+				view.draw(mSpriteBatch);
+			}
+		}
+
+		drawString(String.valueOf(renderTime), 0, 0);
+
+		mSpriteBatch.end();
+		
+		Game.sRender = System.currentTimeMillis() - time;
+		if (System.currentTimeMillis() - time >= 2) {
+			//System.out.println("time: " + (System.currentTimeMillis() - time) + "ms");
+		}
 	}
 
 	public abstract void onRender(SpriteBatch spriteBatch, int gameTime, int screenTime);
@@ -299,6 +330,7 @@ public abstract class Screen {
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.BACKSPACE)) {
+			onBack();
 			mGame.goBack();
 			mScreenTime = 0;
 			return;
@@ -306,7 +338,7 @@ public abstract class Screen {
 
 		// Start touch
 		if (mTouch == -1 && Gdx.input.isTouched()) {
-			System.out.println("start touch: " + mGameTime);
+//			System.out.println("start touch: " + mGameTime);
 			mTouch = mScreenTime;
 			mLongTouch = -1;
 			mTouchX = mLastTouchX = Gdx.input.getX() * Constants.GAME_WIDTH / Gdx.graphics.getWidth();
@@ -315,14 +347,14 @@ public abstract class Screen {
 		
 		// Stop long touch
 		else if (mLongTouch != -1 && !Gdx.input.isTouched()) {
-			System.out.println("stop long touch: " + mGameTime);
+//			System.out.println("stop long touch: " + mGameTime);
 			mTouch = -1;
 			mLongTouch = -1;
 		}
 		
 		// Stop touch
 		else if (mLongTouch == -1 && mTouch != -1 && !Gdx.input.isTouched()) {
-			System.out.println("stop touch: " + mGameTime);
+//			System.out.println("stop touch: " + mGameTime);
 			if (mGame.getHistoryScreen().size() > 0 && mBackHistory > 0) {
 				mScreenTime = 0;
 				mBackHistory = 0;

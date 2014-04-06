@@ -56,7 +56,7 @@ public class PlanetBuildShipScreen extends Screen {
 		int i = 0;
 		for (ShipClassModel sc: classes) {
 			drawString(sc.getName(), 4, POS_Y + LIST_START_Y + i * LINE_INTERVAL);
-			drawString(Utils.getFormatedTime(mPlanet.getBuildETA(sc.getBuildValue())), 4 + 122, POS_Y + LIST_START_Y + i * LINE_INTERVAL);
+			drawString(Utils.getFormatedTime(mPlanet.getBuildETA(sc.getBuildValue())), Constants.GAME_WIDTH / 3 - 34, POS_Y + LIST_START_Y + i * LINE_INTERVAL);
 			i++;
 		}
 
@@ -67,18 +67,18 @@ public class PlanetBuildShipScreen extends Screen {
 		for (ShipModel sc: builds) {
 			time += sc.getBuildETA();
 			drawString(sc.getClassName(), Constants.GAME_WIDTH / 3 + 5, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
-			drawString(Utils.getFormatedTime(time), Constants.GAME_WIDTH / 3 + 127, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
+			drawString(Utils.getFormatedTime(time), Constants.GAME_WIDTH / 3 * 2 - 34, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
 			j++;
 		}
 
 		// Draw ship in orbit
 		List<FleetModel> orbit = mPlanet.getOrbit();
-		int k = 0;
-		drawString(mPlanet.getDock().getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y + k * LINE_INTERVAL);
-		drawRectangle(Constants.GAME_WIDTH / 3 * 2 + 132, POS_Y + LIST_START_Y + k * LINE_INTERVAL + 1, 22, 3, Color.GREEN);
+		drawString(mPlanet.getDock().getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y);
+		drawRectangle(Constants.GAME_WIDTH - 28, POS_Y + LIST_START_Y + 1, 22, 3, Color.GREEN);
+		int k = 1;
 		for (FleetModel sc: orbit) {
 			drawString(sc.getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y + k * LINE_INTERVAL);
-			drawRectangle(Constants.GAME_WIDTH / 3 * 2 + 132, POS_Y + LIST_START_Y + k * LINE_INTERVAL + 1, 22, 3, Color.GREEN);
+			drawRectangle(Constants.GAME_WIDTH - 28, POS_Y + LIST_START_Y + k * LINE_INTERVAL + 1, 22, 3, Color.GREEN);
 			k++;
 		}
 	}
@@ -87,7 +87,7 @@ public class PlanetBuildShipScreen extends Screen {
 	public void onTouch (int x, int y) {
 		if (y > POS_Y + LIST_START_Y) {
 			List<ShipClassModel> classes = GameService.getInstance().getShipClasses();
-			int index = (y - POS_Y - LIST_START_Y) / LINE_INTERVAL;
+			int index = (y - POS_Y - LIST_START_Y + 3) / LINE_INTERVAL;
 			if (x < Constants.GAME_WIDTH / 3 && index < classes.size()) {
 				mPlanet.addBuild(new ShipModel(classes.get(index)));
 			}

@@ -27,19 +27,20 @@ public class ShipModel {
 	
 	public ShipModel(ShipClassModel shipClass) {
 		mSpeed = 42;
-		mMass = (int)(Math.random() * 100);
+		mMass = shipClass.getMass();
 		mShipClass = shipClass;
-		mArmory = (int)(Math.random() * 100);
-		mShieldPower = (int)(Math.random() * 100);
+		mArmory = shipClass.getArmory();
+		mShieldPower = shipClass.getShieldPower();
 		mTotalBuild = shipClass.getBuildValue();
-		mGlobalIndice = (int)(Math.random() * 100);
-		mAttackIndice = (int)(Math.random() * 100);
-		mDefenseIndice = (int)(Math.random() * 100);
-		mCrew = (int)(Math.random() * 100);
-		mTotalCrew = 100;
-		mHull = mHullBase = 250;
-		mPhaserPower = (int)(Math.random() * 100);
-		mTorpedoPower = (int)(Math.random() * 100);
+		mTotalCrew = mCrew = shipClass.getTotalCrew();
+		mHull = mHullBase = shipClass.getHull();
+		mPhaserPower = shipClass.getPhaserPower();
+		mTorpedoPower = shipClass.getTorpedoPower();
+		
+		
+		mAttackIndice = mPhaserPower + mTorpedoPower;
+		mDefenseIndice = mShieldPower + mArmory;
+		mGlobalIndice = mAttackIndice + mDefenseIndice;
 	}
 
 	public double			getSpeed () { return mSpeed; }

@@ -26,13 +26,14 @@ public class PathResolver {
 
 		List<SystemModel> systems = GameService.getInstance().getSystems();
 		for (SystemModel system: systems) {
-			Vertex location = new Vertex("Node_" + system.getId(), system.getName());
+			Vertex location = new Vertex("Node_" + system.getId(), system.getName(), system);
 	      nodes.put(system, location);
 		}
 
 		List<TravelModel> travels = GameService.getInstance().getTraveLines();
 		for (TravelModel travel: travels) {
 		    addLane(travel.getName(), travel.getFrom(), travel.getTo(), travel.getLength());
+		    addLane(travel.getName(), travel.getTo(), travel.getFrom(), travel.getLength());
 		}
 	}
 
@@ -48,7 +49,7 @@ public class PathResolver {
 		return sSelf;
 	}
 
-	public void getPath (SystemModel origin, SystemModel goal) {
+	public LinkedList<Vertex> getPath (SystemModel origin, SystemModel goal) {
 		Graph graph = new Graph(nodes.values(), edges);
 		DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
 
@@ -56,9 +57,13 @@ public class PathResolver {
 		dijkstra.execute(nodes.get(origin));
 		LinkedList<Vertex> path = dijkstra.getPath(nodes.get(goal));
 	    
-		for (Vertex vertex : path) {
-			System.out.println(vertex);
+		if (path != null) {
+			for (Vertex vertex : path) {
+				System.out.println(vertex);
+			}
 		}
+		
+		return path;
 	}		
 
 }
