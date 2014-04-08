@@ -108,18 +108,23 @@ public class SystemModel implements ILocation {
 		boolean attackerWin = false;
 		for (PlanetModel planet: mPlanets) {
 			if (planet.attack(fleet) == FightService.DEFENDER_WIN) {
+				System.out.println("system winner: defender");
 				return FightService.DEFENDER_WIN;
 			}
 		}
+		System.out.println("system winner: attacker");
 		return FightService.ATTACKER_WIN;
 	}
 
-	public boolean moveTo (FleetModel fleet) {
+	public void moveTo (FleetModel fleet) {
 		if (hasHostileForce(fleet.getOwner())) {
 			int winner = attack(fleet);
-			return winner == FightService.ATTACKER_WIN;
+			if (winner == FightService.ATTACKER_WIN) {
+				fleet.setLocation(getCapital());
+			}
+		} else {
+			fleet.setLocation(getCapital());
 		}
-		return true;
 	}
 
 	private boolean hasHostileForce (PlayerModel player) {

@@ -49,10 +49,10 @@ public class FightService {
 		
 		// End
 		if (mAttackerDamageDone > mDefenderDamageDone) {
-			System.out.println("Winer: attacker (" + mAttackerDamageDone + " / " + mDefenderDamageDone + ")");
+			System.out.println("Winner: attacker (" + mAttackerDamageDone + " / " + mDefenderDamageDone + ")");
 			return ATTACKER_WIN;
 		} else {
-			System.out.println("Winer: defender (" + mDefenderDamageDone + " / " + mAttackerDamageDone + ")");
+			System.out.println("Winner: defender (" + mDefenderDamageDone + " / " + mAttackerDamageDone + ")");
 			return DEFENDER_WIN;
 		}
 	}
@@ -65,14 +65,14 @@ public class FightService {
 		// Attacker round
 		{
 			double diff = a.getAttackIndice() / d.getDefenseIndice();
-			double damage = a.getAttackIndice() * diff;
+			double damage = a.getAttackIndice() * diff * (Math.random() * 0.3 + 0.85);
 			mAttackerDamageDone += d.damage(damage);
 		}
 		
 		// Defender round
 		{
 			double diff = d.getAttackIndice() / a.getDefenseIndice();
-			double damage = d.getAttackIndice() * diff;
+			double damage = d.getAttackIndice() * diff * (Math.random() * 0.3 + 0.85);
 			a.damage(damage);
 			mDefenderDamageDone += d.damage(damage);
 		}

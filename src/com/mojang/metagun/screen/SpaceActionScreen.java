@@ -32,6 +32,7 @@ public class SpaceActionScreen extends Screen {
 
 	@Override
 	protected void onCreate () {
+		System.out.println("SpaceAction: onCreate");
 
 		// Button move
 		RectangleView btMove = new RectangleView(Constants.GAME_WIDTH - 120, POS_Y + 24, 50, 50, new Color(1, 1, 1, 0.45f));
@@ -49,6 +50,8 @@ public class SpaceActionScreen extends Screen {
 		});
 		addView(btMove);
 
+		System.out.println("SpaceAction: onCreate 2");
+
 		// Button cancel
 		RectangleView btCancel = new RectangleView(Constants.GAME_WIDTH - 60, POS_Y + 24, 50, 50, new Color(1, 0.6f, 0.6f, 0.45f));
 		btCancel.setOnClickListener(new OnClickListener() {
@@ -62,7 +65,11 @@ public class SpaceActionScreen extends Screen {
 
 	@Override
 	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+		System.out.println("SpaceAction: onDraw");
+		
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 65, new Color(0.2f, 0.2f, 0.2f, 0.85f));
+
+		System.out.println("SpaceAction: onDraw 1");
 
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
 		if (mSelectedSystem != null) {
@@ -76,9 +83,14 @@ public class SpaceActionScreen extends Screen {
 			}
 		}
 
+		System.out.println("SpaceAction: onDraw 2");
+
 		drawRectangle(Constants.GAME_WIDTH / 2, POS_Y, 1, 200, new Color(0, 0, 0, 0.45f));
+		System.out.println("SpaceAction: onDraw 3");
 		drawRectangle(Constants.GAME_WIDTH / 2 + 1, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
+		System.out.println("SpaceAction: onDraw 4");
 		drawString(mActionSystem == null ? "Target" : "Target:", Constants.GAME_WIDTH / 2 + 5, POS_Y + 5);
+		System.out.println("SpaceAction: onDraw 5");
 		if (mActionSystem != null) {
 			drawString(mActionSystem.getName(), Constants.GAME_WIDTH - mActionSystem.getName().length() * 6 - 5, POS_Y + 5);
 			int j = 0;
@@ -95,13 +107,18 @@ public class SpaceActionScreen extends Screen {
 				drawString(str, Constants.GAME_WIDTH / 2 + 5, POS_Y + 20 + j++ * 12);
 			}
 			
+			System.out.println("SpaceAction: onDraw 6");
+
 			drawRectangle(Constants.GAME_WIDTH - 60, POS_Y + 24, 50, 50, new Color(1, 1, 1, 0.45f));
-			drawString("Move", Constants.GAME_WIDTH - 50, POS_Y + 30);
+			drawString("Move", Constants.GAME_WIDTH - 100, POS_Y + 30);
+			drawString("Cancel", Constants.GAME_WIDTH - 50, POS_Y + 30);
 		}
 	}
 
 	@Override
 	public void onTouch (int x, int y) {
+		System.out.println("SpaceAction: onTouch");
+
 		if (y > POS_Y + LIST_START_Y) {
 			if (x > Constants.GAME_WIDTH - 60 && mActionSystem != null) {
 //				List<FleetModel> cpyFleet = new ArrayList<FleetModel>(mSelectedSystem.getFleets());
@@ -147,6 +164,8 @@ public class SpaceActionScreen extends Screen {
 	public void setActionSystem (SystemModel system) {
 		mActionSystem = system;
 		
+		System.out.println("SpaceAction: setAction");
+
 		if (mSelectedSystem != null && system != null) {
 			List<Vertex> path = PathResolver.getInstance().getPath(mSelectedSystem, system);
 			System.out.println("Path from " + mSelectedSystem.getName() + " to " + system.getName());

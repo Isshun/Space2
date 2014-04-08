@@ -97,9 +97,7 @@ public class FleetModel {
 	public void go (SystemModel system) {
 		System.out.println("Go to " + system.getName());
 		
-		if (system.moveTo(this)) {
-			setLocation(system.getCapital());
-		}
+		system.moveTo(this);
 		
 		// Remove casualties
 		List<FleetModel> destroyed = new ArrayList<FleetModel>();

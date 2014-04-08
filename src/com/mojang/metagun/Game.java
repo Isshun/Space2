@@ -39,6 +39,10 @@ public class Game implements ApplicationListener {
 	private MyGestureListener 	mGestureListener;
 	private Screen 				mOffScreen;
 	private SpriteBatch 			mSpriteBatch;
+
+	private int mRenderCount;
+
+	Timer mTimer;
 	
 	public enum Anim {
 		FLIP_LEFT,
@@ -101,8 +105,8 @@ public class Game implements ApplicationListener {
 			setScreen(new SpaceScreen());
 		}
 		
-		Timer timer = new Timer();
-		timer.scheduleTask(new Task() {
+		mTimer = new Timer();
+		mTimer.scheduleTask(new Task() {
 			@Override
 			public void run () {
 				update();
@@ -167,6 +171,22 @@ public class Game implements ApplicationListener {
 			}
 		}
 		
+		System.out.println(mRenderCount + " x " + mCycle);
+		
+		if (mRenderCount > 50 && mCycle == 0) {
+			mTimer.clear();
+			mTimer.scheduleTask(new Task() {
+				@Override
+				public void run () {
+					update();
+				}
+			}, Constants.UPDATE_INTERVAL, Constants.UPDATE_INTERVAL);
+
+			mRenderCount = 0;
+		}
+		
+		mRenderCount++;
+		
 // batch.begin();
 // font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
 // batch.end();
@@ -175,7 +195,11 @@ public class Game implements ApplicationListener {
 	public void update () {
 		System.out.println("update");
 
-		mScreen.tick((int)mGameTime, mCycle);
+		if (mGestureListener.isMoving()) {
+			return;
+		}
+
+		//mScreen.tick((int)mGameTime, mCycle);
 		
 		List<PlanetModel> planets = GameService.getInstance().getPlanets();
 		for (PlanetModel planet: planets) {
@@ -187,7 +211,7 @@ public class Game implements ApplicationListener {
 			player.update();
 		}
 
-		mCycle++;	
+		mCycle++;
 	}
 
 	@Override

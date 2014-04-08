@@ -359,6 +359,8 @@ public abstract class Screen {
 				return;
 			}
 		}
+		
+		onTouch(x, y);
 	}
 
 	public void setOffset (int offset, int finalOffsetX) {

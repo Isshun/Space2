@@ -7,10 +7,11 @@ import com.mojang.metagun.screen.Screen;
 
 public class MyGestureListener implements GestureListener {
 
-	private Screen mScreen;
-	private int mLastTouchX;
-	private int mLastTouchY;
-	private Game mGame;
+	private Screen 	mScreen;
+	private int 		mLastTouchX;
+	private int 		mLastTouchY;
+	private Game 		mGame;
+	private boolean 	mIsMoving;
 
 	public MyGestureListener (Game game) {
 		mGame = game;
@@ -40,7 +41,6 @@ public class MyGestureListener implements GestureListener {
 
 		if (mScreen != null) {
 			mScreen.tap(x2, y2);
-			mScreen.onTouch((int)x2, (int)y2);
 		}
 		
 		return false;
@@ -86,6 +86,7 @@ public class MyGestureListener implements GestureListener {
 		
 		mLastTouchX = (int)x2;
 		mLastTouchY = (int)y2;
+		mIsMoving = true;
 		
 		return false;
 	}
@@ -94,6 +95,8 @@ public class MyGestureListener implements GestureListener {
 	public boolean panStop (float x, float y, int pointer, int button) {
 		System.out.println("pan stop");
 
+		mIsMoving = false;
+		
 		return false;
 	}
 
@@ -112,6 +115,10 @@ public class MyGestureListener implements GestureListener {
 		mGame.goBack();
 
 		return false;
+	}
+
+	public boolean isMoving () {
+		return mIsMoving;
 	}
 
 }

@@ -3,6 +3,7 @@ package com.mojang.metagun.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.DeviceModel;
 import com.mojang.metagun.model.DeviceModel.Device;
@@ -124,10 +125,10 @@ public class GameService {
 			mShipClasses.add(sc);
 		}
 		
-		mPlayer = new PlayerModel("me");
-		mPlayers.add(new PlayerModel("player-1"));
-		mPlayers.add(new PlayerModel("player-2"));
-		mPlayers.add(new PlayerModel("player-3"));
+		mPlayer = new PlayerModel("me", Color.YELLOW);
+		mPlayers.add(new PlayerModel("player-1", Color.RED));
+		mPlayers.add(new PlayerModel("player-2", Color.BLUE));
+		mPlayers.add(new PlayerModel("player-3", Color.PINK));
 		mPlayers.add(mPlayer);
 		
 		// Create systems

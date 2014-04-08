@@ -17,13 +17,14 @@ public class PlayerModel {
 	private List<FleetModel> 	mFleets;
 	private PlanetModel mHome;
 	
-	public PlayerModel(String name) {
+	public PlayerModel(String name, Color color) {
 		mName = name;
 		mFleets = new ArrayList<FleetModel>();
 		mFlag = Art.flags[(int)(Math.random() * 9)];
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new ArrayList<PlanetModel>();
-		mColor = new Color((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
+		//mColor = new Color((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
+		mColor = color;
 	}
 
 	public void addSystem (SystemModel system) {

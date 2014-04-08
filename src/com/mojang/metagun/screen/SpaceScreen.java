@@ -99,17 +99,18 @@ public class SpaceScreen extends Screen {
 	
 	@Override
 	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
-//		List<SystemModel> systems = GameService.getInstance().getSystems();
-//		
-//		// Draw fleets
-//		for (SystemModel system: systems) {
-//			if (system.getFleets().size() > 0) {
-//				if (system.equals(mSelected)) {
-//					//drawRectangle(mSystemSprite, mPosX + system.getX() + 16, mPosY + system.getY() - 4, 16, 16, Color.RED);
-//				}
-//				draw(spriteBatch, Art.ship, mRealPosX + system.getX() + 16, mRealPosY + system.getY() - 4);
-//			}
-//		}
+		List<SystemModel> systems = GameService.getInstance().getSystems();
+		
+		// Draw fleets
+		for (SystemModel system: systems) {
+			if (system.getFleets().size() > 0) {
+				drawRectangle(spriteBatch, mRealPosX + system.getX() + 16, mRealPosY + system.getY() - 4, 16, 16, system.getFleets().get(0).getOwner().getColor());
+				draw(spriteBatch, Art.ship, mRealPosX + system.getX() + 16, mRealPosY + system.getY() - 4);
+				if (system.getFleets().size() > 1) {
+					drawString(spriteBatch, "+" + (system.getFleets().size() - 1), mRealPosX + system.getX() + 28, mRealPosY + system.getY() + 12);
+				}
+			}
+		}
 	}
 
 	@Override
