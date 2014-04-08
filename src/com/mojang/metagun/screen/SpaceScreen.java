@@ -1,11 +1,17 @@
 
 package com.mojang.metagun.screen;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -13,6 +19,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
@@ -48,64 +57,30 @@ public class SpaceScreen extends Screen {
 		mParalax = Art.bg;
 		mCurrentTravelCache = new SpriteCache(100, true);
 		mCurrentTravelCacheId = -1;
-		mMap = new Color[400][400];
+		mMap = new Color[Constants.MAP_WIDTH][Constants.MAP_HEIGHT];
 	}
 	
 	@Override
 	protected void onCreate () {
 
-		for (int x = 0; x < 400; x++) {
-			for (int y = 0; y < 400; y++) {
+		for (int x = 0; x < Constants.MAP_WIDTH; x++) {
+			for (int y = 0; y < Constants.MAP_HEIGHT; y++) {
 				mMap[x][y] = null;
 			}
 		}
 
 		List<SystemModel> systems = GameService.getInstance().getSystems();
-		for (int x = 0; x < 12; x++) {
-			for (int y = 0; y < 12; y++) {
+		for (int x = 0; x < 80; x++) {
 			for (SystemModel system: systems) {
 				if (system.getOwner() != null) {
-					int x2 = system.getX() / 4;
-					int y2 = system.getY() / 4;
+					int x2 = system.getX() + Constants.SYSTEM_SIZE / 2;
+					int y2 = system.getY() + Constants.SYSTEM_SIZE / 2;
 					
 					System.out.println("POS: " + x2 + " x " + y2);
-					
-					if (x2+x >= 0 && y2+y >= 0 && x2+x < 400 && y2+y < 400 && mMap[x2+x][y2+y] == null) {
-						mMap[x2+x][y2+y] = system.getOwner().getColor();
+
+					for (int i = 0; i < 1000; i++) {
+						setPoint((int)Math.round(x2+Math.cos(i) * x), (int)Math.round(y2+Math.sin(i) * x), system.getOwner().getSpaceColor());
 					}
-					if (x2-x >= 0 && y2+y >= 0 && x2-x < 400 && y2+y < 400 && mMap[x2-x][y2+y] == null) {
-						mMap[x2-x][y2+y] = system.getOwner().getColor();
-					}
-					if (x2+x >= 0 && y2-y >= 0 && x2+x < 400 && y2-y < 400 && mMap[x2+x][y2-y] == null) {
-						mMap[x2+x][y2-y] = system.getOwner().getColor();
-					}
-					if (x2-x >= 0 && y2-y >= 0 && x2-x < 400 && y2-y < 400 && mMap[x2-x][y2-y] == null) {
-						mMap[x2-x][y2-y] = system.getOwner().getColor();
-					}
-//							if (x2-x >= 0 && y2-y >= 0 && x2-x < 100 && y2-y < 100 && mMap[x2-x][y2-y] == null) {
-//								mMap[x2-x][y2-y] = system.getOwner().getColor();
-//							}
-//							if (y2-y >= 0 && x2+x < 100 && y2-y < 100 && mMap[x2+x][y2-y] == null) {
-//								mMap[x2+x][y2-y] = system.getOwner().getColor();
-//							}
-//							if (x2-x >= 0 && x2-x < 100 && y2+y < 100 && mMap[x2-x][y2+y] == null) {
-//								mMap[x2-x][y2+y] = system.getOwner().getColor();
-//							}
-							
-							
-//							if (x2+i < 100 && y2+i < 100 && mMap[x2+i][y2+i] == null) {
-//								mMap[x2+i][y2+i] = system.getOwner().getColor();
-//							}
-//							if (x2-i >= 0 && y2-i >=0 && x2-i < 100 && y2-i < 100 && mMap[x2-i][y2-i] == null) {
-//								mMap[x2-i][y2-i] = system.getOwner().getColor();
-//							}
-//							if (x2-i >= 0 && x2 < 100 && y2+i < 100 && mMap[x2-i][y2+i] == null) {
-//								mMap[x2-i][y2+i] = system.getOwner().getColor();
-//							}
-//							if (y2 - i >= 0 && x2 < 100 && y2-i < 100 && mMap[x2+i][y2-i] == null) {
-//								mMap[x2+i][y2-i] = system.getOwner().getColor();
-//							}
-						}
 					}
 				}
 			}
@@ -155,8 +130,57 @@ public class SpaceScreen extends Screen {
 		addView(new TextView("ARMADA", 122, 40));
 	}
 	
+	private void setPoint (int x, int y, Color color) {
+		if (x >= 0 && y >= 0 && x < Constants.MAP_WIDTH && y < Constants.MAP_HEIGHT && mMap[x][y] == null) {
+			mMap[x][y] = color;
+		}
+	}
+
 	@Override
 	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+		
+
+//		try {
+//
+//		//create our FBOs
+//		FrameBuffer blurTargetA = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+//		FrameBuffer blurTargetB = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+//		
+//		//our basic pass-through vertex shader
+//		byte[] encoded = Files.readAllBytes(Paths.get("res/lesson5.vert"));
+//		final String VERT = Charset.forName("US-ASCII").decode(ByteBuffer.wrap(encoded)).toString();
+//
+//		//our fragment shader, which does the blur in one direction at a time
+//		byte[] encoded2 = Files.readAllBytes(Paths.get("res/lesson5.frag"));
+//		final String FRAG = Charset.forName("US-ASCII").decode(ByteBuffer.wrap(encoded2)).toString();
+//
+//		//create our shader program
+//		ShaderProgram blurShader = new ShaderProgram(VERT, FRAG);
+//
+//		//Good idea to log any warnings if they exist
+//		System.out.println("shader:" + blurShader.isCompiled());
+//		
+//		if (blurShader.getLog().length() != 0)
+//		    System.out.println(blurShader.getLog());
+//
+//		blurShader.begin();
+//		blurShader.setUniformf("dir", 0f, 0f); //direction of blur; nil for now
+//		blurShader.setUniformf("resolution", FBO_SIZE); //size of FBO texture
+//		blurShader.setUniformf("radius", 3f); //radius of blur
+////		blurShader.setUniformMatrix("u_worldView", projection);
+//		blurShader.setUniformi("u_texture", 0);
+//		//blurShader.setUniformMatrix("u_worldView", matrix);
+//		//blurShader.setUniformi("u_texture", 0);
+//		//mesh.render(shader, GL10.GL_TRIANGLES);
+//		blurShader.end();
+//		
+//		spriteBatch.draw(region, 0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
+//		blurTargetA.end();
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
 		List<SystemModel> systems = GameService.getInstance().getSystems();
 		
 		// Draw fleets
@@ -174,13 +198,28 @@ public class SpaceScreen extends Screen {
 	@Override
 	public void onDraw (int gameTime, int screenTime) {
 
-		for (int x = 0; x < 400; x++) {
-			for (int y = 0; y < 400; y++) {
+//		if (mPixmap != null) {
+//			mPixmap.dispose();
+//		}
+		
+		mPixmap = new Pixmap(Constants.MAP_WIDTH, Constants.MAP_HEIGHT, Format.RGBA8888);
+//		mPixmap.setColor(Color.CYAN);
+//		mPixmap.fillRectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
+		
+		for (int x = 0; x < Constants.MAP_WIDTH; x++) {
+			for (int y = 0; y < Constants.MAP_HEIGHT; y++) {
 				if (mMap[x][y] != null) {
-					drawRectangle(x * 4 + Constants.SYSTEM_SIZE / 2, y * 4 + Constants.SYSTEM_SIZE / 2, 4, 4, mMap[x][y]);
+//					mPixmap.setColor(mMap[x][y]);
+					mPixmap.drawPixel(x, Constants.MAP_HEIGHT - y, Color.rgba8888(mMap[x][y]));
+					//drawRectangle(x + Constants.SYSTEM_SIZE / 2, y + Constants.SYSTEM_SIZE / 2, 1, 1, mMap[x][y]);
 				}
 			}
 		}
+
+		draw(mPixmap, 0, 0);
+		
+		mPixmap.dispose();
+
 
 		// Draw travel lines
 		List<TravelModel> travels = GameService.getInstance().getTraveLines();

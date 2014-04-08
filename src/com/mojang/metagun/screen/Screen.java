@@ -8,6 +8,7 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -52,6 +53,7 @@ public abstract class Screen {
 	protected boolean					mParalaxNotified;
 	private int 						mOffsetX;
 	private int 						mFinalOffsetX;
+	protected Pixmap mPixmap;
 
 	public Screen() {
 		mViews = new ArrayList<View>();
@@ -66,6 +68,7 @@ public abstract class Screen {
 
 	public final void init (Game game, int gameTime) {
 		System.out.println("Screen init");
+		
 		
 		mGameTime = gameTime;
 		mGameTimeAtStart = gameTime;
@@ -182,6 +185,12 @@ public abstract class Screen {
 		mSpriteCache.add(sprite);
 	}
 
+	protected void draw (Pixmap pixmap, int x, int y) {
+		Texture pixmaptex = new Texture(pixmap);
+		TextureRegion region = new TextureRegion(pixmaptex);
+		mSpriteCache.add(region, x, y);
+	}
+
 	public void draw (TextureRegion region, int x, int y) {
 		int width = region.getRegionWidth();
 		if (width < 0) width = -width;
@@ -256,6 +265,7 @@ public abstract class Screen {
 
 		if (mParalax != null) {
 			mSpriteBatch.begin();
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			draw(mSpriteBatch, mParalax, mRealPosX / 8 - 320, mRealPosY / 8 - 240);
 			mSpriteBatch.end();
 			mParalaxNotified = false;

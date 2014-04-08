@@ -30,5 +30,7 @@ public class Constants {
 	// onTouch after this delay are not throw
 	public static final long TOUCH_DELAY = 150;
 	public static final long BACK_MIN_DELAY = 250;
+	public static final int MAP_WIDTH = 1000;
+	public static final int MAP_HEIGHT = 600;
 
 }

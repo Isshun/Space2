@@ -16,6 +16,7 @@ public class PlayerModel {
 	private List<PlanetModel> 	mPlanets;
 	private List<FleetModel> 	mFleets;
 	private PlanetModel mHome;
+	private Color mSpaceColor;
 	
 	public PlayerModel(String name, Color color) {
 		mName = name;
@@ -25,6 +26,7 @@ public class PlayerModel {
 		mPlanets = new ArrayList<PlanetModel>();
 		//mColor = new Color((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
 		mColor = color;
+		mSpaceColor = new Color(Math.min(color.r + 0.1f, 1), Math.min(color.g + 0.1f, 1), Math.min(color.b + 0.1f, 1), 0.65f);
 	}
 
 	public void addSystem (SystemModel system) {
@@ -109,6 +111,10 @@ public class PlayerModel {
 		for (FleetModel fleet: fleets) {
 			fleet.move();
 		}
+	}
+
+	public Color getSpaceColor () {
+		return mSpaceColor;
 	}
 	
 }

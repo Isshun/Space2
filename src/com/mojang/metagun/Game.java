@@ -43,6 +43,8 @@ public class Game implements ApplicationListener {
 	private int mRenderCount;
 
 	Timer mTimer;
+
+	private long mLastRender;
 	
 	public enum Anim {
 		FLIP_LEFT,
@@ -142,6 +144,12 @@ public class Game implements ApplicationListener {
 
 	@Override
 	public void render () {
+		long time = System.currentTimeMillis();
+		if (time - mLastRender < 10) {
+			return;
+		}
+		mLastRender = time;
+		
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		mAccum += Gdx.graphics.getDeltaTime();
 		//mGameTime += (accum * 1000);
@@ -171,7 +179,7 @@ public class Game implements ApplicationListener {
 			}
 		}
 		
-		System.out.println(mRenderCount + " x " + mCycle);
+//		System.out.println(mRenderCount + " x " + mCycle);
 		
 		if (mRenderCount > 50 && mCycle == 0) {
 			mTimer.clear();
