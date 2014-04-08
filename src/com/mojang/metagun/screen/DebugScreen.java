@@ -46,7 +46,7 @@ public class DebugScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		drawString("map index: " + GameService.getInstance().mMapIndex, 4, 4);
 		
 

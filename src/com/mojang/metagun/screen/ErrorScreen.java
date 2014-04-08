@@ -19,7 +19,7 @@ public class ErrorScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		// TODO Auto-generated method stub
 
 	}

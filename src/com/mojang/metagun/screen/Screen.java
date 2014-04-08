@@ -31,23 +31,16 @@ public abstract class Screen {
 	public static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\<    ()"};
 	
 	protected static Random 		sRandom = new Random();
-	private Game 						mGame;
+	protected Game 					mGame;
 	protected SpriteBatch 			mSpriteBatch;
 	private int 						mScreenTime;
 	private int 						mBackHistory;
-	private int 						mTouch;
-	private int 						mTouchX;
-	private int 						mTouchY;
-	private int 						mLastTouchX;
-	private int 						mLastTouchY;
 	private List<View>				mViews;
 	protected PlayerModel 			mPlayer;
 	protected Screen 					mParent;
 	protected int 						mCycle;
 	private int 						mGameTime;
 	private int 						mGameTimeAtStart;
-	private boolean 					mIsMoving;
-	private int 						mLongTouch;
 	private SpriteCache 				mSpriteCache;
 	private int 						mSpriteCacheId;
 	protected int 						mDeprecatedPosX;
@@ -57,6 +50,8 @@ public abstract class Screen {
 	private boolean 					mIsChangeNotified;
 	protected TextureRegion 		mParalax;
 	protected boolean					mParalaxNotified;
+	private int 						mOffsetX;
+	private int 						mFinalOffsetX;
 
 	public Screen() {
 		mViews = new ArrayList<View>();
@@ -78,8 +73,8 @@ public abstract class Screen {
 		mGame = game;
 		mScreenTime = 0;//Constants.TOUCH_RECOVERY / 2;
 		mBackHistory = 0;
-		mTouch = -1;
-		mLongTouch = -1;
+//		mTouch = -1;
+//		mLongTouch = -1;
 		Matrix4 projection = new Matrix4();
 		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
 
@@ -88,8 +83,6 @@ public abstract class Screen {
 		
 		onCreate();
 	}
-
-	protected abstract void onCreate ();
 
 	public boolean isTop () {
 		return mGame.isTop(this);
@@ -108,22 +101,12 @@ public abstract class Screen {
 		return mGame.goBack();
 	}
 
-	protected void onBack () {
+	public void onBack () {
 	}
 
 	protected void addView(View v) {
 		mViews.add(v);
 	}
-	
-//	public void drawLine(int fromX, int fromY, int toX, int toY, int color) {
-//		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
-//		pixmap.setColor(color);
-//		pixmap.fillRectangle(0, 0, 32, 32);
-//		Texture pixmaptex = new Texture(pixmap);
-//		TextureRegion region = new TextureRegion(pixmaptex);
-//		mSpriteBatch.draw(region, x, y, width, height);
-//		pixmap.dispose();
-//	}
 
 	public void drawRectangle(int x, int y, int width, int height, int color) {
 		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
@@ -259,9 +242,17 @@ public abstract class Screen {
 	public void render (int gameTime, int cycle, long renderTime) {
 		long time = System.currentTimeMillis();
 		
+		if (mCycle != cycle) {
+			mIsChangeNotified = true;
+		}
+		
 		mScreenTime = gameTime - mGameTimeAtStart;
 		mGameTime = gameTime;
 		mCycle = cycle;
+		
+		Matrix4 projection = new Matrix4();
+		projection.setToOrtho(mOffsetX, Constants.GAME_WIDTH + mOffsetX, Constants.GAME_HEIGHT, 0, -1, 1);
+		mSpriteBatch.setProjectionMatrix(projection);
 
 		if (mParalax != null) {
 			mSpriteBatch.begin();
@@ -277,7 +268,7 @@ public abstract class Screen {
 		if (mIsChangeNotified) {
 			mSpriteCache.clear();
 			mSpriteCache.beginCache();
-			onRender(mSpriteBatch, mGameTime, mScreenTime);
+			onDraw(mSpriteBatch, mGameTime, mScreenTime);
 			mSpriteCacheId = mSpriteCache.endCache();
 			mIsChangeNotified = false;
 		}
@@ -289,17 +280,21 @@ public abstract class Screen {
 
 			//mSpriteCache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	
-			Matrix4 projection = new Matrix4();
-			projection.setToOrtho(-mRealPosX, Constants.GAME_WIDTH - mRealPosX, Constants.GAME_HEIGHT - mRealPosY, -mRealPosY, -1, 1);
+			Matrix4 projection2 = new Matrix4();
+			projection2.setToOrtho(-mRealPosX + mOffsetX, Constants.GAME_WIDTH - mRealPosX + mOffsetX, Constants.GAME_HEIGHT - mRealPosY, -mRealPosY, -1, 1);
 	
-			mSpriteCache.setProjectionMatrix(projection);  
+			mSpriteCache.setProjectionMatrix(projection2);  
 			mSpriteCache.begin();  
 			mSpriteCache.draw(mSpriteCacheId);  
 			mSpriteCache.end();
 		}
 		
-		// UI
 		mSpriteBatch.begin();
+
+		// Render dynamic elements
+		onRender(mSpriteBatch, mGameTime, mScreenTime);
+
+		// UI
 		for (View view: mViews) {
 			if (view.isVisible()) {
 				view.draw(mSpriteBatch);
@@ -314,135 +309,65 @@ public abstract class Screen {
 		if (System.currentTimeMillis() - time >= 2) {
 			//System.out.println("time: " + (System.currentTimeMillis() - time) + "ms");
 		}
+		
+		if (mOffsetX < mFinalOffsetX) {
+			mOffsetX = Math.min(mFinalOffsetX, mOffsetX + 42);
+			Gdx.graphics.requestRendering();
+		}
+		
+		if (mOffsetX > mFinalOffsetX) {
+			mOffsetX = Math.max(mFinalOffsetX, mOffsetX - 42);
+			Gdx.graphics.requestRendering();
+		}
+
 	}
 
-	public abstract void onRender(SpriteBatch spriteBatch, int gameTime, int screenTime);
+	public void onRender(SpriteBatch spriteBatch, int gameTime, int screenTime) {
+		
+	}
+	
+	protected abstract void onCreate ();
+	protected abstract void onDraw(SpriteBatch spriteBatch, int gameTime, int screenTime);
 	public abstract void onTouch(int x, int y);
 	public abstract void onLongTouch(int x, int y);
 	public abstract void onMove(int offsetX, int offsetY);
 
 	public void tick (int gameTime, int cycle) {
-		mScreenTime = gameTime - mGameTimeAtStart;
-
-//		System.out.println("tick: " + mScreenTime + ", " + Constants.TOUCH_RECOVERY);
-		
-		if (mScreenTime < Constants.TOUCH_RECOVERY) {
-			return;
-		}
-
-		if (!mIsMoving && Gdx.input.isTouched() && Gdx.input.getDeltaX() > 30) {
-			onPrev();
-			mGameTimeAtStart = mGameTime;
-			return;
-			//mBackHistory = 4;
-		}
-
-		if (!mIsMoving && Gdx.input.isTouched() && Gdx.input.getDeltaX() < -30) {
-			onNext();
-			mGameTimeAtStart = mGameTime;
-			return;
-			//mBackHistory = 4;
-		}
-
 		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.BACKSPACE)) {
 			onBack();
 			mGame.goBack();
 			mScreenTime = 0;
 			return;
 		}
-
-		// Start touch
-		if (mTouch == -1 && Gdx.input.isTouched()) {
-//			System.out.println("start touch: " + mGameTime);
-			mTouch = mScreenTime;
-			mLongTouch = -1;
-			mTouchX = mLastTouchX = Gdx.input.getX() * Constants.GAME_WIDTH / Gdx.graphics.getWidth();
-			mTouchY = mLastTouchY = Gdx.input.getY() * Constants.GAME_HEIGHT / Gdx.graphics.getHeight();
-		}
-		
-		// Stop long touch
-		else if (mLongTouch != -1 && !Gdx.input.isTouched()) {
-//			System.out.println("stop long touch: " + mGameTime);
-			mTouch = -1;
-			mLongTouch = -1;
-		}
-		
-		// Stop touch
-		else if (mLongTouch == -1 && mTouch != -1 && !Gdx.input.isTouched()) {
-//			System.out.println("stop touch: " + mGameTime);
-			if (mGame.getHistoryScreen().size() > 0 && mBackHistory > 0) {
-				mScreenTime = 0;
-				mBackHistory = 0;
-				mIsMoving = false;
-				mGame.goBack();
-				return;
-			}
-			if (Math.abs(mTouchX - mLastTouchX) < 5  && Math.abs(mTouchY - mLastTouchY) < 5 &&  mTouch + TOUCH_INTERVAL > mScreenTime) {
-				for (View view: mViews) {
-					if (view.isClickable() && view.contains(mTouchX, mTouchY)) {
-						view.click();
-						mTouch = -1;
-						mGameTimeAtStart = mGameTime;
-						return;
-					}
-				}
-				onTouch(mTouchX, mTouchY);
-			}
-
-			mTouch = -1;
-		}
-		
-		// Move
-		if (mTouch != -1 && Gdx.input.isTouched()) {
-			// Long touch
-			if (Math.abs(mTouchX - mLastTouchX) < 5  && Math.abs(mTouchY - mLastTouchY) < 5 &&  mTouch + LONG_TOUCH_INTERVAL < mScreenTime) {
-				System.out.println("Long touch: " + mGameTime);
-				mLongTouch = mScreenTime;
-				mGameTimeAtStart = mGameTime;
-				onLongTouch(mTouchX, mTouchY);
-				return;
-			}
-
-			mIsMoving = true;
-			int x = Gdx.input.getX() * Constants.GAME_WIDTH / Gdx.graphics.getWidth();
-			int y = Gdx.input.getY() * Constants.GAME_HEIGHT / Gdx.graphics.getHeight();
-			
-			mBackHistory--;
-			
-			if (mLastTouchX != x || mLastTouchY != y) {
-//				System.out.println("onMove: " + (mLastTouchX - x) + ", " + (mLastTouchY - y));
-				onMove(x - mLastTouchX, y - mLastTouchY);
-			}
-			
-			mLastTouchX = x;
-			mLastTouchY = y;
-		}
 	}
 
-	protected void onPrev () {
+	public void onPrev () {
 	}
 
-	protected void onNext () {
+	public void onNext () {
 	}
 	
 	protected void notifyChange () {
 		mIsChangeNotified = true;
 	}
 
-//	public void render (SpriteBatch spriteBatch) {
-//		mSpriteBatch.begin();
-////		
-//////		onRender(mSpriteBatch);
-////
-////		for (View view: mViews) {
-////			view.draw(mSpriteBatch);
-////		}
-////
-//		mSpriteBatch.end();
-//	}
-//
-//	public SpriteBatch getSpriteBatch () {
-//		return mSpriteBatch;
-//	}
+	public void tap (int x, int y) {
+		for (View view: mViews) {
+			if (view.isClickable() && view.contains(x, y)) {
+				view.click();
+				mGameTimeAtStart = mGameTime;
+				return;
+			}
+		}
+	}
+
+	public void setOffset (int offset, int finalOffsetX) {
+		mOffsetX = offset;
+		mFinalOffsetX = finalOffsetX;
+	}
+
+	public boolean isEnded () {
+		return mOffsetX == mFinalOffsetX;
+	}
 
 }

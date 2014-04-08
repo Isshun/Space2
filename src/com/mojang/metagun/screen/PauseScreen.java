@@ -18,7 +18,7 @@ public class PauseScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		parent.render(gameTime, screenTime, 0);
 		
 		drawRectangle(0, 0, 200, 200, Color.RED);

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
+import com.mojang.metagun.Game.Anim;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.ui.ImageView;
@@ -49,9 +50,7 @@ public class PlanetScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
-		draw(Art.bg, 0, 0);
-		
+	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		int planetX = Constants.GAME_WIDTH - 128 - 40;
 		int planetY = 40;
 		
@@ -144,14 +143,20 @@ public class PlanetScreen extends Screen {
 	public void onNext () {
 		List<PlanetModel> planets = mSystem.getPlanets();
 		int index = planets.indexOf(mPlanet);
-		mPlanet = planets.get(Math.min(index + 1, planets.size() - 1));
+		if (index < planets.size() - 1) {
+			PlanetModel planet = planets.get(Math.min(index + 1, planets.size() - 1));
+			mGame.replaceScreen(new PlanetScreen(mSystem, planet), Anim.FLIP_RIGHT);
+		}
 	}
 
 	@Override
 	public void onPrev () {
 		List<PlanetModel> planets = mSystem.getPlanets();
 		int index = planets.indexOf(mPlanet);
-		mPlanet = planets.get(Math.max(index - 1, 0));
+		if (index > 0) {
+			PlanetModel planet = planets.get(Math.max(index - 1, 0));
+			mGame.replaceScreen(new PlanetScreen(mSystem, planet), Anim.FLIP_LEFT);
+		}
 	}
 
 	@Override

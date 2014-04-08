@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
+import com.mojang.metagun.Game.Anim;
 import com.mojang.metagun.model.FleetModel;
+import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.ShipModel;
 import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.service.GameService;
@@ -57,7 +59,7 @@ public class PanelFleetScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		draw(Art.bg_1, 0, 0);
 		
 		drawBigString(String.format("%s (%d/%d/%d)", mFleet.getName(), (int)mTotInd, (int)mAttInd, (int)mDefInd), 6, 6);
@@ -152,6 +154,26 @@ public class PanelFleetScreen extends Screen {
 	public void onLongTouch (int x, int y) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void onNext () {
+		List<FleetModel> fleets = mPlayer.getfleets();
+		int index = fleets.indexOf(mFleet);
+		if (index < fleets.size() - 1) {
+			FleetModel fleet = fleets.get(Math.min(index + 1, fleets.size() - 1));
+			mGame.replaceScreen(new PanelFleetScreen(fleet), Anim.FLIP_RIGHT);
+		}
+	}
+
+	@Override
+	public void onPrev () {
+		List<FleetModel> fleets = mPlayer.getfleets();
+		int index = fleets.indexOf(mFleet);
+		if (index > 0) {
+			FleetModel fleet = fleets.get(Math.max(index - 1, 0));
+			mGame.replaceScreen(new PanelFleetScreen(fleet), Anim.FLIP_LEFT);
+		}
 	}
 
 }

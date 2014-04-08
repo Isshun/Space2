@@ -4,24 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.SpriteCache;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mojang.metagun.Constants;
-import com.mojang.metagun.Utils;
 import com.mojang.metagun.model.FleetModel;
-import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.RelationModel;
-import com.mojang.metagun.model.ShipClassModel;
-import com.mojang.metagun.model.ShipModel;
 import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.model.TravelModel;
 import com.mojang.metagun.path.Vertex;
 import com.mojang.metagun.service.GameService;
 import com.mojang.metagun.service.PathResolver;
+import com.mojang.metagun.ui.RectangleView;
+import com.mojang.metagun.ui.View.OnClickListener;
 
 public class SpaceActionScreen extends Screen {
 
@@ -29,8 +22,8 @@ public class SpaceActionScreen extends Screen {
 	private static final int 	LIST_START_Y = 19;
 	private static final int 	LINE_INTERVAL = 12;
 	
-	private SystemModel 			mSelectedSystem;
-	private SystemModel 			mActionSystem;
+	protected SystemModel 		mSelectedSystem;
+	protected SystemModel 		mActionSystem;
 
 	public SpaceActionScreen (Screen parent, SystemModel system) {
 		mParent = parent;
@@ -39,12 +32,36 @@ public class SpaceActionScreen extends Screen {
 
 	@Override
 	protected void onCreate () {
-		// TODO Auto-generated method stub
 
+		// Button move
+		RectangleView btMove = new RectangleView(Constants.GAME_WIDTH - 120, POS_Y + 24, 50, 50, new Color(1, 1, 1, 0.45f));
+		btMove.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				List<FleetModel> cpyFleet = new ArrayList<FleetModel>(mSelectedSystem.getFleets());
+				for (FleetModel fleet: cpyFleet) {
+					if (fleet.getOwner().equals(GameService.getInstance().getPlayer())) {
+						fleet.setCourse(mActionSystem);
+					}
+				}
+				back();
+			}
+		});
+		addView(btMove);
+
+		// Button cancel
+		RectangleView btCancel = new RectangleView(Constants.GAME_WIDTH - 60, POS_Y + 24, 50, 50, new Color(1, 0.6f, 0.6f, 0.45f));
+		btCancel.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				back();
+			}
+		});
+		addView(btCancel);
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 65, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
@@ -87,13 +104,13 @@ public class SpaceActionScreen extends Screen {
 	public void onTouch (int x, int y) {
 		if (y > POS_Y + LIST_START_Y) {
 			if (x > Constants.GAME_WIDTH - 60 && mActionSystem != null) {
-				List<FleetModel> cpyFleet = new ArrayList<FleetModel>(mSelectedSystem.getFleets());
-				for (FleetModel fleet: cpyFleet) {
-					if (fleet.getOwner().equals(GameService.getInstance().getPlayer())) {
-						fleet.setCourse(mActionSystem);
-					}
-				}
-				back();
+//				List<FleetModel> cpyFleet = new ArrayList<FleetModel>(mSelectedSystem.getFleets());
+//				for (FleetModel fleet: cpyFleet) {
+//					if (fleet.getOwner().equals(GameService.getInstance().getPlayer())) {
+//						fleet.setCourse(mActionSystem);
+//					}
+//				}
+//				back();
 			}
 
 //			List<ShipClassModel> classes = GameService.getInstance().getShipClasses();
@@ -144,7 +161,8 @@ public class SpaceActionScreen extends Screen {
 				System.out.println("travel from: " + t.getName());
 			}
 		}
-	}
 
+		notifyChange();
+	}
 
 }

@@ -26,7 +26,7 @@ public class PanelArmadaScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		draw(Art.bg_1, 0, 0);
 		drawBigString("ARMADA", 6, 6);
 

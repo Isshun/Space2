@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
+import com.mojang.metagun.model.FleetModel;
 import com.mojang.metagun.model.PlayerModel;
 import com.mojang.metagun.model.SystemModel;
 import com.mojang.metagun.model.TravelModel;
@@ -95,9 +96,24 @@ public class SpaceScreen extends Screen {
 		addView(mBtArmada);
 		addView(new TextView("ARMADA", 122, 40));
 	}
-
+	
 	@Override
 	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+//		List<SystemModel> systems = GameService.getInstance().getSystems();
+//		
+//		// Draw fleets
+//		for (SystemModel system: systems) {
+//			if (system.getFleets().size() > 0) {
+//				if (system.equals(mSelected)) {
+//					//drawRectangle(mSystemSprite, mPosX + system.getX() + 16, mPosY + system.getY() - 4, 16, 16, Color.RED);
+//				}
+//				draw(spriteBatch, Art.ship, mRealPosX + system.getX() + 16, mRealPosY + system.getY() - 4);
+//			}
+//		}
+	}
+
+	@Override
+	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 
 		// Draw travel lines
 		List<TravelModel> travels = GameService.getInstance().getTraveLines();
@@ -143,18 +159,6 @@ public class SpaceScreen extends Screen {
 		for (SystemModel system : systems) {
 			drawSystem(system);
 		}
-
-		// Draw fleets
-		for (SystemModel system: systems) {
-			if (system.getFleets().size() > 0) {
-				if (system.equals(mSelected)) {
-					//drawRectangle(mSystemSprite, mPosX + system.getX() + 16, mPosY + system.getY() - 4, 16, 16, Color.RED);
-				}
-				draw(Art.ship, mDeprecatedPosX + system.getX() + 16, mDeprecatedPosY + system.getY() - 4);
-			}
-		}
-		
-		
 
 //		// Draws travel ships
 //		for (TravelModel travel : travels) {

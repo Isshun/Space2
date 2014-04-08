@@ -7,6 +7,9 @@ import java.util.List;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.mojang.metagun.model.PlanetModel;
@@ -19,27 +22,35 @@ import com.mojang.metagun.service.GameService;
 import com.mojang.metagun.service.PathResolver;
 
 public class Game implements ApplicationListener {
-	private static final long serialVersionUID = 1L;
+	private static final long 	serialVersionUID = 1L;
+
+	private static boolean 		sNeedRendering;
+	public static long 			sRender;
 
 	private LinkedList<Screen> mScreens;
-	private boolean running = false;
-	private Screen screen;
-	private final boolean started = false;
-	private float accum = 0;
-	private boolean mMenuIsOpen;
-	private int mCycle;
-	private double mGameTime;
-
-	private static boolean sNeedRendering;
-
-	public static long sRender;
+	private boolean 				mRunning = false;
+	private Screen 				mScreen;
+	private final boolean		mStarted = false;
+	private float 					mAccum = 0;
+	private boolean 				mMenuIsOpen;
+	private int 					mCycle;
+	private double 				mGameTime;
+	private long 					mLastBack;
+	private MyGestureListener 	mGestureListener;
+	private Screen 				mOffScreen;
+	private SpriteBatch 			mSpriteBatch;
+	
+	public enum Anim {
+		FLIP_LEFT,
+		FLIP_RIGHT
+	}
 
 	@Override
 	public void create () {
 		
 		Art.load();
 		Sound.load();
-		running = true;
+		mRunning = true;
 		
 		double r1 = 320f / Gdx.graphics.getHeight();
 		double r2 = 480f / Gdx.graphics.getWidth();
@@ -48,7 +59,7 @@ public class Game implements ApplicationListener {
 		int ratio = 1;
 		for (int i = 2; i < 10; i++) {
 			System.out.println("window i: " + (Gdx.graphics.getWidth() / i));
-			if ((Gdx.graphics.getWidth() / i) > 600) {
+			if ((Gdx.graphics.getWidth() / i) > 400) {
 				ratio = i;
 			}
 		}
@@ -60,6 +71,12 @@ public class Game implements ApplicationListener {
 
 		Gdx.input.setCatchBackKey(true);
 		Gdx.input.setCatchMenuKey(true);
+		
+		mGestureListener = new MyGestureListener(this);
+		
+      GestureDetector gd = new GestureDetector(20f, 0.4f, 0.6f, 0.15f, mGestureListener);
+      Gdx.input.setInputProcessor(gd);
+		
 		Gdx.graphics.setContinuousRendering(false);
 		Gdx.graphics.requestRendering();
 		mScreens = new LinkedList<Screen>();
@@ -67,6 +84,12 @@ public class Game implements ApplicationListener {
 		GameService.getInstance().initDebug(0);
 
 		PathResolver.getInstance().getPath(GameService.getInstance().getPlayers().get(0).getHome().getSystem(), GameService.getInstance().getPlayer().getHome().getSystem());
+		
+		Matrix4 projection = new Matrix4();
+		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
+
+		mSpriteBatch = new SpriteBatch(100);
+		mSpriteBatch.setProjectionMatrix(projection);
 		
 		if (Constants.GAME_WIDTH > 480) {
 			
@@ -89,22 +112,23 @@ public class Game implements ApplicationListener {
 
 	@Override
 	public void pause () {
-		running = false;
+		mRunning = false;
 	}
 
 	@Override
 	public void resume () {
-		running = true;
+		mRunning = true;
 	}
 
 	public void setScreen (Screen newScreen) {
-		if (screen != null) screen.removed();
-		screen = newScreen;
-		if (screen != null) screen.init(this, (int)mGameTime);
+		if (mScreen != null) mScreen.removed();
+		mScreen = newScreen;
+		mGestureListener.setScreen(newScreen);
+		if (mScreen != null) mScreen.init(this, (int)mGameTime);
 	}
 
 	public void addScreen (Screen newScreen) {
-		mScreens.add(screen);
+		mScreens.add(mScreen);
 		setScreen(newScreen);
 	}
 
@@ -115,21 +139,44 @@ public class Game implements ApplicationListener {
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		accum += Gdx.graphics.getDeltaTime();
+		mAccum += Gdx.graphics.getDeltaTime();
 		//mGameTime += (accum * 1000);
 		//System.out.println("" + accum);
-		while (accum > 1.0f / 60.0f) {
-			screen.tick((int)mGameTime, mCycle);
-			accum -= 1.0f / 60.0f;
+		while (mAccum > 1.0f / 60.0f) {
+			mScreen.tick((int)mGameTime, mCycle);
+			mAccum -= 1.0f / 60.0f;
 			mGameTime += (1.0f / 60.0f * 1000);
 		}
-		screen.render((int)mGameTime, mCycle, sRender);
+		
+		Matrix4 projection = new Matrix4();
+		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
+
+		mSpriteBatch.begin();
+		int width = Art.bg.getRegionWidth();
+		if (width < 0) width = -width;
+		mSpriteBatch.draw(Art.bg, 0, 0, width, Art.bg.getRegionHeight());
+		mSpriteBatch.end();
+		
+		mScreen.render((int)mGameTime, mCycle, sRender);
+		
+		if (mOffScreen != null) {
+			if (mOffScreen.isEnded()) {
+				mOffScreen = null;
+			} else {
+				mOffScreen.render((int)mGameTime, mCycle, sRender);
+			}
+		}
+		
 // batch.begin();
 // font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
 // batch.end();
 	}
 
-	void update () {
+	public void update () {
+		System.out.println("update");
+
+		mScreen.tick((int)mGameTime, mCycle);
+		
 		List<PlanetModel> planets = GameService.getInstance().getPlanets();
 		for (PlanetModel planet: planets) {
 			planet.update();
@@ -152,13 +199,18 @@ public class Game implements ApplicationListener {
 	}
 
 	public Screen goBack () {
+		long time = System.currentTimeMillis();
+		if (time - mLastBack < Constants.BACK_MIN_DELAY) {
+			return null;
+		}
+		mLastBack = time;
 		System.out.println("Go back");
 		Screen s = mScreens.pollLast();
 		if (s != null) {
 			setScreen(s);
 		} else {
 			if (mMenuIsOpen) {
-				s = new PauseScreen(screen);
+				s = new PauseScreen(mScreen);
 				setScreen(s);
 			} else {
 				s = new SpaceScreen();
@@ -176,5 +228,21 @@ public class Game implements ApplicationListener {
 	public static void requestRendering () {
 		//Gdx.graphics.requestRendering();
 		sNeedRendering = true;
+	}
+
+	public void replaceScreen (Screen newScreen, Anim anim) {
+		switch (anim) {
+		case FLIP_LEFT:
+			mScreen.setOffset(0, -Constants.GAME_WIDTH);
+			newScreen.setOffset(Constants.GAME_WIDTH, 0);
+			break;
+		case FLIP_RIGHT:
+			mScreen.setOffset(0, Constants.GAME_WIDTH);
+			newScreen.setOffset(-Constants.GAME_WIDTH, 0);
+			break;
+		}
+		
+		mOffScreen = mScreen;
+		setScreen(newScreen);
 	}
 }

@@ -56,12 +56,15 @@ public class GameService {
 
 	public int mMapIndex;
 
+	private List<FleetModel> mFleets;
+
 	private GameService() {
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new ArrayList<PlanetModel>();
 		mPlayers = new ArrayList<PlayerModel>();
 		mTravelLines = new ArrayList<TravelModel>();
 		mShipClasses = new ArrayList<ShipClassModel>();
+		mFleets = new ArrayList<FleetModel>();
 	}
 	
 	public List<SystemModel> getSystems () {
@@ -206,6 +209,8 @@ public class GameService {
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
 				player.addFleet(fleet);
+				
+				mFleets.add(fleet);
 			}
 			{
 				FleetModel fleet = new FleetModel();
@@ -217,6 +222,8 @@ public class GameService {
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
 				player.addFleet(fleet);
+				
+				mFleets.add(fleet);
 			}
 			{
 				FleetModel fleet = new FleetModel();
@@ -228,6 +235,8 @@ public class GameService {
 				fleet.addShip(new ShipModel(sc));
 				fleet.addShip(new ShipModel(sc));
 				player.addFleet(fleet);
+				
+				mFleets.add(fleet);
 			}
 		}
 		
@@ -304,7 +313,7 @@ public class GameService {
 
 	public SystemModel getSystemAtPos (int x, int y) {
 		for (SystemModel s: mSystems) {
-			if (x >= s.getX() && x <= s.getX() + Constants.SYSTEM_SIZE && y >= s.getY() && y <= s.getY() + Constants.SYSTEM_SIZE) {
+			if (x >= s.getX() - Constants.TOUCH_MARGIN && x <= s.getX() + Constants.SYSTEM_SIZE + Constants.TOUCH_MARGIN && y >= s.getY() - Constants.TOUCH_MARGIN && y <= s.getY() + Constants.SYSTEM_SIZE + Constants.TOUCH_MARGIN ) {
 				return s;
 			}
 		}
@@ -379,6 +388,10 @@ public class GameService {
 			}
 		}
 		return null;
+	}
+
+	public List<FleetModel> getFleets () {
+		return mFleets;
 	}
 
 }

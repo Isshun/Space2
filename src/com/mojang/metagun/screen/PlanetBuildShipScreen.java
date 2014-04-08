@@ -37,7 +37,7 @@ public class PlanetBuildShipScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 100, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 3, 14, new Color(1, 1, 1, 0.45f));

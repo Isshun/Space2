@@ -22,7 +22,7 @@ public class PlanetBuildStructureScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
 		int posY = Constants.GAME_HEIGHT - 100;
 
 		drawRectangle(0, posY, Constants.GAME_WIDTH, 100, new Color(0.5f, 0.5f, 1, 0.5f));
