@@ -96,6 +96,13 @@ public class MainGestureListener implements GestureListener {
 	public boolean panStop (float x, float y, int pointer, int button) {
 		System.out.println("pan stop");
 
+		int x2 = (int)(x * Constants.GAME_WIDTH / Gdx.graphics.getWidth());
+		int y2 = (int)(y * Constants.GAME_HEIGHT / Gdx.graphics.getHeight());
+
+		if (mScreen != null) {
+			mScreen.onMoveEnd(x2, y2);
+		}
+
 		mIsMoving = false;
 		
 		return false;

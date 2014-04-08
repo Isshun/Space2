@@ -45,6 +45,8 @@ public abstract class Screen {
 	private int 						mGameTimeAtStart;
 	private SpriteCache 				mSpriteCache;
 	private int 						mSpriteCacheId;
+	protected SpriteCache 				mCacheUI;
+	private int 						mCacheUIId;
 	protected int 						mDeprecatedPosX;
 	protected int 						mDeprecatedPosY;
 	protected int 						mRealPosX;
@@ -61,6 +63,7 @@ public abstract class Screen {
 		mIsChangeNotified = true;
 		mParalaxNotified = true;
 		mSpriteCache = new SpriteCache(5000, true);
+		mCacheUI = new SpriteCache(5000, true);
 	}
 
 	public void dispose () {
@@ -125,10 +128,18 @@ public abstract class Screen {
 	}
 	
 	public void drawRectangle(int x, int y, int width, int height, Color color) {
-		drawRectangle(null, x, y, width, height, color);
+		drawRectangle(null, mSpriteCache, x, y, width, height, color);
+	}
+
+	public void drawRectangle(SpriteCache cache, int x, int y, int width, int height, Color color) {
+		drawRectangle(null, cache, x, y, width, height, color);
 	}
 	
-	public void drawRectangle(SpriteBatch bacth, int x, int y, int width, int height, Color color) {
+	public void drawRectangle(SpriteBatch batch, int x, int y, int width, int height, Color color) {
+		drawRectangle(batch, null, x, y, width, height, color);
+	}
+	
+	public void drawRectangle(SpriteBatch bacth, SpriteCache cache, int x, int y, int width, int height, Color color) {
 		Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);
 		pixmap.setColor(color);
 		pixmap.fillRectangle(0, 0, 32, 32);
@@ -137,16 +148,13 @@ public abstract class Screen {
 		if (bacth != null) {
 			bacth.draw(region, x, y, width, height);
 		} else {
-			mSpriteCache.add(region, x, y, width, height);
+			cache.add(region, x, y, width, height);
 		}
 		pixmap.dispose();
 	}
 
+
 	protected void drawRectangle (int x, int y, int width, int height, Color color, int angle) {
-		drawRectangle(null, x, y, width, height, color, angle);
-	}
-	
-	protected void drawRectangle (SpriteBatch bacth, int x, int y, int width, int height, Color color, int angle) {
 		Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
 		pixmap.setColor(color);
 		pixmap.fillRectangle(0, 0, width, height);
@@ -154,11 +162,11 @@ public abstract class Screen {
 		Sprite line = new Sprite(pixmaptex);
 		line.setRotation(angle);
 		line.setPosition(x, y);
-		if (bacth != null) {
-			line.draw(bacth);
-		} else {
+//		if (bacth != null) {
+//			line.draw(bacth);
+//		} else {
 			mSpriteCache.add(line);
-		}
+//		}
 		pixmap.dispose();
 	}
 	
@@ -194,10 +202,13 @@ public abstract class Screen {
 	}
 
 	public void draw (TextureRegion region, int x, int y) {
+		draw(mSpriteCache, region, x, y);
+	}
+
+	public void draw (SpriteCache cache, TextureRegion region, int x, int y) {
 		int width = region.getRegionWidth();
 		if (width < 0) width = -width;
-		//mSpriteBatch.draw(region, x, y, width, region.getRegionHeight());
-		mSpriteCache.add(region, x, y, width, region.getRegionHeight());
+		cache.add(region, x, y, width, region.getRegionHeight());
 	}
 
 	public void drawString (String string, int x, int y, int truncate) {
@@ -284,7 +295,7 @@ public abstract class Screen {
 			mSpriteCacheId = mSpriteCache.endCache();
 			mIsChangeNotified = false;
 		}
-
+		
 		// Cache
 		if (mSpriteCache != null) {
 			Gdx.gl.glEnable(GL30.GL_BLEND);
@@ -301,6 +312,8 @@ public abstract class Screen {
 			mSpriteCache.end();
 		}
 		
+		
+		// Render non cached
 		mSpriteBatch.begin();
 
 		// Render dynamic elements
@@ -312,16 +325,28 @@ public abstract class Screen {
 				view.draw(mSpriteBatch);
 			}
 		}
-
 		drawString(mSpriteBatch, String.valueOf(renderTime), 0, 0);
-
 		mSpriteBatch.end();
+
 		
-		Game.sRender = System.currentTimeMillis() - time;
-		if (System.currentTimeMillis() - time >= 2) {
-			//System.out.println("time: " + (System.currentTimeMillis() - time) + "ms");
+		// Cache UI
+		if (mCacheUI != null) {
+			Gdx.gl.glEnable(GL30.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+
+			//mSpriteCache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	
+			Matrix4 projection2 = new Matrix4();
+			projection2.setToOrtho(mOffsetX, Constants.GAME_WIDTH - mOffsetX, Constants.GAME_HEIGHT, 0, -1, 1);
+	
+			mCacheUI.setProjectionMatrix(projection2);  
+			mCacheUI.begin();  
+			mCacheUI.draw(mCacheUIId);  
+			mCacheUI.end();
 		}
+
 		
+		// Render transition
 		if (mOffsetX < mFinalOffsetX) {
 			mOffsetX = Math.min(mFinalOffsetX, mOffsetX + 42);
 			Gdx.graphics.requestRendering();
@@ -343,6 +368,9 @@ public abstract class Screen {
 	public abstract void onTouch(int x, int y);
 	public abstract void onLongTouch(int x, int y);
 	public abstract void onMove(int offsetX, int offsetY);
+	public void onMoveEnd(int x, int y) {
+		
+	}
 
 	public void tick (int gameTime, int cycle) {
 		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.BACKSPACE)) {

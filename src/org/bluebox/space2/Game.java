@@ -128,7 +128,7 @@ public class Game implements ApplicationListener {
 	}
 
 	public void setScreen (Screen newScreen) {
-		if (mScreen != null) mScreen.dispose();
+//		if (mScreen != null) mScreen.dispose();
 		mScreen = newScreen;
 		mGestureListener.setScreen(newScreen);
 		if (mScreen != null) mScreen.init(this, (int)mGameTime);
@@ -241,6 +241,11 @@ public class Game implements ApplicationListener {
 		System.out.println("Go back");
 		Screen s = mScreens.pollLast();
 		if (s != null) {
+
+			if (mScreen != null) {
+				mScreen.dispose();
+			}
+
 			setScreen(s);
 		} else {
 			if (mMenuIsOpen) {
