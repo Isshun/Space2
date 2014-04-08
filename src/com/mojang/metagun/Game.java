@@ -36,7 +36,7 @@ public class Game implements ApplicationListener {
 	private int 					mCycle;
 	private double 				mGameTime;
 	private long 					mLastBack;
-	private MyGestureListener 	mGestureListener;
+	private MainGestureListener 	mGestureListener;
 	private Screen 				mOffScreen;
 	private SpriteBatch 			mSpriteBatch;
 
@@ -78,7 +78,7 @@ public class Game implements ApplicationListener {
 		Gdx.input.setCatchBackKey(true);
 		Gdx.input.setCatchMenuKey(true);
 		
-		mGestureListener = new MyGestureListener(this);
+		mGestureListener = new MainGestureListener(this);
 		
       GestureDetector gd = new GestureDetector(20f, 0.4f, 0.6f, 0.15f, mGestureListener);
       Gdx.input.setInputProcessor(gd);
@@ -127,7 +127,7 @@ public class Game implements ApplicationListener {
 	}
 
 	public void setScreen (Screen newScreen) {
-		if (mScreen != null) mScreen.removed();
+		if (mScreen != null) mScreen.dispose();
 		mScreen = newScreen;
 		mGestureListener.setScreen(newScreen);
 		if (mScreen != null) mScreen.init(this, (int)mGameTime);
@@ -173,6 +173,7 @@ public class Game implements ApplicationListener {
 		
 		if (mOffScreen != null) {
 			if (mOffScreen.isEnded()) {
+				mOffScreen.dispose();
 				mOffScreen = null;
 			} else {
 				mOffScreen.render((int)mGameTime, mCycle, sRender);
@@ -274,7 +275,14 @@ public class Game implements ApplicationListener {
 			break;
 		}
 		
+		if (mOffScreen != null) {
+			mOffScreen.dispose();
+			mOffScreen = null;
+		}
+		
 		mOffScreen = mScreen;
-		setScreen(newScreen);
+		mScreen = newScreen;
+		mGestureListener.setScreen(newScreen);
+		if (mScreen != null) mScreen.init(this, (int)mGameTime);
 	}
 }

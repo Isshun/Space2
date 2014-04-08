@@ -5,7 +5,7 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.mojang.metagun.screen.Screen;
 
-public class MyGestureListener implements GestureListener {
+public class MainGestureListener implements GestureListener {
 
 	private Screen 	mScreen;
 	private int 		mLastTouchX;
@@ -13,7 +13,7 @@ public class MyGestureListener implements GestureListener {
 	private Game 		mGame;
 	private boolean 	mIsMoving;
 
-	public MyGestureListener (Game game) {
+	public MainGestureListener (Game game) {
 		mGame = game;
 	}
 

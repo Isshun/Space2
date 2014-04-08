@@ -62,8 +62,9 @@ public abstract class Screen {
 		mSpriteCache = new SpriteCache(5000, true);
 	}
 
-	public void removed () {
+	public void dispose () {
 		mSpriteBatch.dispose();
+		mSpriteBatch = null;
 	}
 
 	public final void init (Game game, int gameTime) {
