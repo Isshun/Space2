@@ -63,7 +63,7 @@ public class Game implements ApplicationListener {
 		int ratio = 1;
 		for (int i = 2; i < 10; i++) {
 			System.out.println("window i: " + (Gdx.graphics.getWidth() / i));
-			if ((Gdx.graphics.getWidth() / i) > 400) {
+			if ((Gdx.graphics.getWidth() / i) > 600) {
 				ratio = i;
 			}
 		}

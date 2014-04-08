@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.PlanetModel;
@@ -25,7 +24,7 @@ public class PanelGovernmentScreen extends Screen {
 	}
 	
 	@Override
-	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (int gameTime, int screenTime) {
 		draw(Art.bg, 0, 0);
 
 		draw(Art.ic_people, START_X, 3);

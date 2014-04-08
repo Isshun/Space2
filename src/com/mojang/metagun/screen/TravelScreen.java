@@ -1,7 +1,6 @@
 
 package com.mojang.metagun.screen;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.model.FleetModel;
 import com.mojang.metagun.model.TravelModel;
 
@@ -18,7 +17,7 @@ public class TravelScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {		
+	public void onDraw (int gameTime, int screenTime) {		
 		int posY = 6;
 		drawString("from: " + mTravel.getFrom().getName(), 6, posY);
 		

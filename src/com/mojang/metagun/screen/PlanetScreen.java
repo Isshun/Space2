@@ -4,7 +4,6 @@ package com.mojang.metagun.screen;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.Game.Anim;
@@ -50,7 +49,7 @@ public class PlanetScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (int gameTime, int screenTime) {
 		int planetX = Constants.GAME_WIDTH - 128 - 40;
 		int planetY = 40;
 		

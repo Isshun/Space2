@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.FleetModel;
 import com.mojang.metagun.model.RelationModel;
@@ -64,7 +63,7 @@ public class SpaceActionScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (int gameTime, int screenTime) {
 		System.out.println("SpaceAction: onDraw");
 		
 		drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 65, new Color(0.2f, 0.2f, 0.2f, 0.85f));

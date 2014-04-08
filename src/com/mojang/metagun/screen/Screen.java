@@ -57,7 +57,7 @@ public abstract class Screen {
 		mViews = new ArrayList<View>();
 		mIsChangeNotified = true;
 		mParalaxNotified = true;
-		mSpriteCache = new SpriteCache(1000, true);
+		mSpriteCache = new SpriteCache(5000, true);
 	}
 
 	public void removed () {
@@ -268,7 +268,7 @@ public abstract class Screen {
 		if (mIsChangeNotified) {
 			mSpriteCache.clear();
 			mSpriteCache.beginCache();
-			onDraw(mSpriteBatch, mGameTime, mScreenTime);
+			onDraw(mGameTime, mScreenTime);
 			mSpriteCacheId = mSpriteCache.endCache();
 			mIsChangeNotified = false;
 		}
@@ -327,7 +327,7 @@ public abstract class Screen {
 	}
 	
 	protected abstract void onCreate ();
-	protected abstract void onDraw(SpriteBatch spriteBatch, int gameTime, int screenTime);
+	protected abstract void onDraw(int gameTime, int screenTime);
 	public abstract void onTouch(int x, int y);
 	public abstract void onLongTouch(int x, int y);
 	public abstract void onMove(int offsetX, int offsetY);

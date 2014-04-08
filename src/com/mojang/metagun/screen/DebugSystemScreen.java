@@ -2,7 +2,6 @@ package com.mojang.metagun.screen;
 
 import java.util.List;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.model.FleetModel;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.SystemModel;
@@ -51,7 +50,7 @@ public class DebugSystemScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (int gameTime, int screenTime) {
 		// TODO Auto-generated method stub
 
 	}

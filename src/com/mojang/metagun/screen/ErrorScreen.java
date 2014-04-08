@@ -1,6 +1,5 @@
 package com.mojang.metagun.screen;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.ui.TextView;
 
 public class ErrorScreen extends Screen {
@@ -19,7 +18,7 @@ public class ErrorScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (int gameTime, int screenTime) {
 		// TODO Auto-generated method stub
 
 	}

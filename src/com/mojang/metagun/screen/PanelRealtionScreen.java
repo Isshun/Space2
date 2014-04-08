@@ -2,7 +2,6 @@ package com.mojang.metagun.screen;
 
 import java.util.List;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.model.PlayerModel;
 import com.mojang.metagun.service.GameService;
@@ -10,7 +9,7 @@ import com.mojang.metagun.service.GameService;
 public class PanelRealtionScreen extends Screen {
 
 	@Override
-	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (int gameTime, int screenTime) {
 		draw(Art.bg, 0, 0);
 
 		List<PlayerModel> players = GameService.getInstance().getPlayers();

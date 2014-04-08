@@ -241,6 +241,10 @@ public class GameService {
 			}
 		}
 		
+//		for (SystemModel system: mSystems) {
+//			system.setOwner(mPlayers.get((int)(Math.random() * 3)));
+//		}
+		
 	}
 //
 //	private void addRandomSystem (int level, SystemModel parent) {

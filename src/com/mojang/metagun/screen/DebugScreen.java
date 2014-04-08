@@ -3,7 +3,6 @@ package com.mojang.metagun.screen;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.PlayerModel;
 import com.mojang.metagun.model.ShipModel;
@@ -46,7 +45,7 @@ public class DebugScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (int gameTime, int screenTime) {
 		drawString("map index: " + GameService.getInstance().mMapIndex, 4, 4);
 		
 

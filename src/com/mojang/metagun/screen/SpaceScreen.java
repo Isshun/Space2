@@ -42,16 +42,74 @@ public class SpaceScreen extends Screen {
 
 	private SpriteCache 			mCurrentTravelCache;
 	private int 					mCurrentTravelCacheId;
+	private Color[][]				mMap;
 
 	public SpaceScreen () {
 		mParalax = Art.bg;
 		mCurrentTravelCache = new SpriteCache(100, true);
 		mCurrentTravelCacheId = -1;
+		mMap = new Color[400][400];
 	}
 	
 	@Override
 	protected void onCreate () {
 
+		for (int x = 0; x < 400; x++) {
+			for (int y = 0; y < 400; y++) {
+				mMap[x][y] = null;
+			}
+		}
+
+		List<SystemModel> systems = GameService.getInstance().getSystems();
+		for (int x = 0; x < 12; x++) {
+			for (int y = 0; y < 12; y++) {
+			for (SystemModel system: systems) {
+				if (system.getOwner() != null) {
+					int x2 = system.getX() / 4;
+					int y2 = system.getY() / 4;
+					
+					System.out.println("POS: " + x2 + " x " + y2);
+					
+					if (x2+x >= 0 && y2+y >= 0 && x2+x < 400 && y2+y < 400 && mMap[x2+x][y2+y] == null) {
+						mMap[x2+x][y2+y] = system.getOwner().getColor();
+					}
+					if (x2-x >= 0 && y2+y >= 0 && x2-x < 400 && y2+y < 400 && mMap[x2-x][y2+y] == null) {
+						mMap[x2-x][y2+y] = system.getOwner().getColor();
+					}
+					if (x2+x >= 0 && y2-y >= 0 && x2+x < 400 && y2-y < 400 && mMap[x2+x][y2-y] == null) {
+						mMap[x2+x][y2-y] = system.getOwner().getColor();
+					}
+					if (x2-x >= 0 && y2-y >= 0 && x2-x < 400 && y2-y < 400 && mMap[x2-x][y2-y] == null) {
+						mMap[x2-x][y2-y] = system.getOwner().getColor();
+					}
+//							if (x2-x >= 0 && y2-y >= 0 && x2-x < 100 && y2-y < 100 && mMap[x2-x][y2-y] == null) {
+//								mMap[x2-x][y2-y] = system.getOwner().getColor();
+//							}
+//							if (y2-y >= 0 && x2+x < 100 && y2-y < 100 && mMap[x2+x][y2-y] == null) {
+//								mMap[x2+x][y2-y] = system.getOwner().getColor();
+//							}
+//							if (x2-x >= 0 && x2-x < 100 && y2+y < 100 && mMap[x2-x][y2+y] == null) {
+//								mMap[x2-x][y2+y] = system.getOwner().getColor();
+//							}
+							
+							
+//							if (x2+i < 100 && y2+i < 100 && mMap[x2+i][y2+i] == null) {
+//								mMap[x2+i][y2+i] = system.getOwner().getColor();
+//							}
+//							if (x2-i >= 0 && y2-i >=0 && x2-i < 100 && y2-i < 100 && mMap[x2-i][y2-i] == null) {
+//								mMap[x2-i][y2-i] = system.getOwner().getColor();
+//							}
+//							if (x2-i >= 0 && x2 < 100 && y2+i < 100 && mMap[x2-i][y2+i] == null) {
+//								mMap[x2-i][y2+i] = system.getOwner().getColor();
+//							}
+//							if (y2 - i >= 0 && x2 < 100 && y2-i < 100 && mMap[x2+i][y2-i] == null) {
+//								mMap[x2+i][y2-i] = system.getOwner().getColor();
+//							}
+						}
+					}
+				}
+			}
+		
 		// Button planets
 		mBtPlanets = new ImageView(Art.bt_planets, 6, 6);
 		mBtPlanets.setOnClickListener(new OnClickListener() {
@@ -114,7 +172,15 @@ public class SpaceScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (int gameTime, int screenTime) {
+
+		for (int x = 0; x < 400; x++) {
+			for (int y = 0; y < 400; y++) {
+				if (mMap[x][y] != null) {
+					drawRectangle(x * 4 + Constants.SYSTEM_SIZE / 2, y * 4 + Constants.SYSTEM_SIZE / 2, 4, 4, mMap[x][y]);
+				}
+			}
+		}
 
 		// Draw travel lines
 		List<TravelModel> travels = GameService.getInstance().getTraveLines();

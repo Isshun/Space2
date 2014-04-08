@@ -3,7 +3,6 @@ package com.mojang.metagun.screen;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.Constants;
 import com.mojang.metagun.model.PlanetModel;
 import com.mojang.metagun.model.ShipClassModel;
@@ -22,7 +21,7 @@ public class PlanetBuildStructureScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onDraw (int gameTime, int screenTime) {
 		int posY = Constants.GAME_HEIGHT - 100;
 
 		drawRectangle(0, posY, Constants.GAME_WIDTH, 100, new Color(0.5f, 0.5f, 1, 0.5f));
