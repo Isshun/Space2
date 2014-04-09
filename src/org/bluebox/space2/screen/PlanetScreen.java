@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
+import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.Game.Anim;
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.SystemModel;
@@ -84,9 +85,11 @@ public class PlanetScreen extends Screen {
 			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], planetX, planetY);
 		}
 		
-		int shipX = planetX - 128 / 2;
-		int shipY = planetY;
-		draw(Art.dock, shipX, shipY);
+		if (mPlanet.getDock() != null) {
+			int shipX = planetX - 128 / 2;
+			int shipY = planetY;
+			draw(Art.dock, shipX, shipY);
+		}
 		
 
 		

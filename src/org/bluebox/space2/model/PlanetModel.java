@@ -7,28 +7,28 @@ import org.bluebox.space2.service.FightService;
 
 
 public class PlanetModel implements ILocation {
-	private String 					mName;
-	private double 					mInitialTick;
-	private PlanetClassModel 		mClass;
-	private SystemModel 				mSystem;
-	private int 						mPos;
-	private int 						mPeople;
-	private double 					mBaseFood;
-	private double 					mBaseBuild;
-	private double 					mBaseCulture;
-	private double 					mBaseScience;
-	private double 					mBaseMoney;
-	private double 					mSatisfaction;
-	private int 						mSize;
-	private List<ShipModel>			mBuilds;
-	private List<BuildingModel>	mBuildings;
-	private List<FleetModel> 		mOrbit;
-	private DockModel 				mDock;
-	private PlayerModel 				mOwner;
+	private String 						mName;
+	private double 						mInitialTick;
+	private PlanetClassModel 			mClass;
+	private SystemModel 					mSystem;
+	private int 							mPos;
+	private int 							mPeople;
+	private double 						mBaseFood;
+	private double 						mBaseBuild;
+	private double 						mBaseCulture;
+	private double 						mBaseScience;
+	private double 						mBaseMoney;
+	private double 						mSatisfaction;
+	private int 							mSize;
+	private List<ShipModel>				mBuilds;
+	private List<BuildingClassModel>	mBuildings;
+	private List<FleetModel> 			mOrbit;
+	private DockModel 					mDock;
+	private PlayerModel 					mOwner;
 
 	public PlanetModel (int classId, int size) {
 		mBuilds = new ArrayList<ShipModel>();
-		mBuildings = new ArrayList<BuildingModel>();
+		mBuildings = new ArrayList<BuildingClassModel>();
 		mOrbit = new ArrayList<FleetModel>();
 		mPeople = 1;
 		mClass = PlanetClassModel.getFromId(classId);
@@ -185,7 +185,7 @@ public class PlanetModel implements ILocation {
 		mSize = size;
 	}
 
-	public void addBuild (ShipModel sc) {
+	public void buildShip(ShipModel sc) {
 		if (mDock == null) {
 			System.out.println("addBuild: planet has no spacedock");
 		}
@@ -321,6 +321,14 @@ public class PlanetModel implements ILocation {
 
 	public PlayerModel getOwner () {
 		return mOwner;
+	}
+
+	public void buildStructure(BuildingClassModel buildingClass) {
+		if (mDock == null && buildingClass.type == BuildingClassModel.Type.DOCK) {
+			mDock = new DockModel();
+		}
+		
+		mBuildings.add(buildingClass);
 	}
 
 }

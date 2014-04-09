@@ -92,7 +92,7 @@ public class PlanetBuildShipScreen extends Screen {
 			List<ShipClassModel> classes = GameService.getInstance().getShipClasses();
 			int index = (y - POS_Y - LIST_START_Y + 3) / LINE_INTERVAL;
 			if (x < Constants.GAME_WIDTH / 3 && index < classes.size()) {
-				mPlanet.addBuild(new ShipModel(classes.get(index)));
+				mPlanet.buildShip(new ShipModel(classes.get(index)));
 			}
 			if (x > Constants.GAME_WIDTH / 3 && x < Constants.GAME_WIDTH / 3 * 2) {
 				System.out.println("remove build");

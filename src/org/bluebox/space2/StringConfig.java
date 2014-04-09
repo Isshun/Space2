@@ -1,4 +1,4 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2;
 
 import com.badlogic.gdx.graphics.Color;
 

@@ -66,7 +66,7 @@ public class Game implements ApplicationListener {
 		int ratio = 1;
 		for (int i = 2; i < 10; i++) {
 			System.out.println("window i: " + (Gdx.graphics.getWidth() / i));
-			if ((Gdx.graphics.getWidth() / i) > 600) {
+			if ((Gdx.graphics.getWidth() / i) > 320) {
 				ratio = i;
 			}
 		}
@@ -79,8 +79,8 @@ public class Game implements ApplicationListener {
 		initInput();
 		
 		
-		Gdx.graphics.setContinuousRendering(false);
-		Gdx.graphics.requestRendering();
+//		Gdx.graphics.setContinuousRendering(false);
+//		Gdx.graphics.requestRendering();
 		mScreens = new LinkedList<Screen>();
 
 		mData = GameDataFactory.create();
@@ -88,7 +88,7 @@ public class Game implements ApplicationListener {
 		
 		GameService.getInstance().initDebug(0);
 
-		PathResolver.getInstance().getPath(GameService.getInstance().getPlayers().get(0).getHome().getSystem(), GameService.getInstance().getPlayer().getHome().getSystem());
+//		PathResolver.getInstance().getPath(GameService.getInstance().getPlayers().get(0).getHome().getSystem(), GameService.getInstance().getPlayer().getHome().getSystem());
 		
 		Matrix4 projection = new Matrix4();
 		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
@@ -144,10 +144,51 @@ public class Game implements ApplicationListener {
 	}
 
 	public void addScreen (Screen newScreen) {
-		mScreens.add(mScreen);
-		setScreen(newScreen);
+		if (mScreen != null) {
+			mScreen.dispose();
+			mScreen = null;
+		}
+
+		mScreen = newScreen;
+		mScreens.add(newScreen);
+		mGestureListener.setScreen(newScreen);
+		if (mScreen != null) mScreen.init(this, (int)mGameTime);
+
+		//setScreen(newScreen);
 	}
 
+	public Screen goBack () {
+		long time = System.currentTimeMillis();
+		if (time - mLastBack < Constants.BACK_MIN_DELAY) {
+			return null;
+		}
+		mLastBack = time;
+		System.out.println("Go back");
+		Screen s = mScreens.pollLast();
+		if (s != null) {
+			if (mScreen != null) {
+				Screen old = mScreen;
+				replaceScreen(old, s, null);
+				//old.goOut(anim);
+				return s;
+			}
+
+//			setScreen(s);
+//		} else {
+//			if (mMenuIsOpen) {
+//				s = new PauseScreen(mScreen);
+//				replaceScreen(mScreen, s, null);
+////				setScreen(s);
+//			} else {
+//				s = new SpaceScreen();
+//				replaceScreen(mScreen, s, null);
+////				setScreen(s);
+//			}
+//			mMenuIsOpen = !mMenuIsOpen;
+		}
+		return s;
+	}
+	
 	public boolean isTop (Screen screen) {
 		return mScreens.getLast() != screen;
 	}
@@ -164,10 +205,11 @@ public class Game implements ApplicationListener {
 		mAccum += Gdx.graphics.getDeltaTime();
 		//mGameTime += (accum * 1000);
 		//System.out.println("" + accum);
-		while (mAccum > 1.0f / 60.0f) {
+		float delay = 1.0f / 60.0f;
+		while (mAccum > delay) {
 			mScreen.tick((int)mGameTime, mCycle);
-			mAccum -= 1.0f / 60.0f;
-			mGameTime += (1.0f / 60.0f * 1000);
+			mAccum -= delay;
+			mGameTime += (delay * 1000);
 		}
 		
 		Matrix4 projection = new Matrix4();
@@ -179,18 +221,18 @@ public class Game implements ApplicationListener {
 		mSpriteBatch.draw(Art.bg, 0, 0, width, Art.bg.getRegionHeight());
 		mSpriteBatch.end();
 		
+//		if (mOffScreen != null) {
+//			if (mOffScreen.isEnded()) {
+//				mOffScreen.dispose();
+//				mOffScreen = null;
+//			} else {
+//				mOffScreen.render((int)mGameTime, mCycle, sRender);
+//			}
+//		}
+//		
 		mScreen.render((int)mGameTime, mCycle, sRender);
-		
-		if (mOffScreen != null) {
-			if (mOffScreen.isEnded()) {
-				mOffScreen.dispose();
-				mOffScreen = null;
-			} else {
-				mOffScreen.render((int)mGameTime, mCycle, sRender);
-			}
-		}
-		
-//		System.out.println(mRenderCount + " x " + mCycle);
+
+		//		System.out.println(mRenderCount + " x " + mCycle);
 		
 		if (mRenderCount > 50 && mCycle == 0) {
 			mTimer.clear();
@@ -241,34 +283,6 @@ public class Game implements ApplicationListener {
 	public void dispose () {
 	}
 
-	public Screen goBack () {
-		long time = System.currentTimeMillis();
-		if (time - mLastBack < Constants.BACK_MIN_DELAY) {
-			return null;
-		}
-		mLastBack = time;
-		System.out.println("Go back");
-		Screen s = mScreens.pollLast();
-		if (s != null) {
-			if (mScreen != null) {
-				replaceScreen(mScreen, s, null);
-			}
-
-//			setScreen(s);
-		} else {
-			if (mMenuIsOpen) {
-				s = new PauseScreen(mScreen);
-				replaceScreen(mScreen, s, null);
-//				setScreen(s);
-			} else {
-				s = new SpaceScreen();
-				replaceScreen(mScreen, s, null);
-//				setScreen(s);
-			}
-			mMenuIsOpen = !mMenuIsOpen;
-		}
-		return s;
-	}
 
 	public List<Screen> getHistoryScreen () {
 		return mScreens;
@@ -305,8 +319,6 @@ public class Game implements ApplicationListener {
 			mOffScreen.dispose();
 			mOffScreen = null;
 		}
-		
-		oldScreen.goOut(anim);
 		
 		mOffScreen = oldScreen;
 		mScreen = newScreen;

@@ -8,6 +8,7 @@ import java.util.Random;
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
 import org.bluebox.space2.Game;
+import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.Game.Anim;
 import org.bluebox.space2.model.PlayerModel;
 import org.bluebox.space2.service.GameService;
@@ -65,6 +66,7 @@ public abstract class Screen {
 	private StringConfig				mStringConfig;
 	protected boolean 				mRefreshOnUpdate;
 	protected Anim 					mOutTransition;
+	private boolean mFirst;
 	
 	public Screen() {
 		mOutTransition = Anim.NO_TRANSITION;
@@ -87,14 +89,14 @@ public abstract class Screen {
 	public final void init (Game game, int gameTime) {
 		System.out.println("Screen init: " + this.getClass().getName());
 		
-		
+		mFirst = true;
 		mGameTime = gameTime;
 		mGameTimeAtStart = gameTime;
 		mPlayer = GameService.getInstance().getPlayer();
 		mGame = game;
 		mScreenTime = 0;//Constants.TOUCH_RECOVERY / 2;
 		mBackHistory = 0;
-		mIsChangeNotified = true;
+		mIsChangeNotified = false;
 		Matrix4 projection = new Matrix4();
 		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
 
@@ -102,6 +104,8 @@ public abstract class Screen {
 		mSpriteBatch.setProjectionMatrix(projection);
 		
 		onCreate();
+		
+		redraw();
 	}
 
 	public boolean isTop () {
@@ -288,6 +292,9 @@ public abstract class Screen {
 			int lineLength = mStringConfig.maxWidth / charWidth;
 			for (; rest.length() > lineLength; line++) {
 				int index = rest.lastIndexOf(' ', lineLength);
+				if (index == -1) {
+					index = lineLength;
+				}
 				String sub = rest.substring(0, index);
 				rest = rest.substring(index + 1);
 				System.out.println("sub: " + index + ", " + sub);
@@ -369,6 +376,8 @@ public abstract class Screen {
 	}
 
 	public void render (int gameTime, int cycle, long renderTime) {
+//		System.out.println("render: " + getClass().getName());
+
 		long time = System.currentTimeMillis();
 		
 		if (mCycle != cycle && mRefreshOnUpdate) {
@@ -383,44 +392,40 @@ public abstract class Screen {
 		projection.setToOrtho(mOffsetX, Constants.GAME_WIDTH + mOffsetX, Constants.GAME_HEIGHT, 0, -1, 1);
 		mSpriteBatch.setProjectionMatrix(projection);
 
-		if (mParalax != null) {
-			mSpriteBatch.begin();
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			draw(mSpriteBatch, mParalax, mRealPosX / 8 - 320, mRealPosY / 8 - 240);
-			mSpriteBatch.end();
-			mParalaxNotified = false;
-		}
+//		if (mParalax != null) {
+//			mSpriteBatch.begin();
+//			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//			draw(mSpriteBatch, mParalax, mRealPosX / 8 - 320, mRealPosY / 8 - 240);
+//			mSpriteBatch.end();
+//			mParalaxNotified = false;
+//		}
 
-		if (mParent != null) {
-			mParent.render(gameTime, cycle, renderTime);
-		}
+//		if (mParent != null) {
+//			mParent.render(gameTime, cycle, renderTime);
+//		}
 		
-		if (mIsChangeNotified) {
-			mSpriteCache.clear();
-			mSpriteCache.beginCache();
-			onDraw(mGameTime, mScreenTime);
-			mSpriteCacheId = mSpriteCache.endCache();
-			mIsChangeNotified = false;
-		}
+//		if (mIsChangeNotified) {
+//			redraw();
+//		}
 		
-		// Cache
-		if (mSpriteCache != null) {
-			Gdx.gl.glEnable(GL30.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
-
-			//mSpriteCache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-	
-			Matrix4 projection2 = new Matrix4();
-			projection2.setToOrtho(-mRealPosX + mOffsetX, Constants.GAME_WIDTH - mRealPosX + mOffsetX, Constants.GAME_HEIGHT - mRealPosY + mOffsetY, -mRealPosY + mOffsetY, -1, 1);
-
-			mSpriteCache.setProjectionMatrix(projection2);  
-			mSpriteCache.begin();  
-			mSpriteCache.draw(mSpriteCacheId);  
-			mSpriteCache.end();
-		}
+//		// Cache
+//		if (mSpriteCache != null) {
+//			Gdx.gl.glEnable(GL30.GL_BLEND);
+//			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+//
+//			//mSpriteCache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//	
+//			Matrix4 projection2 = new Matrix4();
+//			projection2.setToOrtho(-mRealPosX + mOffsetX, Constants.GAME_WIDTH - mRealPosX + mOffsetX, Constants.GAME_HEIGHT - mRealPosY + mOffsetY, -mRealPosY + mOffsetY, -1, 1);
+//
+//			mSpriteCache.setProjectionMatrix(projection2);  
+//			mSpriteCache.begin();  
+//			mSpriteCache.draw(mSpriteCacheId);  
+//			mSpriteCache.end();
+//		}
 		
 		
-		// Render non cached
+ //		 Render non cached
 		mSpriteBatch.begin();
 
 		// Render dynamic elements
@@ -434,46 +439,59 @@ public abstract class Screen {
 		}
 		drawString(mSpriteBatch, String.valueOf(renderTime), 0, 0);
 		mSpriteBatch.end();
+//
+//		
+//		// Cache UI
+//		if (mCacheUI != null && mCacheUIId != 0) {
+//			Gdx.gl.glEnable(GL30.GL_BLEND);
+//			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+//
+//			//mSpriteCache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//	
+//			Matrix4 projection2 = new Matrix4();
+//			projection2.setToOrtho(mOffsetX, Constants.GAME_WIDTH - mOffsetX, Constants.GAME_HEIGHT - mOffsetY, mOffsetY, -1, 1);
+//	
+//			mCacheUI.setProjectionMatrix(projection2);  
+//			mCacheUI.begin();  
+//			mCacheUI.draw(mCacheUIId);  
+//			mCacheUI.end();
+//		}
 
+		System.out.println("trans: " + mOffsetX + " " + mFinalOffsetX + " " + mOffsetY + " " + mFinalOffsetY);
 		
-		// Cache UI
-		if (mCacheUI != null && mCacheUIId != 0) {
-			Gdx.gl.glEnable(GL30.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+//		
+//		// Render transition
+//		if (mOffsetX < mFinalOffsetX) {
+//			mOffsetX = Math.min(mFinalOffsetX, mOffsetX + Constants.SCREEN_TRANSITION_OFFSET);
+//			Gdx.graphics.requestRendering();
+//		}
+//		
+//		if (mOffsetX > mFinalOffsetX) {
+//			mOffsetX = Math.max(mFinalOffsetX, mOffsetX - Constants.SCREEN_TRANSITION_OFFSET);
+//			Gdx.graphics.requestRendering();
+//		}
+//
+//		if (mOffsetY < mFinalOffsetY) {
+//			mOffsetY = Math.min(mFinalOffsetY, mOffsetY + Constants.SCREEN_TRANSITION_OFFSET);
+//			Gdx.graphics.requestRendering();
+//		}
+//		
+//		if (mOffsetY > mFinalOffsetY) {
+//			mOffsetY = Math.max(mFinalOffsetY, mOffsetY - Constants.SCREEN_TRANSITION_OFFSET);
+//			Gdx.graphics.requestRendering();
+//		}
 
-			//mSpriteCache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-	
-			Matrix4 projection2 = new Matrix4();
-			projection2.setToOrtho(mOffsetX, Constants.GAME_WIDTH - mOffsetX, Constants.GAME_HEIGHT - mOffsetY, mOffsetY, -1, 1);
-	
-			mCacheUI.setProjectionMatrix(projection2);  
-			mCacheUI.begin();  
-			mCacheUI.draw(mCacheUIId);  
-			mCacheUI.end();
-		}
+	}
 
+	private void redraw () {
+		System.out.println("redraw: " + getClass().getName());
 		
-		// Render transition
-		if (mOffsetX < mFinalOffsetX) {
-			mOffsetX = Math.min(mFinalOffsetX, mOffsetX + Constants.SCREEN_TRANSITION_OFFSET);
-			Gdx.graphics.requestRendering();
-		}
-		
-		if (mOffsetX > mFinalOffsetX) {
-			mOffsetX = Math.max(mFinalOffsetX, mOffsetX - Constants.SCREEN_TRANSITION_OFFSET);
-			Gdx.graphics.requestRendering();
-		}
-
-		if (mOffsetY < mFinalOffsetY) {
-			mOffsetY = Math.min(mFinalOffsetY, mOffsetY + Constants.SCREEN_TRANSITION_OFFSET);
-			Gdx.graphics.requestRendering();
-		}
-		
-		if (mOffsetY > mFinalOffsetY) {
-			mOffsetY = Math.max(mFinalOffsetY, mOffsetY - Constants.SCREEN_TRANSITION_OFFSET);
-			Gdx.graphics.requestRendering();
-		}
-
+		mCacheUI.clear();
+		mSpriteCache.clear();
+		mSpriteCache.beginCache();
+		onDraw(mGameTime, mScreenTime);
+		mSpriteCacheId = mSpriteCache.endCache();
+		mIsChangeNotified = false;
 	}
 
 	public void onRender(SpriteBatch spriteBatch, int gameTime, int screenTime) {

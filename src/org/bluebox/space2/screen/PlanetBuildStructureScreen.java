@@ -3,11 +3,13 @@ package org.bluebox.space2.screen;
 import java.util.List;
 
 import org.bluebox.space2.Constants;
+import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.Game.Anim;
 import org.bluebox.space2.model.BuildingClassModel;
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.ShipClassModel;
 import org.bluebox.space2.service.GameService;
+import org.bluebox.space2.ui.View.OnClickListener;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -18,39 +20,54 @@ public class PlanetBuildStructureScreen extends Screen {
 	private static final int POPUP_HEIGHT = Constants.GAME_HEIGHT - POPUP_PADDING * 2;
 	private static final int GRID_SIZE = 80;
 	private static final int GRID_NB_COLUMNS = 4;
+	private static final int SEP = POPUP_WIDTH / 6 * 4;
 	
-	private int mSelected;
+	private ButtonView mBtBuild;
+	protected int mSelected;
+	protected PlanetModel mPlanet;
+	protected List<BuildingClassModel> mBuildings;
 
-	public PlanetBuildStructureScreen (Screen parent, PlanetModel mPlanet) {
+	public PlanetBuildStructureScreen (Screen parent, PlanetModel planet) {
 		mParent = parent;
 		parent.notifyChange();
+		mPlanet = planet;
 		mOutTransition = Anim.GO_DOWN;
+		mBuildings = GameService.getInstance().getBuildingClasses();
 	}
 
 	@Override
 	protected void onCreate () {
+		mBtBuild = new ButtonView(POPUP_PADDING + SEP + 11, POPUP_PADDING + POPUP_HEIGHT - 32, POPUP_WIDTH - SEP - 22, 22, new Color(0.2f, 1, 0.2f, 1));
+		mBtBuild.setText("structure");
+		mBtBuild.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				if (mSelected < mBuildings.size()) {
+					mPlanet.buildStructure(mBuildings.get(mSelected));
+					back();
+				}
+			}
+		});
+		addView(mBtBuild);
 	}
 
 	@Override
 	public void onDraw (int gameTime, int screenTime) {
 		int posY = Constants.GAME_HEIGHT - 100;
-		int sep = POPUP_WIDTH / 6 * 4;
 		
-		System.out.println("popup width: " + POPUP_WIDTH + ", sep: " + sep + ", sub: " + (POPUP_WIDTH - sep));
+		System.out.println("popup width: " + POPUP_WIDTH + ", sep: " + SEP + ", sub: " + (POPUP_WIDTH - SEP));
 
 		// Background
 		drawRectangle(POPUP_PADDING, POPUP_PADDING, POPUP_WIDTH, POPUP_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
-		
-		List<BuildingClassModel> buildings = GameService.getInstance().getBuildingClasses();
-		
+				
 		int i = 0;
-		for (BuildingClassModel b: buildings) {
+		for (BuildingClassModel b: mBuildings) {
 			drawIcon(b, POPUP_PADDING + 10 + (i % GRID_NB_COLUMNS) * GRID_SIZE, POPUP_PADDING + 10 + (i / GRID_NB_COLUMNS) * GRID_SIZE, mSelected == i);
 			i++;
 		}
 		
-		if (mSelected < buildings.size()) {
-			drawInfo(buildings.get(mSelected), POPUP_PADDING + sep, POPUP_PADDING, POPUP_WIDTH - sep, POPUP_HEIGHT);
+		if (mSelected < mBuildings.size()) {
+			drawInfo(mBuildings.get(mSelected), POPUP_PADDING + SEP, POPUP_PADDING, POPUP_WIDTH - SEP, POPUP_HEIGHT);
 		}
 	}
 
@@ -83,9 +100,11 @@ public class PlanetBuildStructureScreen extends Screen {
 		
 		// Button build
 		drawRectangle(startX + 11, startY + height - 32, width - 22, 22, new Color(0.8f, 1, 0.8f, 0.5f));
+		drawString("build", startX + 11, startY + height - 32);
 
 		// Button cancel
 		drawRectangle(startX + 11, startY + height - 62, width - 22, 22, new Color(1, 0.8f, 0.8f, 0.5f));
+		drawString("close", startX + 11, startY + height - 62);
 	}
 
 	@Override

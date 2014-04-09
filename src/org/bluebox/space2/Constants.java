@@ -34,6 +34,6 @@ public class Constants {
 
 	
 	public static final int SCREEN_SCALE = 1;
-	public static final int SCREEN_TRANSITION_OFFSET = 42;
+	public static final int SCREEN_TRANSITION_OFFSET = 10;
 
 }

@@ -6,11 +6,13 @@ import java.util.List;
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
 import org.bluebox.space2.Game;
+import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.SystemModel;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SystemScreen extends Screen {
 	private static final int PLANET_REVOLUTION = 96;
@@ -41,6 +43,11 @@ public class SystemScreen extends Screen {
 		}
 	}
 
+	@Override
+	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+		drawRectangle(spriteBatch, 0, 0, 1000, 1000, Color.RED);
+	}
+	
 	@Override
 	public void onDraw (int gameTime, int screenTime) {
 		draw(Art.bg, 0, 0);

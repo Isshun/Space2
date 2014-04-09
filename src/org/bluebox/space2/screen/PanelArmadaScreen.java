@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
+import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.model.FleetModel;
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.service.GameService;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PanelArmadaScreen extends Screen {
 
@@ -74,6 +76,11 @@ public class PanelArmadaScreen extends Screen {
 	public void onLongTouch (int x, int y) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+		drawRectangle(spriteBatch, 0, 0, 1000, 1000, Color.GREEN);
 	}
 
 }

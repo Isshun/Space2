@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
+import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.Game.Anim;
 import org.bluebox.space2.model.FleetModel;
 import org.bluebox.space2.model.PlanetModel;
