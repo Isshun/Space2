@@ -77,10 +77,5 @@ public class PanelArmadaScreen extends Screen {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
-		drawRectangle(spriteBatch, 0, 0, 1000, 1000, Color.GREEN);
-	}
 
 }

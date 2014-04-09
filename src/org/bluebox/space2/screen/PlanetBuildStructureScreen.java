@@ -15,17 +15,18 @@ import com.badlogic.gdx.graphics.Color;
 
 public class PlanetBuildStructureScreen extends Screen {
 	
-	private static final int POPUP_PADDING = 42; 
+	private static final int POPUP_PADDING = 6; 
+	private static final int POPUP_TOP = 26; 
 	private static final int POPUP_WIDTH = Constants.GAME_WIDTH - POPUP_PADDING * 2; 
-	private static final int POPUP_HEIGHT = Constants.GAME_HEIGHT - POPUP_PADDING * 2;
+	private static final int POPUP_HEIGHT = Constants.GAME_HEIGHT - POPUP_PADDING * 2 - 20;
 	private static final int GRID_SIZE = 80;
 	private static final int GRID_NB_COLUMNS = 4;
-	private static final int SEP = POPUP_WIDTH / 6 * 4;
+	private static final int SEP = POPUP_WIDTH / 5 * 3;
 	
-	private ButtonView mBtBuild;
-	protected int mSelected;
-	protected PlanetModel mPlanet;
-	protected List<BuildingClassModel> mBuildings;
+	private ButtonView 						mBtBuild;
+	protected int 								mSelected;
+	protected PlanetModel 					mPlanet;
+	protected List<BuildingClassModel> 	mBuildings;
 
 	public PlanetBuildStructureScreen (Screen parent, PlanetModel planet) {
 		mParent = parent;
@@ -58,16 +59,16 @@ public class PlanetBuildStructureScreen extends Screen {
 		System.out.println("popup width: " + POPUP_WIDTH + ", sep: " + SEP + ", sub: " + (POPUP_WIDTH - SEP));
 
 		// Background
-		drawRectangle(POPUP_PADDING, POPUP_PADDING, POPUP_WIDTH, POPUP_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
+		drawRectangle(POPUP_PADDING, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH, POPUP_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 				
 		int i = 0;
 		for (BuildingClassModel b: mBuildings) {
-			drawIcon(b, POPUP_PADDING + 10 + (i % GRID_NB_COLUMNS) * GRID_SIZE, POPUP_PADDING + 10 + (i / GRID_NB_COLUMNS) * GRID_SIZE, mSelected == i);
+			drawIcon(b, POPUP_PADDING + 10 + (i % GRID_NB_COLUMNS) * GRID_SIZE, POPUP_PADDING + POPUP_TOP + 10 + (i / GRID_NB_COLUMNS) * GRID_SIZE, mSelected == i);
 			i++;
 		}
 		
 		if (mSelected < mBuildings.size()) {
-			drawInfo(mBuildings.get(mSelected), POPUP_PADDING + SEP, POPUP_PADDING, POPUP_WIDTH - SEP, POPUP_HEIGHT);
+			drawInfo(mBuildings.get(mSelected), POPUP_PADDING + SEP, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH - SEP, POPUP_HEIGHT);
 		}
 	}
 

@@ -44,11 +44,6 @@ public class SystemScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
-		drawRectangle(spriteBatch, 0, 0, 1000, 1000, Color.RED);
-	}
-	
-	@Override
 	public void onDraw (int gameTime, int screenTime) {
 		draw(Art.bg, 0, 0);
 		draw(Art.sun[mSystem.getType()], -156, Constants.GAME_HEIGHT / 2 - 128);

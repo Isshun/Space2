@@ -138,7 +138,6 @@ public class SpaceScreen extends Screen {
 
 	@Override
 	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
-		drawRectangle(spriteBatch, 0, 0, 1000, 1000, Color.RED);
 
 //		try {
 //
