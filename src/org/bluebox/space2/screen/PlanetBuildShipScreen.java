@@ -73,9 +73,12 @@ public class PlanetBuildShipScreen extends Screen {
 
 		// Draw ship in orbit
 		List<FleetModel> orbit = mPlanet.getOrbit();
-		drawString(mPlanet.getDock().getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y);
-		drawRectangle(Constants.GAME_WIDTH - 28, POS_Y + LIST_START_Y + 1, 22, 3, Color.GREEN);
-		int k = 1;
+		int k = 0;
+		if (mPlanet.getDock() != null) {
+			drawString(mPlanet.getDock().getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y);
+			drawRectangle(Constants.GAME_WIDTH - 28, POS_Y + LIST_START_Y + 1, 22, 3, Color.GREEN);
+			k = 1;
+		}
 		for (FleetModel sc: orbit) {
 			drawString(sc.getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y + k * LINE_INTERVAL);
 			drawRectangle(Constants.GAME_WIDTH - 28, POS_Y + LIST_START_Y + k * LINE_INTERVAL + 1, 22, 3, Color.GREEN);

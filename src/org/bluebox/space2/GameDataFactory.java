@@ -1,5 +1,7 @@
 package org.bluebox.space2;
 
+import org.bluebox.space2.model.BuildingClassModel;
+import org.bluebox.space2.model.BuildingClassModel.Type;
 import org.bluebox.space2.model.DeviceModel;
 import org.bluebox.space2.model.FleetModel;
 import org.bluebox.space2.model.NameGenerator;
@@ -32,6 +34,7 @@ public class GameDataFactory {
 	public static GameData create () {
 		GameData data = new GameData();
 
+		initBuildingClasses(data);
 		initShipClasses(data);
 		initPlayers(data);
 		initSystems(data);
@@ -40,6 +43,35 @@ public class GameDataFactory {
 		initFleets(data);
 		
 		return data;
+	}
+
+	private static void initBuildingClasses (GameData data) {
+		{
+			BuildingClassModel b = new BuildingClassModel(Type.HYDROPONICS);
+			b.setName("Hydroponic farms");
+			b.setShortName("Hydroponics.");
+			b.setEffect("^+20%");
+			b.setDesc("L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.");
+			data.buildingClasses.add(b);
+		}
+
+		{
+			BuildingClassModel b = new BuildingClassModel(Type.ECONOMIC_CENTER);
+			b.setName("Economic center");
+			b.setShortName("Centre eco.");
+			b.setEffect("$+20% @+5% pop+5");
+			b.setDesc("L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.");
+			data.buildingClasses.add(b);
+		}
+
+		{
+			BuildingClassModel b = new BuildingClassModel(Type.DOCK);
+			b.setName("Space dock");
+			b.setShortName("space dock");
+			b.setEffect("*+20%");
+			b.setDesc("Dock for spaceships located in low orbit, they provide facilities to build and repair spacecraft.");
+			data.buildingClasses.add(b);
+		}
 	}
 
 	private static void initFleets (GameData data) {

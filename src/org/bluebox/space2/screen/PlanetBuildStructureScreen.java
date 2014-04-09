@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.bluebox.space2.Constants;
 import org.bluebox.space2.Game.Anim;
-import org.bluebox.space2.model.BuildingModel;
+import org.bluebox.space2.model.BuildingClassModel;
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.ShipClassModel;
 import org.bluebox.space2.service.GameService;
@@ -24,16 +24,11 @@ public class PlanetBuildStructureScreen extends Screen {
 	public PlanetBuildStructureScreen (Screen parent, PlanetModel mPlanet) {
 		mParent = parent;
 		parent.notifyChange();
-		mOutTransition = Anim.FLIP_BOTTOM;
+		mOutTransition = Anim.GO_DOWN;
 	}
 
 	@Override
 	protected void onCreate () {
-	}
-
-	@Override
-	public void onBack () {
-		setTransition(Anim.FLIP_BOTTOM);
 	}
 
 	@Override
@@ -46,21 +41,25 @@ public class PlanetBuildStructureScreen extends Screen {
 		// Background
 		drawRectangle(POPUP_PADDING, POPUP_PADDING, POPUP_WIDTH, POPUP_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 		
-		BuildingModel b = new BuildingModel();
+		List<BuildingClassModel> buildings = GameService.getInstance().getBuildingClasses();
 		
-		for (int i = 0; i < 20; i++) {
+		int i = 0;
+		for (BuildingClassModel b: buildings) {
 			drawIcon(b, POPUP_PADDING + 10 + (i % GRID_NB_COLUMNS) * GRID_SIZE, POPUP_PADDING + 10 + (i / GRID_NB_COLUMNS) * GRID_SIZE, mSelected == i);
+			i++;
 		}
 		
-		drawInfo(b, POPUP_PADDING + sep, POPUP_PADDING, POPUP_WIDTH - sep, POPUP_HEIGHT);
+		if (mSelected < buildings.size()) {
+			drawInfo(buildings.get(mSelected), POPUP_PADDING + sep, POPUP_PADDING, POPUP_WIDTH - sep, POPUP_HEIGHT);
+		}
 	}
 
-	private void drawIcon (BuildingModel building, int posX, int posY, boolean isSelected) {
+	private void drawIcon (BuildingClassModel building, int posX, int posY, boolean isSelected) {
 		drawRectangle(posX, posY, GRID_SIZE - 10, GRID_SIZE - 10, isSelected ? new Color(0.75f, 1, 0.75f, 0.65f) : new Color(1, 1, 1, 0.45f));
 		drawString(building.getShortName(), posX, posY);
 	}
 
-	private void drawInfo (BuildingModel building, int startX, int startY, int width, int height) {
+	private void drawInfo (BuildingClassModel building, int startX, int startY, int width, int height) {
 //		// Background
 //		drawRectangle(startX, startY, width, height, new Color(0.5f, 1, 0.5f, 0.5f));
 

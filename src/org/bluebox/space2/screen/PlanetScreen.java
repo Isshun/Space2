@@ -26,6 +26,8 @@ public class PlanetScreen extends Screen {
 	private double tick;
 	private SystemModel mSystem;
 	private Color mColor;
+	private RectangleView mBtShip;
+	private RectangleView mBtStructure;
 
 	public PlanetScreen (SystemModel system, PlanetModel planet) {
 		mPlanet = planet;
@@ -33,17 +35,19 @@ public class PlanetScreen extends Screen {
 		//mColor = planet.getOwner() != null ? planet.getOwner().getUIColor() : new Color(1, 0.5f, 0.5f, 0.5f);
 		mColor = new Color(1, 1, 1, 0.45f);
 		
-		View btShip = new RectangleView(6, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
-		btShip.setOnClickListener(new OnClickListener() {
+		mBtShip = new ButtonView(6, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
+		mBtShip.setText("ship");
+		mBtShip.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
 				addScreen(new PlanetBuildShipScreen(PlanetScreen.this, mPlanet));
 			}
 		});
-		addView(btShip);
+		addView(mBtShip);
 
-		View btStructure = new RectangleView(126, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
-		btStructure.setOnClickListener(new OnClickListener() {
+		mBtStructure = new ButtonView(126, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
+		mBtStructure.setText("structure");
+		mBtStructure.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
 				Screen s = new PlanetBuildStructureScreen(PlanetScreen.this, mPlanet);
@@ -51,7 +55,7 @@ public class PlanetScreen extends Screen {
 				addScreen(s);
 			}
 		});
-		addView(btStructure);
+		addView(mBtStructure);
 	}
 
 	@Override
@@ -83,6 +87,7 @@ public class PlanetScreen extends Screen {
 		int shipX = planetX - 128 / 2;
 		int shipY = planetY;
 		draw(Art.dock, shipX, shipY);
+		
 
 		
 //		if (Math.sin(tick) >= 0) {
@@ -102,17 +107,24 @@ public class PlanetScreen extends Screen {
 //		if (mPlanet.getOwner() != null) {
 //			drawBigString(mPlanet.getName(), 12, 12, mPlanet.getOwner().getColor());
 //		} else {
-		setStringSize(StringConfig.SIZE_BIG);
-		drawString(mPlanet.getName(), 12, 12);
 //		}
 		
 		if (isTop()) {
+			setStringSize(StringConfig.SIZE_BIG);
+			drawString(mPlanet.getName(), 12, 12);
 			drawCharacteristics(6, 32);
 			drawInfos(6, 84);
+			mBtShip.setVisibility(mPlanet.getDock() != null ? View.VISIBLE : View.GONE);
+			mBtStructure.setVisibility(View.VISIBLE);
+		} else {
+			setStringSize(StringConfig.SIZE_BIG);
+			drawString("Build on " + mPlanet.getName(), 12, 12);
+			mBtShip.setVisibility(View.GONE);
+			mBtStructure.setVisibility(View.GONE);
 		}
 		
-		drawString("ship", 6, Constants.GAME_HEIGHT - 20);
-		drawString("structure", 126, Constants.GAME_HEIGHT - 20);
+//		drawString("ship", 6, Constants.GAME_HEIGHT - 20);
+//		drawString("structure", 126, Constants.GAME_HEIGHT - 20);
 	}
 
 	private void drawCharacteristics (int posX, int posY) {

@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.bluebox.space2.Constants;
 import org.bluebox.space2.GameData;
+import org.bluebox.space2.model.BuildingClassModel;
+import org.bluebox.space2.model.BuildingClassModel.Type;
 import org.bluebox.space2.model.DeviceModel;
 import org.bluebox.space2.model.FleetModel;
 import org.bluebox.space2.model.NameGenerator;
@@ -142,6 +144,19 @@ public class GameService {
 
 	public GameData getData () {
 		return mData;
+	}
+
+	public List<BuildingClassModel> getBuildingClasses () {
+		return mData.buildingClasses;
+	}
+
+	public BuildingClassModel getBuildingClass (Type type) {
+		for (BuildingClassModel buildingClass: mData.buildingClasses) {
+			if (buildingClass.type == type) {
+				return buildingClass;
+			}
+		}
+		return null;
 	}
 
 }

@@ -49,7 +49,8 @@ public class Game implements ApplicationListener {
 		FLIP_LEFT,
 		FLIP_RIGHT,
 		FLIP_BOTTOM,
-		FLIP_TOP
+		FLIP_TOP,
+		GO_DOWN
 	}
 
 	@Override
@@ -250,18 +251,18 @@ public class Game implements ApplicationListener {
 		Screen s = mScreens.pollLast();
 		if (s != null) {
 			if (mScreen != null) {
-				replaceScreen(mScreen, s, mScreen.getAnimOut());
+				replaceScreen(mScreen, s, null);
 			}
 
 //			setScreen(s);
 		} else {
 			if (mMenuIsOpen) {
 				s = new PauseScreen(mScreen);
-				replaceScreen(mScreen, s, mScreen.getAnimOut());
+				replaceScreen(mScreen, s, null);
 //				setScreen(s);
 			} else {
 				s = new SpaceScreen();
-				replaceScreen(mScreen, s, mScreen.getAnimOut());
+				replaceScreen(mScreen, s, null);
 //				setScreen(s);
 			}
 			mMenuIsOpen = !mMenuIsOpen;
@@ -279,21 +280,33 @@ public class Game implements ApplicationListener {
 	}
 
 	public void replaceScreen (Screen oldScreen, Screen newScreen, Anim anim) {
-		switch (anim) {
-		case FLIP_LEFT:
-			oldScreen.setOffset(0, -Constants.GAME_WIDTH);
-			newScreen.setOffset(Constants.GAME_WIDTH, 0);
-			break;
-		case FLIP_RIGHT:
-			oldScreen.setOffset(0, Constants.GAME_WIDTH);
-			newScreen.setOffset(-Constants.GAME_WIDTH, 0);
-			break;
+		if (anim != null) {
+			switch (anim) {
+			case FLIP_LEFT:
+				oldScreen.setOffset(0, -Constants.GAME_WIDTH);
+				newScreen.setOffset(Constants.GAME_WIDTH, 0);
+				break;
+			case FLIP_RIGHT:
+				oldScreen.setOffset(0, Constants.GAME_WIDTH);
+				newScreen.setOffset(-Constants.GAME_WIDTH, 0);
+				break;
+			case GO_DOWN:
+				oldScreen.setOffsetY(0, -Constants.GAME_HEIGHT);
+	//			newScreen.setOffset(-Constants.GAME_WIDTH, 0);
+				break;
+			case FLIP_TOP:
+				oldScreen.setOffset(0, Constants.GAME_WIDTH);
+				newScreen.setOffset(-Constants.GAME_WIDTH, 0);
+				break;
+			}
 		}
 		
 		if (mOffScreen != null) {
 			mOffScreen.dispose();
 			mOffScreen = null;
 		}
+		
+		oldScreen.goOut(anim);
 		
 		mOffScreen = oldScreen;
 		mScreen = newScreen;

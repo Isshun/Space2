@@ -7,28 +7,29 @@ import org.bluebox.space2.service.FightService;
 
 
 public class PlanetModel implements ILocation {
-	private String 				mName;
-	private double 				mInitialTick;
-	private PlanetClassModel 	mClass;
-	private SystemModel 			mSystem;
-	private int 					mPos;
-	private int 					mPeople;
-	private double 				mBaseFood;
-	private double 				mBaseBuild;
-	private double 				mBaseCulture;
-	private double 				mBaseScience;
-	private double 				mBaseMoney;
-	private double 				mSatisfaction;
-	private int 					mSize;
-	private List<ShipModel>		mBuilds;
-	private List<FleetModel> 	mOrbit;
-	private FleetModel 			mDock;
-	private PlayerModel 			mOwner;
+	private String 					mName;
+	private double 					mInitialTick;
+	private PlanetClassModel 		mClass;
+	private SystemModel 				mSystem;
+	private int 						mPos;
+	private int 						mPeople;
+	private double 					mBaseFood;
+	private double 					mBaseBuild;
+	private double 					mBaseCulture;
+	private double 					mBaseScience;
+	private double 					mBaseMoney;
+	private double 					mSatisfaction;
+	private int 						mSize;
+	private List<ShipModel>			mBuilds;
+	private List<BuildingModel>	mBuildings;
+	private List<FleetModel> 		mOrbit;
+	private DockModel 				mDock;
+	private PlayerModel 				mOwner;
 
 	public PlanetModel (int classId, int size) {
 		mBuilds = new ArrayList<ShipModel>();
+		mBuildings = new ArrayList<BuildingModel>();
 		mOrbit = new ArrayList<FleetModel>();
-		mDock = new FleetModel("Dock");
 		mPeople = 1;
 		mClass = PlanetClassModel.getFromId(classId);
 		mSize = size;
@@ -185,6 +186,10 @@ public class PlanetModel implements ILocation {
 	}
 
 	public void addBuild (ShipModel sc) {
+		if (mDock == null) {
+			System.out.println("addBuild: planet has no spacedock");
+		}
+		
 		System.out.println("Add build: " + sc.getClassName());
 		sc.setPlanet(this);
 		mBuilds.add(sc);
@@ -295,7 +300,7 @@ public class PlanetModel implements ILocation {
 		mOrbit.removeAll(destroyed);
 	}
 
-	public FleetModel getDock () {
+	public DockModel getDock () {
 		return mDock;
 	}
 

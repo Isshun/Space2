@@ -325,8 +325,8 @@ public abstract class Screen {
 		string = string.toLowerCase();
 		for (int i = 0; i < Math.min(string.length(), truncate); i++) {
 			char ch = string.charAt(i);
-			if (ch == 'É' || ch == 'È') {
-				ch = 'E';
+			if (ch == 'é' || ch == 'è') {
+				ch = 'e';
 			}
 			if (ch == 'à') {
 				ch = 'a';
@@ -455,22 +455,22 @@ public abstract class Screen {
 		
 		// Render transition
 		if (mOffsetX < mFinalOffsetX) {
-			mOffsetX = Math.min(mFinalOffsetX, mOffsetX + 42);
+			mOffsetX = Math.min(mFinalOffsetX, mOffsetX + Constants.SCREEN_TRANSITION_OFFSET);
 			Gdx.graphics.requestRendering();
 		}
 		
 		if (mOffsetX > mFinalOffsetX) {
-			mOffsetX = Math.max(mFinalOffsetX, mOffsetX - 42);
+			mOffsetX = Math.max(mFinalOffsetX, mOffsetX - Constants.SCREEN_TRANSITION_OFFSET);
 			Gdx.graphics.requestRendering();
 		}
 
 		if (mOffsetY < mFinalOffsetY) {
-			mOffsetY = Math.min(mFinalOffsetY, mOffsetY + 42);
+			mOffsetY = Math.min(mFinalOffsetY, mOffsetY + Constants.SCREEN_TRANSITION_OFFSET);
 			Gdx.graphics.requestRendering();
 		}
 		
 		if (mOffsetY > mFinalOffsetY) {
-			mOffsetY = Math.max(mFinalOffsetY, mOffsetY - 42);
+			mOffsetY = Math.max(mFinalOffsetY, mOffsetY - Constants.SCREEN_TRANSITION_OFFSET);
 			Gdx.graphics.requestRendering();
 		}
 
@@ -510,7 +510,7 @@ public abstract class Screen {
 
 	public void tap (int x, int y) {
 		for (View view: mViews) {
-			if (view.isClickable() && view.contains(x, y)) {
+			if (view.isVisible() && view.isClickable() && view.contains(x, y)) {
 				view.click();
 				mGameTimeAtStart = mGameTime;
 				return;
@@ -528,7 +528,7 @@ public abstract class Screen {
 	}
 
 	public boolean isEnded () {
-		return mOffsetX == mFinalOffsetX;
+		return mOffsetX == mFinalOffsetX && mOffsetY == mFinalOffsetY;
 	}
 
 	public void setTransition (Anim anim) {
@@ -548,6 +548,23 @@ public abstract class Screen {
 
 	public Anim getAnimOut () {
 		return mOutTransition;
+	}
+
+	public void setOffsetY (int startOffset, int endOffset) {
+		mOffsetY = startOffset;
+		mFinalOffsetY = endOffset;
+	}
+
+	public void goOut (Anim anim) {
+		mParent = null;
+		
+		if (anim == null) {
+			switch (mOutTransition) {
+			case GO_DOWN:
+				setOffsetY(0, -Constants.GAME_HEIGHT);
+				break;
+			}
+		}
 	}
 
 }

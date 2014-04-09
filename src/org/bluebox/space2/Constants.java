@@ -14,7 +14,6 @@ public class Constants {
 	public static int GAME_WIDTH = 1280;
 	public static int GAME_HEIGHT = 780;
 	public static final long TOUCH_MOVE_DELAY = 50;
-	public static final int SCREEN_SCALE = 1;
 	public static final int SYSTEM_SIZE = 22;
 	public static final int TOUCH_RECOVERY = 500;
 	public static final int UPDATE_INTERVAL = 1;
@@ -32,5 +31,9 @@ public class Constants {
 	public static final long BACK_MIN_DELAY = 250;
 	public static final int MAP_WIDTH = 1000;
 	public static final int MAP_HEIGHT = 600;
+
+	
+	public static final int SCREEN_SCALE = 1;
+	public static final int SCREEN_TRANSITION_OFFSET = 42;
 
 }
