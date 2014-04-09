@@ -11,7 +11,6 @@ import org.bluebox.space2.screen.PauseScreen;
 import org.bluebox.space2.screen.Screen;
 import org.bluebox.space2.screen.SpaceScreen;
 import org.bluebox.space2.service.GameService;
-import org.bluebox.space2.service.PathResolver;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -23,38 +22,38 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 public class Game implements ApplicationListener {
-	private static final long 	serialVersionUID = 1L;
+	private static final long 		serialVersionUID = 1L;
 
-	private static boolean 		sNeedRendering;
-	public static long 			sRender;
+	private static boolean 			sNeedRendering;
+	public static long 				sRender;
 
-	private LinkedList<Screen> mScreens;
-	private boolean 				mRunning = false;
-	private Screen 				mScreen;
-	private final boolean		mStarted = false;
-	private float 					mAccum = 0;
-	private boolean 				mMenuIsOpen;
-	private int 					mCycle;
-	private double 				mGameTime;
-	private long 					mLastBack;
+	private LinkedList<Screen> 	mScreens;
+	private boolean 					mRunning = false;
+	private Screen 					mScreen;
+	private final boolean			mStarted = false;
+	private float 						mAccum = 0;
+	private boolean 					mMenuIsOpen;
+	private int 						mCycle;
+	private double 					mGameTime;
+	private long 						mLastBack;
 	private MainGestureListener 	mGestureListener;
-	private Screen 				mOffScreen;
-	private SpriteBatch 			mSpriteBatch;
-
-	private int mRenderCount;
-
-	Timer mTimer;
-
-	private long mLastRender;
+	private Screen 					mOffScreen;
+	private SpriteBatch 				mSpriteBatch;
+	private GameData					mData;
+	private int 						mRenderCount;
+	protected Timer 					mTimer;
+	private long 						mLastRender;
 	
 	public enum Anim {
+		NO_TRANSITION,
 		FLIP_LEFT,
-		FLIP_RIGHT
+		FLIP_RIGHT,
+		FLIP_BOTTOM,
+		FLIP_TOP
 	}
 
 	@Override
 	public void create () {
-		
 		Art.load();
 		Sound.load();
 		mRunning = true;
@@ -76,17 +75,15 @@ public class Game implements ApplicationListener {
 		
 		System.out.println("window: " + Constants.GAME_WIDTH + " x " + Constants.GAME_HEIGHT);
 
-		Gdx.input.setCatchBackKey(true);
-		Gdx.input.setCatchMenuKey(true);
+		initInput();
 		
-		mGestureListener = new MainGestureListener(this);
-		
-      GestureDetector gd = new GestureDetector(20f, 0.4f, 0.6f, 0.15f, mGestureListener);
-      Gdx.input.setInputProcessor(gd);
 		
 		Gdx.graphics.setContinuousRendering(false);
 		Gdx.graphics.requestRendering();
 		mScreens = new LinkedList<Screen>();
+
+		mData = GameDataFactory.create();
+		GameService.getInstance().setData(mData);
 		
 		GameService.getInstance().initDebug(0);
 
@@ -108,6 +105,7 @@ public class Game implements ApplicationListener {
 			setScreen(new SpaceScreen());
 		}
 		
+		
 		mTimer = new Timer();
 		mTimer.scheduleTask(new Task() {
 			@Override
@@ -115,6 +113,16 @@ public class Game implements ApplicationListener {
 				update();
 			}
 		}, Constants.UPDATE_INTERVAL, Constants.UPDATE_INTERVAL);
+	}
+
+	private void initInput () {
+		Gdx.input.setCatchBackKey(true);
+		Gdx.input.setCatchMenuKey(true);
+		
+		mGestureListener = new MainGestureListener(this);
+		
+      GestureDetector gd = new GestureDetector(20f, 0.4f, 0.6f, 0.15f, mGestureListener);
+      Gdx.input.setInputProcessor(gd);
 	}
 
 	@Override
@@ -203,7 +211,7 @@ public class Game implements ApplicationListener {
 	}
 
 	public void update () {
-		System.out.println("update");
+//		System.out.println("update");
 
 		if (mGestureListener.isMoving()) {
 			return;
@@ -241,19 +249,20 @@ public class Game implements ApplicationListener {
 		System.out.println("Go back");
 		Screen s = mScreens.pollLast();
 		if (s != null) {
-
 			if (mScreen != null) {
-				mScreen.dispose();
+				replaceScreen(mScreen, s, mScreen.getAnimOut());
 			}
 
-			setScreen(s);
+//			setScreen(s);
 		} else {
 			if (mMenuIsOpen) {
 				s = new PauseScreen(mScreen);
-				setScreen(s);
+				replaceScreen(mScreen, s, mScreen.getAnimOut());
+//				setScreen(s);
 			} else {
 				s = new SpaceScreen();
-				setScreen(s);
+				replaceScreen(mScreen, s, mScreen.getAnimOut());
+//				setScreen(s);
 			}
 			mMenuIsOpen = !mMenuIsOpen;
 		}
@@ -269,14 +278,14 @@ public class Game implements ApplicationListener {
 		sNeedRendering = true;
 	}
 
-	public void replaceScreen (Screen newScreen, Anim anim) {
+	public void replaceScreen (Screen oldScreen, Screen newScreen, Anim anim) {
 		switch (anim) {
 		case FLIP_LEFT:
-			mScreen.setOffset(0, -Constants.GAME_WIDTH);
+			oldScreen.setOffset(0, -Constants.GAME_WIDTH);
 			newScreen.setOffset(Constants.GAME_WIDTH, 0);
 			break;
 		case FLIP_RIGHT:
-			mScreen.setOffset(0, Constants.GAME_WIDTH);
+			oldScreen.setOffset(0, Constants.GAME_WIDTH);
 			newScreen.setOffset(-Constants.GAME_WIDTH, 0);
 			break;
 		}
@@ -286,7 +295,7 @@ public class Game implements ApplicationListener {
 			mOffScreen = null;
 		}
 		
-		mOffScreen = mScreen;
+		mOffScreen = oldScreen;
 		mScreen = newScreen;
 		mGestureListener.setScreen(newScreen);
 		if (mScreen != null) mScreen.init(this, (int)mGameTime);

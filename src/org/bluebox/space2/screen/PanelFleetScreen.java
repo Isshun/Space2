@@ -62,7 +62,8 @@ public class PanelFleetScreen extends Screen {
 	public void onDraw (int gameTime, int screenTime) {
 		draw(Art.bg_1, 0, 0);
 		
-		drawBigString(String.format("%s (%d/%d/%d)", mFleet.getName(), (int)mTotInd, (int)mAttInd, (int)mDefInd), 6, 6);
+		setStringSize(StringConfig.SIZE_BIG);
+		drawString(String.format("%s (%d/%d/%d)", mFleet.getName(), (int)mTotInd, (int)mAttInd, (int)mDefInd), 6, 6);
 
 		// Draw location
 		drawString(mFleet.getLocationName(), 6, 24);
@@ -109,7 +110,8 @@ public class PanelFleetScreen extends Screen {
 		
 		ShipModel ship = mFleet.getShips().get(mSelected);
 
-		drawBigString(String.valueOf((int)ship.getIndice()), posX + 6, posY + 16);
+		setStringSize(StringConfig.SIZE_BIG);
+		drawString(String.valueOf((int)ship.getIndice()), posX + 6, posY + 16);
 //		draw(Art.ic_info_32, 215, 120);
 		drawString("class:      " + ship.getClassName(),posX + 42, posY);
 		drawString("mass:           " + ship.getMass(), posX + 42, posY + 12 * 1);
@@ -118,7 +120,8 @@ public class PanelFleetScreen extends Screen {
 		
 		drawRectangle(posX, posY + 48, 157, 1, Color.rgba8888(1, 1, 1, 0.65f));
 
-		drawBigString(String.valueOf((int)ship.getAttackIndice()), posX + 6, posY + 64);
+		setStringSize(StringConfig.SIZE_BIG);
+		drawString(String.valueOf((int)ship.getAttackIndice()), posX + 6, posY + 64);
 //		draw(Art.ic_attack_32, 215, 162);
 		drawString("pow. phaser:    " + (int)ship.getPhaserPower(), posX + 42, posY + 18 + 12 * 3);
 		drawString("pow. torpedo:   " + (int)ship.getTorpedoPower(), posX + 42, posY + 18 + 12 * 4);
@@ -126,7 +129,8 @@ public class PanelFleetScreen extends Screen {
 
 		drawRectangle(posX, posY + 90, 157, 1, Color.rgba8888(1, 1, 1, 0.65f));
 		
-		drawBigString(String.valueOf((int)ship.getDefenseIndice()), posX + 6, posY + 106);
+		setStringSize(StringConfig.SIZE_BIG);
+		drawString(String.valueOf((int)ship.getDefenseIndice()), posX + 6, posY + 106);
 //		draw(Art.shield, 215, 204);
 		drawString("hull:       " + ship.getHull() + "/" + ship.getHullBase(), posX + 42, posY + 24 + 12 * 6);
 		drawString("armory:          " + (int)ship.getArmory(), posX + 42, posY + 24 + 12 * 7);
@@ -162,7 +166,7 @@ public class PanelFleetScreen extends Screen {
 		int index = fleets.indexOf(mFleet);
 		if (index < fleets.size() - 1) {
 			FleetModel fleet = fleets.get(Math.min(index + 1, fleets.size() - 1));
-			mGame.replaceScreen(new PanelFleetScreen(fleet), Anim.FLIP_RIGHT);
+			mGame.replaceScreen(this, new PanelFleetScreen(fleet), Anim.FLIP_RIGHT);
 		}
 	}
 
@@ -172,7 +176,7 @@ public class PanelFleetScreen extends Screen {
 		int index = fleets.indexOf(mFleet);
 		if (index > 0) {
 			FleetModel fleet = fleets.get(Math.max(index - 1, 0));
-			mGame.replaceScreen(new PanelFleetScreen(fleet), Anim.FLIP_LEFT);
+			mGame.replaceScreen(this, new PanelFleetScreen(fleet), Anim.FLIP_LEFT);
 		}
 	}
 

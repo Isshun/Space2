@@ -1,7 +1,9 @@
 package org.bluebox.space2.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bluebox.space2.Art;
 
@@ -14,20 +16,24 @@ public class PlayerModel {
 	private TextureRegion 		mFlag;
 	private Color					mColor;
 	private List<SystemModel> 	mSystems;
-	private List<PlanetModel> 	mPlanets;
+	private Set<PlanetModel> 	mPlanets;
 	private List<FleetModel> 	mFleets;
-	private PlanetModel mHome;
-	private Color mSpaceColor;
+	private PlanetModel 			mHome;
+	private Color 					mSpaceColor;
+	private Color 					mDarkColor;
+	private Color 					mUIColor;
 	
-	public PlayerModel(String name, Color color) {
+	public PlayerModel(String name, Color uiColor, Color color) {
 		mName = name;
 		mFleets = new ArrayList<FleetModel>();
 		mFlag = Art.flags[(int)(Math.random() * 9)];
 		mSystems = new ArrayList<SystemModel>();
-		mPlanets = new ArrayList<PlanetModel>();
+		mPlanets = new HashSet<PlanetModel>();
 		//mColor = new Color((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
 		mColor = color;
+		mUIColor = uiColor;
 		mSpaceColor = new Color(Math.min(color.r + 0.1f, 1), Math.min(color.g + 0.1f, 1), Math.min(color.b + 0.1f, 1), 0.65f);
+		mDarkColor = new Color(Math.max(color.r - 0.3f, 0), Math.max(color.g - 0.3f, 0), Math.max(color.b - 0.3f, 0), 1);
 	}
 
 	public void addSystem (SystemModel system) {
@@ -37,12 +43,9 @@ public class PlayerModel {
 		
 		mSystems.add(system);
 		system.setOwner(this);
-		for (PlanetModel planet: system.getPlanets()) {
-			mPlanets.add(planet);
-		}
 	}
 
-	public List<PlanetModel> getPlanets () {
+	public Set<PlanetModel> getPlanets () {
 		return mPlanets;
 	}
 	
@@ -116,6 +119,18 @@ public class PlayerModel {
 
 	public Color getSpaceColor () {
 		return mSpaceColor;
+	}
+
+	public void addPlanet (PlanetModel planetModel) {
+		mPlanets.add(planetModel);
+	}
+
+	public Color getDarkColor () {
+		return mDarkColor;
+	}
+	
+	public Color getUIColor () {
+		return mUIColor;
 	}
 	
 }

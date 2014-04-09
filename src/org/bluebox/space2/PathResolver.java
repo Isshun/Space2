@@ -1,4 +1,4 @@
-package org.bluebox.space2.service;
+package org.bluebox.space2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +12,7 @@ import org.bluebox.space2.path.DijkstraAlgorithm;
 import org.bluebox.space2.path.Edge;
 import org.bluebox.space2.path.Graph;
 import org.bluebox.space2.path.Vertex;
+import org.bluebox.space2.service.GameService;
 
 
 public class PathResolver {

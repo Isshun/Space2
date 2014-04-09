@@ -8,6 +8,7 @@ import java.util.Random;
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
 import org.bluebox.space2.Game;
+import org.bluebox.space2.Game.Anim;
 import org.bluebox.space2.model.PlayerModel;
 import org.bluebox.space2.service.GameService;
 import org.bluebox.space2.ui.View;
@@ -30,7 +31,7 @@ public abstract class Screen {
 	private static final int 		TOUCH_INTERVAL = 750;
 	private static final int 		LONG_TOUCH_INTERVAL = 500;
 	
-	public static final String[]	CHARS = {"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ".,!?:;\"'+-=/\\<    ()"};
+	public static final String[]	CHARS = {"abcdefghijklmnopqrstuvwxyz0123456789", ".,!?:;\"'+-=/\\<%   () $^&*@"};
 	
 	protected static Random 		sRandom = new Random();
 	protected Game 					mGame;
@@ -45,8 +46,8 @@ public abstract class Screen {
 	private int 						mGameTimeAtStart;
 	private SpriteCache 				mSpriteCache;
 	private int 						mSpriteCacheId;
-	protected SpriteCache 				mCacheUI;
-	private int 						mCacheUIId;
+	protected SpriteCache 			mCacheUI;
+	protected int 						mCacheUIId;
 	protected int 						mDeprecatedPosX;
 	protected int 						mDeprecatedPosY;
 	protected int 						mRealPosX;
@@ -56,23 +57,35 @@ public abstract class Screen {
 	protected boolean					mParalaxNotified;
 	private int 						mOffsetX;
 	private int 						mFinalOffsetX;
-	protected Pixmap mPixmap;
-
+	protected Pixmap 					mPixmap;
+	private int 						mOffsetY;
+	private int 						mFinalOffsetY;
+	private Color						mColorBad;
+	private Color						mColorGood;
+	private StringConfig				mStringConfig;
+	protected boolean 				mRefreshOnUpdate;
+	protected Anim 					mOutTransition;
+	
 	public Screen() {
+		mOutTransition = Anim.NO_TRANSITION;
 		mViews = new ArrayList<View>();
 		mIsChangeNotified = true;
 		mParalaxNotified = true;
 		mSpriteCache = new SpriteCache(5000, true);
 		mCacheUI = new SpriteCache(5000, true);
+		mColorBad = new Color(220f/255, 40f/255, 50f/255, 1);
+		mColorGood = new Color(0.5f, 1, 0.5f, 1);
+		mStringConfig = new StringConfig();
 	}
 
 	public void dispose () {
+		System.out.println("Screen dispose: " + this.getClass().getName());
 		mSpriteBatch.dispose();
 		mSpriteBatch = null;
 	}
 
 	public final void init (Game game, int gameTime) {
-		System.out.println("Screen init");
+		System.out.println("Screen init: " + this.getClass().getName());
 		
 		
 		mGameTime = gameTime;
@@ -81,8 +94,7 @@ public abstract class Screen {
 		mGame = game;
 		mScreenTime = 0;//Constants.TOUCH_RECOVERY / 2;
 		mBackHistory = 0;
-//		mTouch = -1;
-//		mLongTouch = -1;
+		mIsChangeNotified = true;
 		Matrix4 projection = new Matrix4();
 		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
 
@@ -211,51 +223,146 @@ public abstract class Screen {
 		cache.add(region, x, y, width, region.getRegionHeight());
 	}
 
-	public void drawString (String string, int x, int y, int truncate) {
-		drawString(null, string, x, y, truncate, null);
+//	public void drawString (String string, int x, int y, int truncate) {
+//		drawString(null, string, x, y, truncate, null);
+//	}
+//
+//	public int drawString (String string, int x, int y, int truncate, boolean b) {
+//		String rest = string;
+//		int i = 0;
+//		for (; rest.length() > truncate; i++) {
+//			int index = rest.lastIndexOf(' ', truncate);
+//			String sub = rest.substring(0, index);
+//			rest = rest.substring(index + 1);
+//			System.out.println("sub: " + index + ", " + sub);
+//			drawString(null, sub, x, y + i * 10, Integer.MAX_VALUE, null);
+//		}
+//		return i + 1;
+//	}
+//
+//	public int drawBigString (String string, int x, int y, int truncate) {
+//		String rest = string;
+//		int i = 0;
+//		for (; rest.length() > truncate; i++) {
+//			int index = rest.lastIndexOf(' ', truncate);
+//			String sub = rest.substring(0, index);
+//			rest = rest.substring(index + 1);
+//			System.out.println("sub: " + index + ", " + sub);
+//			drawBigString(sub, x, y + i * 18);
+//		}
+//		drawBigString(rest, x, y + i * 18);
+//		
+//		return i + 1;
+//	}
+
+	protected void setStringMaxWidth (int width) {
+		mStringConfig.maxWidth = width;
 	}
 
-	public void drawString (SpriteBatch batch, String string, int x, int y, Color color) {
-		drawString(batch, string, x, y, Integer.MAX_VALUE, color);
+	protected void setStringMultiline (boolean isMultiline) {
+		mStringConfig.isMultiline = isMultiline;
 	}
 
-	public void drawString (String string, int x, int y, Color color) {
-		drawString(null, string, x, y, Integer.MAX_VALUE, color);
-	} 
-	
-	public void drawString (SpriteBatch batch, String string, int x, int y) {
-		drawString(batch, string, x, y, Integer.MAX_VALUE, null);
+	protected void setStringColorNumbers (boolean isColored) {
+		mStringConfig.isNumbersColored = isColored;
+	}
+
+	protected void setStringColor (Color color) {
+		mStringConfig.color = color;
+	}
+
+	protected void setStringSize(int size) {
+		mStringConfig.size = size;
+	}
+
+	public int drawString (SpriteBatch batch, String string, int x, int y) {
+		
+		boolean isBig = mStringConfig.size == StringConfig.SIZE_BIG;
+		int lineHeight = isBig ? 18 : 10;
+		int charWidth = isBig ? 12 : 6;
+		int line = 0;
+		
+		// Multilines
+		if (mStringConfig.isMultiline) {
+			String rest = string;
+			int lineLength = mStringConfig.maxWidth / charWidth;
+			for (; rest.length() > lineLength; line++) {
+				int index = rest.lastIndexOf(' ', lineLength);
+				String sub = rest.substring(0, index);
+				rest = rest.substring(index + 1);
+				System.out.println("sub: " + index + ", " + sub);
+				if (isBig) {
+					drawBigString(batch, sub, x, y + line * lineHeight);
+				} else {
+					drawString(null, sub, x, y + line * lineHeight, Integer.MAX_VALUE);
+				}
+			}
+			string = rest;
+		}
+
+		if (isBig) {
+			drawBigString(batch, string, x, y + line * lineHeight);
+		} else {
+			drawString(batch, string, x, y + line * lineHeight, Integer.MAX_VALUE);
+		}
+		
+		resetStringConfig();
+		return line + 1;
 	}
 	
-	public void drawString (String string, int x, int y) {
-		drawString(null, string, x, y, Integer.MAX_VALUE, null);
+	private void resetStringConfig () {
+		mStringConfig.color = null;
+		mStringConfig.isMultiline = false;
+		mStringConfig.maxWidth = Integer.MAX_VALUE;
+		mStringConfig.size = StringConfig.SIZE_REGULAR;
+	}
+
+	public int drawString (String string, int x, int y) {
+		return drawString(null, string, x, y);
 	}
 	
-	public void drawString (SpriteBatch batch, String string, int x, int y, int truncate, Color color) {
-		string = string.toUpperCase();
+	private void drawString (SpriteBatch batch, String string, int x, int y, int truncate) {
+		string = string.toLowerCase();
 		for (int i = 0; i < Math.min(string.length(), truncate); i++) {
 			char ch = string.charAt(i);
+			if (ch == 'É' || ch == 'È') {
+				ch = 'E';
+			}
+			if (ch == 'à') {
+				ch = 'a';
+			}
+			if (mStringConfig.isNumbersColored) {
+				if (ch == ' ') {
+					mStringConfig.color = null;
+				}
+				if (ch == '+') {
+					mStringConfig.color = mColorGood;
+				}
+				if (ch == '-') {
+					mStringConfig.color = mColorBad;
+				}
+			}
 			for (int ys = 0; ys < CHARS.length; ys++) {
 				int xs = CHARS[ys].indexOf(ch);
 				if (xs >= 0) {
-					draw(batch, Art.guys[xs][ys + 9], x + i * 6, y, color);
+					draw(batch, Art.guys[xs][ys + 9], x + i * 6, y, mStringConfig.color);
 				}
 			}
 		}
 
 		if (string.length() >= truncate) {
-			draw(batch, Art.guys[20][10], x + truncate * 6, y, color);
+			draw(batch, Art.guys[20][10], x + truncate * 6, y, mStringConfig.color);
 		}
 	}
 
-	public void drawBigString (String string, int x, int y) {
-		string = string.toUpperCase();
+	private void drawBigString (SpriteBatch batch, String string, int x, int y) {
+		string = string.toLowerCase();
 		for (int i = 0; i < string.length(); i++) {
 			char ch = string.charAt(i);
 			for (int ys = 0; ys < CHARS.length; ys++) {
 				int xs = CHARS[ys].indexOf(ch);
 				if (xs >= 0) {
-					draw(Art.bigText[xs][ys + 7], x + i * 12, y);
+					draw(batch, Art.bigText[xs][ys + 7], x + i * 12, y, mStringConfig.color);
 				}
 			}
 		}
@@ -264,7 +371,7 @@ public abstract class Screen {
 	public void render (int gameTime, int cycle, long renderTime) {
 		long time = System.currentTimeMillis();
 		
-		if (mCycle != cycle) {
+		if (mCycle != cycle && mRefreshOnUpdate) {
 			mIsChangeNotified = true;
 		}
 		
@@ -304,8 +411,8 @@ public abstract class Screen {
 			//mSpriteCache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	
 			Matrix4 projection2 = new Matrix4();
-			projection2.setToOrtho(-mRealPosX + mOffsetX, Constants.GAME_WIDTH - mRealPosX + mOffsetX, Constants.GAME_HEIGHT - mRealPosY, -mRealPosY, -1, 1);
-	
+			projection2.setToOrtho(-mRealPosX + mOffsetX, Constants.GAME_WIDTH - mRealPosX + mOffsetX, Constants.GAME_HEIGHT - mRealPosY + mOffsetY, -mRealPosY + mOffsetY, -1, 1);
+
 			mSpriteCache.setProjectionMatrix(projection2);  
 			mSpriteCache.begin();  
 			mSpriteCache.draw(mSpriteCacheId);  
@@ -330,14 +437,14 @@ public abstract class Screen {
 
 		
 		// Cache UI
-		if (mCacheUI != null) {
+		if (mCacheUI != null && mCacheUIId != 0) {
 			Gdx.gl.glEnable(GL30.GL_BLEND);
 			Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 
 			//mSpriteCache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	
 			Matrix4 projection2 = new Matrix4();
-			projection2.setToOrtho(mOffsetX, Constants.GAME_WIDTH - mOffsetX, Constants.GAME_HEIGHT, 0, -1, 1);
+			projection2.setToOrtho(mOffsetX, Constants.GAME_WIDTH - mOffsetX, Constants.GAME_HEIGHT - mOffsetY, mOffsetY, -1, 1);
 	
 			mCacheUI.setProjectionMatrix(projection2);  
 			mCacheUI.begin();  
@@ -354,6 +461,16 @@ public abstract class Screen {
 		
 		if (mOffsetX > mFinalOffsetX) {
 			mOffsetX = Math.max(mFinalOffsetX, mOffsetX - 42);
+			Gdx.graphics.requestRendering();
+		}
+
+		if (mOffsetY < mFinalOffsetY) {
+			mOffsetY = Math.min(mFinalOffsetY, mOffsetY + 42);
+			Gdx.graphics.requestRendering();
+		}
+		
+		if (mOffsetY > mFinalOffsetY) {
+			mOffsetY = Math.max(mFinalOffsetY, mOffsetY - 42);
 			Gdx.graphics.requestRendering();
 		}
 
@@ -401,6 +518,8 @@ public abstract class Screen {
 		}
 		
 		onTouch(x, y);
+		
+		mIsChangeNotified = true;
 	}
 
 	public void setOffset (int offset, int finalOffsetX) {
@@ -410,6 +529,25 @@ public abstract class Screen {
 
 	public boolean isEnded () {
 		return mOffsetX == mFinalOffsetX;
+	}
+
+	public void setTransition (Anim anim) {
+		switch (anim) {
+		case FLIP_BOTTOM:
+			mOffsetY = -Constants.GAME_HEIGHT;
+			mFinalOffsetY = 0;
+			break;
+		case FLIP_TOP:
+			break;
+		case FLIP_LEFT:
+			break;
+		case FLIP_RIGHT:
+			break;
+		}
+	}
+
+	public Anim getAnimOut () {
+		return mOutTransition;
 	}
 
 }

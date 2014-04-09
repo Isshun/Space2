@@ -59,5 +59,14 @@ public class PlanetClassModel {
 	public static String getShortText(int classId) {
 		return sClass[classId].shortName;
 	}
+
+	public static PlanetClassModel getFromId (int classId) {
+		for (PlanetClassModel c: PlanetClassModel.sClass) {
+			if (c.id == classId) {
+				return c;
+			}
+		}
+		return null;
+	}
 	
 }

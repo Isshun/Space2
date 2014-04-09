@@ -8,6 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MainGestureListener implements GestureListener {
 
+	private static float RATIO_X;
+	private static float RATIO_Y;
+	
 	private Screen 	mScreen;
 	private int 		mLastTouchX;
 	private int 		mLastTouchY;
@@ -15,6 +18,9 @@ public class MainGestureListener implements GestureListener {
 	private boolean 	mIsMoving;
 
 	public MainGestureListener (Game game) {
+		RATIO_X = (float)Constants.GAME_WIDTH / Gdx.graphics.getWidth();
+		RATIO_Y = (float)Constants.GAME_HEIGHT / Gdx.graphics.getHeight();
+		
 		mGame = game;
 	}
 
@@ -24,11 +30,8 @@ public class MainGestureListener implements GestureListener {
 
 	@Override
 	public boolean touchDown (float x, float y, int pointer, int button) {
-		int x2 = (int)(x * Constants.GAME_WIDTH / Gdx.graphics.getWidth());
-		int y2 = (int)(y * Constants.GAME_HEIGHT / Gdx.graphics.getHeight());
-
-		mLastTouchX = (int)x2;
-		mLastTouchY = (int)y2;
+		mLastTouchX = (int)(x * RATIO_X);
+		mLastTouchY = (int)(y * RATIO_Y);
 
 		return false;
 	}
@@ -37,8 +40,8 @@ public class MainGestureListener implements GestureListener {
 	public boolean tap (float x, float y, int count, int button) {
 		System.out.println("tap: " + (int)x + " x " + (int)y);
 		
-		int x2 = (int)(x * Constants.GAME_WIDTH / Gdx.graphics.getWidth());
-		int y2 = (int)(y * Constants.GAME_HEIGHT / Gdx.graphics.getHeight());
+		int x2 = (int)(x * RATIO_X);
+		int y2 = (int)(y * RATIO_Y);
 
 		if (mScreen != null) {
 			mScreen.tap(x2, y2);
@@ -51,8 +54,8 @@ public class MainGestureListener implements GestureListener {
 	public boolean longPress (float x, float y) {
 		System.out.println("longpress");
 
-		int x2 = (int)(x * Constants.GAME_WIDTH / Gdx.graphics.getWidth());
-		int y2 = (int)(y * Constants.GAME_HEIGHT / Gdx.graphics.getHeight());
+		int x2 = (int)(x * RATIO_X);
+		int y2 = (int)(y * RATIO_Y);
 
 		if (mScreen != null) {
 			mScreen.onLongTouch((int)x2, (int)y2);
@@ -78,8 +81,8 @@ public class MainGestureListener implements GestureListener {
 	public boolean pan (float x, float y, float deltaX, float deltaY) {
 		System.out.println("pan");
 
-		int x2 = (int)(x * Constants.GAME_WIDTH / Gdx.graphics.getWidth());
-		int y2 = (int)(y * Constants.GAME_HEIGHT / Gdx.graphics.getHeight());
+		int x2 = (int)(x * RATIO_X);
+		int y2 = (int)(y * RATIO_Y);
 
 		if (mScreen != null) {
 			mScreen.onMove((int)x2 - mLastTouchX, (int)y2 - mLastTouchY);
@@ -96,8 +99,8 @@ public class MainGestureListener implements GestureListener {
 	public boolean panStop (float x, float y, int pointer, int button) {
 		System.out.println("pan stop");
 
-		int x2 = (int)(x * Constants.GAME_WIDTH / Gdx.graphics.getWidth());
-		int y2 = (int)(y * Constants.GAME_HEIGHT / Gdx.graphics.getHeight());
+		int x2 = (int)(x * RATIO_X);
+		int y2 = (int)(y * RATIO_Y);
 
 		if (mScreen != null) {
 			mScreen.onMoveEnd(x2, y2);

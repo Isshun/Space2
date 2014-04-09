@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
@@ -33,10 +34,10 @@ public class PanelGovernmentScreen extends Screen {
 		draw(Art.res_food, START_X + SPACING_X * 2, 3);
 		draw(Art.ic_construction_12, 118 + SPACING_X * 3, 3);
 		draw(Art.ic_money_12, START_X + SPACING_X * 4, 3);
-		draw(Art.res_science, START_X + SPACING_X * 5, 3);
+		draw(Art.ic_science, START_X + SPACING_X * 5, 3);
 		draw(Art.res_culture, START_X + SPACING_X * 6, 3);
 		
-		List<PlanetModel> planets = GameService.getInstance().getPlayer().getPlanets();
+		List<PlanetModel> planets = new ArrayList<PlanetModel>(GameService.getInstance().getPlayer().getPlanets());
 		Collections.sort(planets, new Comparator<PlanetModel>() {
 			@Override
 			public int compare (PlanetModel p1, PlanetModel p2) {
@@ -74,7 +75,7 @@ public class PanelGovernmentScreen extends Screen {
 
 	@Override
 	public void onTouch (int x, int y) {
-		List<PlanetModel> planets = mPlayer.getPlanets();
+		Set<PlanetModel> planets = mPlayer.getPlanets();
 		List<PlanetModel> colonized = new ArrayList<PlanetModel>();
 		for (PlanetModel planet : planets) {
 			if (planet.getPeople() > 0) {

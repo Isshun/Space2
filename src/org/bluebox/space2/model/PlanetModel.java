@@ -25,13 +25,13 @@ public class PlanetModel implements ILocation {
 	private FleetModel 			mDock;
 	private PlayerModel 			mOwner;
 
-	public PlanetModel () {
+	public PlanetModel (int classId, int size) {
 		mBuilds = new ArrayList<ShipModel>();
 		mOrbit = new ArrayList<FleetModel>();
 		mDock = new FleetModel("Dock");
-		mClass = getRandomPlanetClass();
-		mSize = (int)(Math.random() * 5);
 		mPeople = 1;
+		mClass = PlanetClassModel.getFromId(classId);
+		mSize = size;
 		mBaseBuild = 5 + Math.random() * 8;
 		mBaseMoney = Math.random() * 10;
 		mBaseScience = Math.random() * 10;
@@ -40,7 +40,7 @@ public class PlanetModel implements ILocation {
 		mSatisfaction = Math.random() * 100;
 	}
 
-	private PlanetClassModel getRandomPlanetClass () {
+	private static int getRandomPlanetClass () {
 		int totalRand = 0;
 		
 		for (PlanetClassModel pc: PlanetClassModel.sClass) {
@@ -51,12 +51,12 @@ public class PlanetModel implements ILocation {
 		int sum = 0;
 		for (PlanetClassModel pc: PlanetClassModel.sClass) {
 			if (r <= sum + pc.rand) {
-				return pc;
+				return pc.id;
 			}
 			sum += pc.rand;
 		}
 		
-		return null;
+		return 0;
 	}
 
 	public String getName() {
@@ -210,7 +210,10 @@ public class PlanetModel implements ILocation {
 	}
 
 	public void setOwner (PlayerModel owner) {
-		mOwner = owner;
+		if (mOwner != owner) {
+			mOwner = owner;
+			owner.addPlanet(this);
+		}
 	}
 
 	public int getIndice () {
@@ -276,6 +279,11 @@ public class PlanetModel implements ILocation {
 
 		return FightService.ATTACKER_WIN;
 	}
+	
+	public void colonize (PlayerModel player) {
+		setOwner(player);
+		mSystem.setOwner(player);
+	}
 
 	private void removeDestroyedFleet () {
 		List<FleetModel> destroyed = new ArrayList<FleetModel>();
@@ -289,6 +297,25 @@ public class PlanetModel implements ILocation {
 
 	public FleetModel getDock () {
 		return mDock;
+	}
+
+	public static PlanetModel create (int pos) {
+		int classId = getRandomPlanetClass();
+		
+		int size = 0;
+		if (pos <= 1) {
+			size = (int)(Math.random() * 3);
+		} else {
+			size = (int)(Math.random() * 5);
+		}
+		
+		PlanetModel planet = new PlanetModel(classId, size);
+
+		return planet;
+	}
+
+	public PlayerModel getOwner () {
+		return mOwner;
 	}
 
 }

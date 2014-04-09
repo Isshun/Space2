@@ -25,12 +25,15 @@ public class PlanetScreen extends Screen {
 	PlanetModel mPlanet;
 	private double tick;
 	private SystemModel mSystem;
+	private Color mColor;
 
 	public PlanetScreen (SystemModel system, PlanetModel planet) {
 		mPlanet = planet;
 		mSystem = system;
+		//mColor = planet.getOwner() != null ? planet.getOwner().getUIColor() : new Color(1, 0.5f, 0.5f, 0.5f);
+		mColor = new Color(1, 1, 1, 0.45f);
 		
-		View btShip = new RectangleView(6, Constants.GAME_HEIGHT - 20, 100, 20, new Color(1, 0.5f, 0.5f, 0.5f));
+		View btShip = new RectangleView(6, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
 		btShip.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
@@ -39,11 +42,13 @@ public class PlanetScreen extends Screen {
 		});
 		addView(btShip);
 
-		View btStructure = new RectangleView(126, Constants.GAME_HEIGHT - 20, 100, 20, new Color(0.5f, 0.5f, 1, 0.5f));
+		View btStructure = new RectangleView(126, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
 		btStructure.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
-				addScreen(new PlanetBuildStructureScreen(PlanetScreen.this, mPlanet));
+				Screen s = new PlanetBuildStructureScreen(PlanetScreen.this, mPlanet);
+				s.setTransition(Anim.FLIP_BOTTOM);
+				addScreen(s);
 			}
 		});
 		addView(btStructure);
@@ -92,8 +97,14 @@ public class PlanetScreen extends Screen {
 //			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], posX, posY);
 //		}
 		
-		drawRectangle(6, 6, Constants.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
-		drawBigString(mPlanet.getName(), 12, 12);
+		drawRectangle(6, 6, Constants.GAME_WIDTH - 12, 20, mColor);
+
+//		if (mPlanet.getOwner() != null) {
+//			drawBigString(mPlanet.getName(), 12, 12, mPlanet.getOwner().getColor());
+//		} else {
+		setStringSize(StringConfig.SIZE_BIG);
+		drawString(mPlanet.getName(), 12, 12);
+//		}
 		
 		if (isTop()) {
 			drawCharacteristics(6, 32);
@@ -105,8 +116,8 @@ public class PlanetScreen extends Screen {
 	}
 
 	private void drawCharacteristics (int posX, int posY) {
-		drawRectangle(posX, posY, 134, 46, Color.rgba8888(1, 1, 1, 0.5f));
-		drawRectangle(posX, posY, 134, 12, Color.rgba8888(1, 1, 1, 0.5f));
+		drawRectangle(posX, posY, 134, 46, mColor);
+		drawRectangle(posX, posY, 134, 12, mColor);
 		drawString("Info", posX + 4, posY + 4);
 		drawString("Size:          " + mPlanet.getSizeName(), posX + 4, posY + 4 + 12);
 		drawString("Class:   " + mPlanet.getClassName(), posX + 4, posY + 4 + 22);
@@ -114,8 +125,8 @@ public class PlanetScreen extends Screen {
 	}
 
 	private void drawInfos (int posX, int posY) {
-		drawRectangle(posX, posY, 134, 72, Color.rgba8888(1, 1, 1, 0.5f));
-		drawRectangle(posX, posY, 134, 12, Color.rgba8888(1, 1, 1, 0.5f));
+		drawRectangle(posX, posY, 134, 72, mColor);
+		drawRectangle(posX, posY, 134, 12, mColor);
 		drawString("Production ", posX + 4, posY + 4);
 		
 		posY += 14;
@@ -131,7 +142,7 @@ public class PlanetScreen extends Screen {
 		drawString(String.format("Money:       %d (%d)", (int)mPlanet.getMoney(), (int)mPlanet.getBaseMoney()), posX + 20, posY + 4);
 
 		posY += 12;
-		draw(Art.res_science, posX + 4, posY);
+		draw(Art.ic_science, posX + 4, posY);
 		drawString(String.format("Science:     %d (%d)", (int)mPlanet.getScience(), (int)mPlanet.getBaseScience()), posX + 20, posY + 4);
 
 		posY += 12;
@@ -145,7 +156,7 @@ public class PlanetScreen extends Screen {
 		int index = planets.indexOf(mPlanet);
 		if (index < planets.size() - 1) {
 			PlanetModel planet = planets.get(Math.min(index + 1, planets.size() - 1));
-			mGame.replaceScreen(new PlanetScreen(mSystem, planet), Anim.FLIP_RIGHT);
+			mGame.replaceScreen(this, new PlanetScreen(mSystem, planet), Anim.FLIP_RIGHT);
 		}
 	}
 
@@ -155,7 +166,7 @@ public class PlanetScreen extends Screen {
 		int index = planets.indexOf(mPlanet);
 		if (index > 0) {
 			PlanetModel planet = planets.get(Math.max(index - 1, 0));
-			mGame.replaceScreen(new PlanetScreen(mSystem, planet), Anim.FLIP_LEFT);
+			mGame.replaceScreen(this, new PlanetScreen(mSystem, planet), Anim.FLIP_LEFT);
 		}
 	}
 

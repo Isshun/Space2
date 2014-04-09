@@ -5,8 +5,9 @@ import java.util.List;
 
 import org.bluebox.space2.service.FightService;
 
-
 public class SystemModel implements ILocation {
+	private static final String sSystemNames[] = {"Archer", "Cerberus", "Proxima", "Vega", "Regula", "Tigen", "Idron", "Wolf", "Remus", "Deridia", "Bajor", "Drayan", "Enara", "Ledos", "Rakosa", "Arrakis", "Ocampa", "Telsium Prime", "Banea", "Hanon", "Arcadia", "Caitan", "Halia", "Trillius", "Ardana", "Benzar", "Risa", "Selay", "Antos", "Aaamazzara", "Acamar", "Akaali", "Andoria", "Antica", "Antos", "Ardana", "Argelius", "Arkaria", "Assigner", "Aurelia", "Bajor", "Ba'ku", "Banea", "Barzan", "Benzar", "Betazed", "Bolarus", "Breen", "Brekka", "Brunali", "Bynaus", "Capella", "Cardassia", "Chalna", "Cravic", "Delta", "Deneb", "Denobula", "Dosi", "Draylax", "Drema", "Ekos", "El-Aurian", "Elaysian", "Eminiar", "Excalbia", "Fabrina", "Ferenginar", "Garenor", "Gosis", "Hekaras", "Halkan", "Ilidaria", "Janus", "Kantare", "Karemma", "Kelemane", "Kelis", "Kelva", "Koinonian", "Kolarus", "Kurill", "Kraylor", "Kyrian-Vaskan", "Kzin", "Lissepia", "Loque'eque", "Luria", "Lyssarrian", "Makull", "Mari", "Melkotian", "Mintaka", "Miri", "Mokra", "Nausicaa", "Nechani", "Norcadia", "Ocampa", "Organia", "Orion", "Ornara", "Peliar Zel", "Pendari", "Pralor", "Qomar", "Rakhar", "Rakosa", "Ram Izad", "Remus", "Romulus", "Selay", "Sikaris", "Tagra", "Tak Tak", "Talax", "Tallonian", "Talos", "Tandar", "Tarella", "Tarquin", "Tellar", "Telsius", "Teplan", "T'Lan", "Torothan", "Triannon", "Trill", "Tyrellia", "Tzenketh", "Ullian", "Valakis", "Vaadwaur", "Vendikar", "Vhnori", "Vulcan", "Xindus", "Yadera", "Yridian", "Zahl", "Zakdorn", "Zalkon", "Zeon"};
+
 	private static int 			sCount;
 	private String 				mName;
 	private int 					mPosX;
@@ -62,7 +63,10 @@ public class SystemModel implements ILocation {
 	}
 	
 	public void setOwner (PlayerModel owner) {
-		mOwner = owner;
+		if (mOwner != owner) {
+			mOwner = owner;
+			owner.addSystem(this);
+		}
 	}
 
 	public int getDistance (SystemModel s) {
@@ -149,6 +153,35 @@ public class SystemModel implements ILocation {
 
 	public int getId () {
 		return mId;
+	}
+
+	public void colonize (PlayerModel player) {
+		getCapital().setOwner(player);
+		if (mOwner != player) {
+			mOwner = player;
+			player.addSystem(this);
+		}
+	}
+
+	public static SystemModel create (int posX, int posY) {
+		int nameIndex = Math.min(sCount, sSystemNames.length - 1);
+		String name = sSystemNames[nameIndex];
+
+		SystemModel system = new SystemModel(name, posX, posY);
+		
+		if (name.equals("Arrakis")) {
+			PlanetModel planet = new PlanetModel(PlanetClassModel.CLASS_L_DESERT, 3);
+//			planet.setClassification();
+//			planet.setSize(3);
+			system.addPlanet(planet);
+		} else {
+			int length = (int)(Math.random() * 5 + 1);
+			for (int i = 0; i < length; i++) {
+				system.addPlanet(PlanetModel.create(i));
+			}
+		}
+		
+		return system;
 	}
 
 }

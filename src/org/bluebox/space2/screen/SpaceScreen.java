@@ -59,6 +59,7 @@ public class SpaceScreen extends Screen {
 		mCurrentTravelCache = new SpriteCache(100, true);
 		mCurrentTravelCacheId = -1;
 		mMap = new Color[Constants.MAP_WIDTH][Constants.MAP_HEIGHT];
+		mRefreshOnUpdate = true;
 	}
 	
 	@Override
@@ -77,14 +78,12 @@ public class SpaceScreen extends Screen {
 					int x2 = system.getX() + Constants.SYSTEM_SIZE / 2;
 					int y2 = system.getY() + Constants.SYSTEM_SIZE / 2;
 					
-					System.out.println("POS: " + x2 + " x " + y2);
-
 					for (int i = 0; i < 1000; i++) {
 						setPoint((int)Math.round(x2+Math.cos(i) * x), (int)Math.round(y2+Math.sin(i) * x), system.getOwner().getSpaceColor());
 					}
-					}
 				}
 			}
+		}
 		
 		// Button planets
 		mBtPlanets = new ImageView(Art.bt_planets, 6, 6);
@@ -279,10 +278,9 @@ public class SpaceScreen extends Screen {
 		String name = system.getName();
 		PlayerModel owner = system.getOwner();
 		if (owner != null) {
-			drawString(name, mDeprecatedPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mDeprecatedPosY + system.getY() + Constants.SYSTEM_SIZE + 6, owner.getColor());
-		} else {
-			drawString(name, mDeprecatedPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mDeprecatedPosY + system.getY() + Constants.SYSTEM_SIZE + 6, Color.WHITE);
+			setStringColor(owner.getColor());
 		}
+		drawString(name, mDeprecatedPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mDeprecatedPosY + system.getY() + Constants.SYSTEM_SIZE + 6);
 	}
 
 	private void drawInterface (int posX, int posY) {
@@ -305,7 +303,7 @@ public class SpaceScreen extends Screen {
 			drawRectangle(mCacheUI, MAP_POS_X + system.getX() / 20, MAP_POS_Y + system.getY() / 20, 1, 1, color);
 		}
 		
-		mCacheUI.endCache();
+		mCacheUIId = mCacheUI.endCache();
 
 	}
 

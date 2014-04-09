@@ -50,12 +50,17 @@ public class SystemScreen extends Screen {
 			Color color = new Color(mSystem.getOwner().getColor());
 			drawRectangle(6, 6, Constants.GAME_WIDTH - 12, 20, Color.rgba8888(color.r, color.g, color.b, 0.65f));
 			draw(mSystem.getOwner().getFlag(), 8, 8);
-			drawBigString(mSystem.getName(), 36, 12);
+			
+			setStringSize(StringConfig.SIZE_BIG);
+			drawString(mSystem.getName(), 36, 12);
+			
 			drawString(String.format("%s (%s)", mSystem.getOwner().getName(), mSystem.getOwner().getRelation()), 30, 32);
 		} else {
 			drawRectangle(6, 6, Constants.GAME_WIDTH - 10, 20, Color.rgba8888(1, 1, 1, 0.5f));
 			drawString("Free", 12, 32);
-			drawBigString(mSystem.getName(), 12, 12);
+
+			setStringSize(StringConfig.SIZE_BIG);
+			drawString(mSystem.getName(), 12, 12);
 		}
 
 		List<PlanetModel> planets = mSystem.getPlanets();
@@ -109,6 +114,14 @@ public class SystemScreen extends Screen {
 		
 		String code = planet.getShortClassification() + planet.getShortSizeName();
 		drawString(code, posX + 26 - code.length() * 3, posY + 44 + Math.max(offsetY, 21));
+
+		if (planet.getOwner() != null) {
+//			drawRectangle(posX + 26 - "colonized".length() * 3 - 1, posY - 32 - 3, "colonized".length() * 6 + 3, 11, planet.getOwner().getDarkColor());
+//			drawString("colonized", posX + 27 - "colonized".length() * 3, posY - 32);
+			setStringColor(planet.getOwner().getColor());
+			drawString(planet.getOwner().getName(), posX + 27 - planet.getOwner().getName().length() * 3, posY - 22);
+		}
+		
 	}
 
 	@Override

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bluebox.space2.PathResolver;
 import org.bluebox.space2.path.Vertex;
-import org.bluebox.space2.service.PathResolver;
 
 
 public class FleetModel {
