@@ -90,6 +90,7 @@ public abstract class Screen {
 		System.out.println("Screen init: " + this.getClass().getName());
 		
 		if (mIsInitialized) {
+			mIsChangeNotified = true;
 			return;
 		}
 		

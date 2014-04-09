@@ -9,6 +9,8 @@ import org.bluebox.space2.model.BuildingClassModel;
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.ShipClassModel;
 import org.bluebox.space2.service.GameService;
+import org.bluebox.space2.ui.RectangleView;
+import org.bluebox.space2.ui.ScrollerView;
 import org.bluebox.space2.ui.View.OnClickListener;
 
 import com.badlogic.gdx.graphics.Color;
@@ -18,7 +20,7 @@ public class PlanetBuildStructureScreen extends Screen {
 	private static final int POPUP_PADDING = 6; 
 	private static final int POPUP_TOP = 26; 
 	private static final int POPUP_WIDTH = Constants.GAME_WIDTH - POPUP_PADDING * 2; 
-	private static final int POPUP_HEIGHT = Constants.GAME_HEIGHT - POPUP_PADDING * 2 - 20;
+	private static final int POPUP_HEIGHT = Constants.GAME_HEIGHT - POPUP_TOP - POPUP_PADDING * 2;
 	private static final int GRID_SIZE = 80;
 	private static final int GRID_NB_COLUMNS = 4;
 	private static final int SEP = POPUP_WIDTH / 5 * 3;
@@ -27,6 +29,8 @@ public class PlanetBuildStructureScreen extends Screen {
 	protected int 								mSelected;
 	protected PlanetModel 					mPlanet;
 	protected List<BuildingClassModel> 	mBuildings;
+	private ButtonView mBtClose;
+	private ScrollerView mScroller;
 
 	public PlanetBuildStructureScreen (Screen parent, PlanetModel planet) {
 		mParent = parent;
@@ -38,8 +42,10 @@ public class PlanetBuildStructureScreen extends Screen {
 
 	@Override
 	protected void onCreate () {
-		mBtBuild = new ButtonView(POPUP_PADDING + SEP + 11, POPUP_PADDING + POPUP_HEIGHT - 32, POPUP_WIDTH - SEP - 22, 22, new Color(0.2f, 1, 0.2f, 1));
-		mBtBuild.setText("structure");
+		int btWidth = POPUP_WIDTH / 2 - 12;
+		
+		mBtBuild = new ButtonView(POPUP_PADDING + 8, POPUP_TOP + POPUP_PADDING + POPUP_HEIGHT - 30, btWidth, 22, new Color(0.2f, 1, 0.2f, 1));
+		mBtBuild.setText("build");
 		mBtBuild.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
@@ -50,6 +56,20 @@ public class PlanetBuildStructureScreen extends Screen {
 			}
 		});
 		addView(mBtBuild);
+		
+		mBtClose = new ButtonView(POPUP_PADDING + 8 + btWidth + 8, POPUP_TOP + POPUP_PADDING + POPUP_HEIGHT - 30, btWidth, 22, new Color(1, 1, 1, 0.55f));
+		mBtClose.setText("close");
+		mBtClose.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				back();
+			}
+		});
+		addView(mBtClose);
+		
+		mScroller = new ScrollerView(SEP + 5, POPUP_TOP + POPUP_PADDING, POPUP_WIDTH - SEP, POPUP_HEIGHT, new Color(1, 0.5f, 0.5f, 0.55f));
+		mScroller.setText("L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.");
+		addView(mScroller);
 	}
 
 	@Override
@@ -68,7 +88,7 @@ public class PlanetBuildStructureScreen extends Screen {
 		}
 		
 		if (mSelected < mBuildings.size()) {
-			drawInfo(mBuildings.get(mSelected), POPUP_PADDING + SEP, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH - SEP, POPUP_HEIGHT);
+			drawInfo(mBuildings.get(mSelected), POPUP_PADDING + SEP, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH - SEP, POPUP_HEIGHT - 38);
 		}
 	}
 
@@ -82,7 +102,7 @@ public class PlanetBuildStructureScreen extends Screen {
 //		drawRectangle(startX, startY, width, height, new Color(0.5f, 1, 0.5f, 0.5f));
 
 		// Separation
-		drawRectangle(startX, startY, 2, Constants.GAME_HEIGHT - POPUP_PADDING - POPUP_PADDING, new Color(1, 1, 1, 0.45f));
+		drawRectangle(startX, startY, 2, height, new Color(1, 1, 1, 0.45f));
 
 		// Building title
 		setStringSize(StringConfig.SIZE_BIG);
@@ -94,18 +114,22 @@ public class PlanetBuildStructureScreen extends Screen {
 		setStringColorNumbers(true);
 		drawString(building.getEffect(), startX + 10, startY + 7 + (lines * 20));
 		
-		// Building description
-		setStringMultiline(true);
-		setStringMaxWidth(width - 22);
-		drawString(building.getDesc(), startX + 10, startY + 20 + (lines * 20));
+//		// Building description
+//		setStringMultiline(true);
+//		setStringMaxWidth(width - 22);
+//		drawString(building.getDesc(), startX + 10, startY + 20 + (lines * 20));
 		
-		// Button build
-		drawRectangle(startX + 11, startY + height - 32, width - 22, 22, new Color(0.8f, 1, 0.8f, 0.5f));
-		drawString("build", startX + 11, startY + height - 32);
-
-		// Button cancel
-		drawRectangle(startX + 11, startY + height - 62, width - 22, 22, new Color(1, 0.8f, 0.8f, 0.5f));
-		drawString("close", startX + 11, startY + height - 62);
+		mScroller.setPosition(startX + 10, startY + 20 + (lines * 20));
+		mScroller.setWidth(width - 22);
+		mScroller.setHeight(height - 20 - (lines * 20));
+		
+//		// Button build
+//		drawRectangle(startX + 11, startY + height - 32, width - 22, 22, new Color(0.8f, 1, 0.8f, 0.5f));
+//		drawString("build", startX + 11, startY + height - 32);
+//
+//		// Button cancel
+//		drawRectangle(startX + 11, startY + height - 62, width - 22, 22, new Color(1, 0.8f, 0.8f, 0.5f));
+//		drawString("close", startX + 11, startY + height - 62);
 	}
 
 	@Override
