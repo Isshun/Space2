@@ -15,6 +15,7 @@ import org.bluebox.space2.service.GameService;
 import org.bluebox.space2.ui.View;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 
 public abstract class Screen {
 	private static final int 		TOUCH_INTERVAL = 750;
@@ -66,7 +68,8 @@ public abstract class Screen {
 	private StringConfig				mStringConfig;
 	protected boolean 				mRefreshOnUpdate;
 	protected Anim 					mOutTransition;
-	private boolean mIsInitialized;
+	private boolean 					mIsInitialized;
+	protected float					mZoom;
 	
 	public Screen() {
 		mOutTransition = Anim.NO_TRANSITION;
@@ -78,6 +81,7 @@ public abstract class Screen {
 		mColorBad = new Color(220f/255, 40f/255, 50f/255, 1);
 		mColorGood = new Color(0.5f, 1, 0.5f, 1);
 		mStringConfig = new StringConfig();
+		mZoom = 1;
 	}
 
 	public void dispose () {
@@ -390,7 +394,9 @@ public abstract class Screen {
 			//mSpriteCache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	
 			Matrix4 projection2 = new Matrix4();
-			projection2.setToOrtho(-mRealPosX + mOffsetX, Constants.GAME_WIDTH - mRealPosX + mOffsetX, Constants.GAME_HEIGHT - mRealPosY + mOffsetY, -mRealPosY + mOffsetY, -1, 1);
+			projection2.setToOrtho(-mRealPosX + mOffsetX, Constants.GAME_WIDTH * mZoom - mRealPosX + mOffsetX, Constants.GAME_HEIGHT * mZoom - mRealPosY + mOffsetY, -mRealPosY + mOffsetY, -1, 1);
+
+			//projection2.setToOrtho(0, Constants.GAME_WIDTH * mZoom, Constants.GAME_HEIGHT * mZoom, 0, -1, 1);
 
 			mSpriteCache.setProjectionMatrix(projection2);  
 			mSpriteCache.begin();  

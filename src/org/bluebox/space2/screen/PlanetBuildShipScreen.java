@@ -27,6 +27,7 @@ public class PlanetBuildShipScreen extends Screen {
 	public PlanetBuildShipScreen (Screen parent, PlanetModel planet) {
 		mParent = parent;
 		mPlanet = planet;
+		mRefreshOnUpdate = true;
 //		mSpriteBatch = parent.getSpriteBatch();
 	}
 
