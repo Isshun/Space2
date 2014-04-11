@@ -4,7 +4,7 @@ package org.bluebox.space2.screen;
 import org.bluebox.space2.model.FleetModel;
 import org.bluebox.space2.model.TravelModel;
 
-public class TravelScreen extends Screen {
+public class TravelScreen extends ScreenBase {
 
 	private TravelModel mTravel;
 	private FleetModel mFleet;
@@ -17,19 +17,19 @@ public class TravelScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {		
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {		
 		int posY = 6;
-		drawString("from: " + mTravel.getFrom().getName(), 6, posY);
+		mainLayer.drawString("from: " + mTravel.getFrom().getName(), 6, posY);
 		
 		posY += 12;
-		drawString("to: " + mTravel.getTo().getName(), 6, posY);
+		mainLayer.drawString("to: " + mTravel.getTo().getName(), 6, posY);
 
 		posY += 12;
-		drawString("length: " + mTravel.getLength(), 6, posY);
+		mainLayer.drawString("length: " + mTravel.getLength(), 6, posY);
 
 		if (mFleet != null) {
 			posY += 12;
-			drawString("ETA: " + mFleet.getETA(), 6, posY);
+			mainLayer.drawString("ETA: " + mFleet.getETA(), 6, posY);
 		}
 	}
 

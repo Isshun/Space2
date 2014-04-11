@@ -15,7 +15,7 @@ import org.bluebox.space2.ui.View.OnClickListener;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class PlanetBuildStructureScreen extends Screen {
+public class PlanetBuildStructureScreen extends ScreenBase {
 	
 	private static final int POPUP_PADDING = 6; 
 	private static final int POPUP_TOP = 26; 
@@ -32,7 +32,7 @@ public class PlanetBuildStructureScreen extends Screen {
 	private ButtonView mBtClose;
 	private ScrollerView mScroller;
 
-	public PlanetBuildStructureScreen (Screen parent, PlanetModel planet) {
+	public PlanetBuildStructureScreen (ScreenBase parent, PlanetModel planet) {
 		mParent = parent;
 		parent.notifyChange();
 		mPlanet = planet;
@@ -73,46 +73,46 @@ public class PlanetBuildStructureScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
 		int posY = Constants.GAME_HEIGHT - 100;
 		
 		System.out.println("popup width: " + POPUP_WIDTH + ", sep: " + SEP + ", sub: " + (POPUP_WIDTH - SEP));
 
 		// Background
-		drawRectangle(POPUP_PADDING, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH, POPUP_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
+		mainLayer.drawRectangle(POPUP_PADDING, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH, POPUP_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 				
 		int i = 0;
 		for (BuildingClassModel b: mBuildings) {
-			drawIcon(b, POPUP_PADDING + 10 + (i % GRID_NB_COLUMNS) * GRID_SIZE, POPUP_PADDING + POPUP_TOP + 10 + (i / GRID_NB_COLUMNS) * GRID_SIZE, mSelected == i);
+			drawIcon(mainLayer, b, POPUP_PADDING + 10 + (i % GRID_NB_COLUMNS) * GRID_SIZE, POPUP_PADDING + POPUP_TOP + 10 + (i / GRID_NB_COLUMNS) * GRID_SIZE, mSelected == i);
 			i++;
 		}
 		
 		if (mSelected < mBuildings.size()) {
-			drawInfo(mBuildings.get(mSelected), POPUP_PADDING + SEP, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH - SEP, POPUP_HEIGHT - 38);
+			drawInfo(mainLayer, mBuildings.get(mSelected), POPUP_PADDING + SEP, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH - SEP, POPUP_HEIGHT - 38);
 		}
 	}
 
-	private void drawIcon (BuildingClassModel building, int posX, int posY, boolean isSelected) {
-		drawRectangle(posX, posY, GRID_SIZE - 10, GRID_SIZE - 10, isSelected ? new Color(0.75f, 1, 0.75f, 0.65f) : new Color(1, 1, 1, 0.45f));
-		drawString(building.getShortName(), posX, posY);
+	private void drawIcon (ScreenLayer mainLayer, BuildingClassModel building, int posX, int posY, boolean isSelected) {
+		mainLayer.drawRectangle(posX, posY, GRID_SIZE - 10, GRID_SIZE - 10, isSelected ? new Color(0.75f, 1, 0.75f, 0.65f) : new Color(1, 1, 1, 0.45f));
+		mainLayer.drawString(building.getShortName(), posX, posY);
 	}
 
-	private void drawInfo (BuildingClassModel building, int startX, int startY, int width, int height) {
+	private void drawInfo (ScreenLayer mainLayer, BuildingClassModel building, int startX, int startY, int width, int height) {
 //		// Background
 //		drawRectangle(startX, startY, width, height, new Color(0.5f, 1, 0.5f, 0.5f));
 
 		// Separation
-		drawRectangle(startX, startY, 2, height, new Color(1, 1, 1, 0.45f));
+		mainLayer.drawRectangle(startX, startY, 2, height, new Color(1, 1, 1, 0.45f));
 
 		// Building title
-		setStringSize(StringConfig.SIZE_BIG);
-		setStringMultiline(true);
-		setStringMaxWidth(width - 22);
-		int lines = drawString(building.getName(), startX + 10, startY + 10);
+		mainLayer.setStringSize(StringConfig.SIZE_BIG);
+		mainLayer.setStringMultiline(true);
+		mainLayer.setStringMaxWidth(width - 22);
+		int lines = mainLayer.drawString(building.getName(), startX + 10, startY + 10);
 
 		// Building effect
-		setStringColorNumbers(true);
-		drawString(building.getEffect(), startX + 10, startY + 7 + (lines * 20));
+		mainLayer.setStringColorNumbers(true);
+		mainLayer.drawString(building.getEffect(), startX + 10, startY + 7 + (lines * 20));
 		
 //		// Building description
 //		setStringMultiline(true);

@@ -1,14 +1,13 @@
 package org.bluebox.space2.ui;
 
-import org.bluebox.space2.Art;
-import org.bluebox.space2.screen.Screen;
+import org.bluebox.space2.screen.ScreenLayer;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 
@@ -27,7 +26,7 @@ public class ScrollerView extends View {
 	}
 
 	@Override
-	public void draw (SpriteBatch spriteBatch) {
+	public void draw (SpriteCache spriteBatch) {
 //		projection.setToOrtho(mOffsetX, Constants.GAME_WIDTH + mOffsetX, Constants.GAME_HEIGHT, 0, -1, 1);
 
 //		spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho(300, 850, Constants.GAME_HEIGHT, 0, -1, 1));
@@ -44,7 +43,7 @@ public class ScrollerView extends View {
 			line.setRotation(mAngle);
 		}
 		line.setPosition(mPosX, mPosY);
-		line.draw(spriteBatch);
+		spriteBatch.add(line);
 
 
       FrameBuffer fb = new FrameBuffer(Pixmap.Format.RGBA8888, mWidth, mHeight, false);
@@ -56,8 +55,8 @@ public class ScrollerView extends View {
 		if (mText != null) {
 			for (int i = 0; i < mText.length(); i++) {
 				char ch = mText.charAt(i);
-				for (int ys = 0; ys < Screen.CHARS.length; ys++) {
-					int xs = Screen.CHARS[ys].indexOf(ch);
+				for (int ys = 0; ys < ScreenLayer.CHARS.length; ys++) {
+					int xs = ScreenLayer.CHARS[ys].indexOf(ch);
 					if (xs >= 0) {
 						//Art.guys[xs][ys + 9]
 

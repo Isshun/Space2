@@ -2,7 +2,7 @@ package org.bluebox.space2.screen;
 
 import org.bluebox.space2.ui.TextView;
 
-public class ErrorScreen extends Screen {
+public class ErrorScreen extends ScreenBase {
 
 	public static final int RESOLUTION_NOT_SUPPORTED = 1;
 
@@ -18,7 +18,7 @@ public class ErrorScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
 		// TODO Auto-generated method stub
 
 	}

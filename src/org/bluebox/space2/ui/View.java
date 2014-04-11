@@ -1,6 +1,7 @@
 package org.bluebox.space2.ui;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public abstract class View {
@@ -52,7 +53,7 @@ public abstract class View {
 		mVisibility = state;
 	}
 
-	public abstract void draw (SpriteBatch spriteBatch);
+	public abstract void draw (SpriteCache spriteBatch);
 
 	public void setOnClickListener (OnClickListener onClickListener) {
 		mOnClickListener = onClickListener;

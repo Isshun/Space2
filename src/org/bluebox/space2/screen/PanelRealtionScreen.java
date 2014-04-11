@@ -7,19 +7,19 @@ import org.bluebox.space2.model.PlayerModel;
 import org.bluebox.space2.service.GameService;
 
 
-public class PanelRealtionScreen extends Screen {
+public class PanelRealtionScreen extends ScreenBase {
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
-		draw(Art.bg, 0, 0);
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+		mainLayer.draw(Art.bg, 0, 0);
 
 		List<PlayerModel> players = GameService.getInstance().getPlayers();
 		int i = 0;
 		for (PlayerModel player : players) {
-			draw(player.getFlag(), 4, 4 + i * 20);
-			drawRectangle(20, 4 + i * 20, 8, 8, player.getColor());
-			drawString(player.getName(), 30, 6 + i * 20);
-			drawString(player.getHome().getName(), 120, 6 + i * 20);
+			mainLayer.draw(player.getFlag(), 4, 4 + i * 20);
+			mainLayer.drawRectangle(20, 4 + i * 20, 8, 8, player.getColor());
+			mainLayer.drawString(player.getName(), 30, 6 + i * 20);
+			mainLayer.drawString(player.getHome().getName(), 120, 6 + i * 20);
 			i++;
 		}
 	}

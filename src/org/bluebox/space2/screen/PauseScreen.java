@@ -7,21 +7,21 @@ import org.bluebox.space2.Art;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class PauseScreen extends Screen {
-	private final Screen parent;
+public class PauseScreen extends ScreenBase {
+	private final ScreenBase parent;
 	private int selected = 0;
 
 	private final String[] options = {"BACK TO GAME", "AUTOMORTIS", "QUIT TO TITLE"};
 
-	public PauseScreen (Screen parent) {
+	public PauseScreen (ScreenBase parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
-		parent.render(gameTime, screenTime, 0);
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+		parent.render(0, 0, 0);
 		
-		drawRectangle(0, 0, 200, 200, Color.RED);
+		mainLayer.drawRectangle(0, 0, 200, 200, Color.RED);
 
 		int xs = 0;
 		int ys = options.length;
@@ -40,14 +40,14 @@ public class PauseScreen extends Screen {
 				if (y < 0) yf--;
 				if (x >= xs) xf++;
 				if (y >= ys) yf++;
-				draw(Art.guys[xf][yf], xp + x * 6, yp + y * 6);
+				mainLayer.draw(Art.guys[xf][yf], xp + x * 6, yp + y * 6);
 			}
 		}
 		for (int y = 0; y < options.length; y++) {
 			if (y == selected) {
-				drawString("+", xp, yp + y * 6);
+				mainLayer.drawString("+", xp, yp + y * 6);
 			}
-			drawString(options[y], xp + 6, yp + y * 6);
+			mainLayer.drawString(options[y], xp + 6, yp + y * 6);
 		}
 	}
 

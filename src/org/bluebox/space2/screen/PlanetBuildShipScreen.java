@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class PlanetBuildShipScreen extends Screen {
+public class PlanetBuildShipScreen extends ScreenBase {
 
 	private static final int 	POS_Y = Constants.GAME_HEIGHT - 100;
 	private static final int 	LIST_START_Y = 19;
@@ -24,7 +24,7 @@ public class PlanetBuildShipScreen extends Screen {
 	
 	private PlanetModel 			mPlanet;
 
-	public PlanetBuildShipScreen (Screen parent, PlanetModel planet) {
+	public PlanetBuildShipScreen (ScreenBase parent, PlanetModel planet) {
 		mParent = parent;
 		mPlanet = planet;
 		mRefreshOnUpdate = true;
@@ -38,26 +38,26 @@ public class PlanetBuildShipScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
-		drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 100, new Color(0.2f, 0.2f, 0.2f, 0.85f));
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+		mainLayer.drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 100, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 
-		drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 3, 14, new Color(1, 1, 1, 0.45f));
-		drawString("Design", 4, POS_Y + 5);
-		drawRectangle(Constants.GAME_WIDTH / 3, POS_Y, 1, 200, new Color(0, 0, 0, 0.45f));
+		mainLayer.drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 3, 14, new Color(1, 1, 1, 0.45f));
+		mainLayer.drawString("Design", 4, POS_Y + 5);
+		mainLayer.drawRectangle(Constants.GAME_WIDTH / 3, POS_Y, 1, 200, new Color(0, 0, 0, 0.45f));
 
-		drawRectangle(Constants.GAME_WIDTH / 3 + 1, POS_Y, Constants.GAME_WIDTH / 3 - 1, 14, new Color(1, 1, 1, 0.45f));
-		drawString("Spacedock", Constants.GAME_WIDTH / 3 + 5, POS_Y + 5);
-		drawRectangle(Constants.GAME_WIDTH / 3 * 2, POS_Y, 1, 200, new Color(0, 0, 0, 0.45f));
+		mainLayer.drawRectangle(Constants.GAME_WIDTH / 3 + 1, POS_Y, Constants.GAME_WIDTH / 3 - 1, 14, new Color(1, 1, 1, 0.45f));
+		mainLayer.drawString("Spacedock", Constants.GAME_WIDTH / 3 + 5, POS_Y + 5);
+		mainLayer.drawRectangle(Constants.GAME_WIDTH / 3 * 2, POS_Y, 1, 200, new Color(0, 0, 0, 0.45f));
 
-		drawRectangle(Constants.GAME_WIDTH / 3 * 2 + 1, POS_Y, Constants.GAME_WIDTH / 3, 14, new Color(1, 1, 1, 0.45f));
-		drawString("In orbit", Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + 5);
+		mainLayer.drawRectangle(Constants.GAME_WIDTH / 3 * 2 + 1, POS_Y, Constants.GAME_WIDTH / 3, 14, new Color(1, 1, 1, 0.45f));
+		mainLayer.drawString("In orbit", Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + 5);
 		
 		// Draw ship desing
 		List<ShipClassModel> classes = GameService.getInstance().getShipClasses();
 		int i = 0;
 		for (ShipClassModel sc: classes) {
-			drawString(sc.getName(), 4, POS_Y + LIST_START_Y + i * LINE_INTERVAL);
-			drawString(Utils.getFormatedTime(mPlanet.getBuildETA(sc.getBuildValue())), Constants.GAME_WIDTH / 3 - 34, POS_Y + LIST_START_Y + i * LINE_INTERVAL);
+			mainLayer.drawString(sc.getName(), 4, POS_Y + LIST_START_Y + i * LINE_INTERVAL);
+			mainLayer.drawString(Utils.getFormatedTime(mPlanet.getBuildETA(sc.getBuildValue())), Constants.GAME_WIDTH / 3 - 34, POS_Y + LIST_START_Y + i * LINE_INTERVAL);
 			i++;
 		}
 
@@ -67,8 +67,8 @@ public class PlanetBuildShipScreen extends Screen {
 		int time = 0;
 		for (ShipModel sc: builds) {
 			time += sc.getBuildETA();
-			drawString(sc.getClassName(), Constants.GAME_WIDTH / 3 + 5, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
-			drawString(Utils.getFormatedTime(time), Constants.GAME_WIDTH / 3 * 2 - 34, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
+			mainLayer.drawString(sc.getClassName(), Constants.GAME_WIDTH / 3 + 5, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
+			mainLayer.drawString(Utils.getFormatedTime(time), Constants.GAME_WIDTH / 3 * 2 - 34, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
 			j++;
 		}
 
@@ -76,13 +76,13 @@ public class PlanetBuildShipScreen extends Screen {
 		List<FleetModel> orbit = mPlanet.getOrbit();
 		int k = 0;
 		if (mPlanet.getDock() != null) {
-			drawString(mPlanet.getDock().getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y);
-			drawRectangle(Constants.GAME_WIDTH - 28, POS_Y + LIST_START_Y + 1, 22, 3, Color.GREEN);
+			mainLayer.drawString(mPlanet.getDock().getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y);
+			mainLayer.drawRectangle(Constants.GAME_WIDTH - 28, POS_Y + LIST_START_Y + 1, 22, 3, Color.GREEN);
 			k = 1;
 		}
 		for (FleetModel sc: orbit) {
-			drawString(sc.getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y + k * LINE_INTERVAL);
-			drawRectangle(Constants.GAME_WIDTH - 28, POS_Y + LIST_START_Y + k * LINE_INTERVAL + 1, 22, 3, Color.GREEN);
+			mainLayer.drawString(sc.getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y + k * LINE_INTERVAL);
+			mainLayer.drawRectangle(Constants.GAME_WIDTH - 28, POS_Y + LIST_START_Y + k * LINE_INTERVAL + 1, 22, 3, Color.GREEN);
 			k++;
 		}
 	}

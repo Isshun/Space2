@@ -13,7 +13,7 @@ import org.bluebox.space2.service.GameService;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class PanelGovernmentScreen extends Screen {
+public class PanelGovernmentScreen extends ScreenBase {
 
 	private static final int LINE_HEIGHT = 15;
 	private static final int START_Y = 19;
@@ -26,16 +26,16 @@ public class PanelGovernmentScreen extends Screen {
 	}
 	
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
-		draw(Art.bg, 0, 0);
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+		mainLayer.draw(Art.bg, 0, 0);
 
-		draw(Art.ic_people, START_X, 3);
-		draw(Art.ic_satisfaction, START_X + SPACING_X * 1, 3);
-		draw(Art.res_food, START_X + SPACING_X * 2, 3);
-		draw(Art.ic_construction_12, 118 + SPACING_X * 3, 3);
-		draw(Art.ic_money_12, START_X + SPACING_X * 4, 3);
-		draw(Art.ic_science, START_X + SPACING_X * 5, 3);
-		draw(Art.res_culture, START_X + SPACING_X * 6, 3);
+		mainLayer.draw(Art.ic_people, START_X, 3);
+		mainLayer.draw(Art.ic_satisfaction, START_X + SPACING_X * 1, 3);
+		mainLayer.draw(Art.res_food, START_X + SPACING_X * 2, 3);
+		mainLayer.draw(Art.ic_construction_12, 118 + SPACING_X * 3, 3);
+		mainLayer.draw(Art.ic_money_12, START_X + SPACING_X * 4, 3);
+		mainLayer.draw(Art.ic_science, START_X + SPACING_X * 5, 3);
+		mainLayer.draw(Art.res_culture, START_X + SPACING_X * 6, 3);
 		
 		List<PlanetModel> planets = new ArrayList<PlanetModel>(GameService.getInstance().getPlayer().getPlanets());
 		Collections.sort(planets, new Comparator<PlanetModel>() {
@@ -57,17 +57,17 @@ public class PanelGovernmentScreen extends Screen {
 		int i = 0;
 		for (PlanetModel planet : planets) {
 			if (planet.getPeople() > 0) {
-				drawRectangle(4, START_Y + i * (LINE_HEIGHT + 1), Constants.GAME_WIDTH - 8, LINE_HEIGHT, i % 2 == 0 ? Color.rgba8888(0.85f, 0.85f, 1, 0.45f) : Color.rgba8888(0.85f, 0.85f, 1, 0.4f));
-				draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_12], 5, START_Y + 2 + i * (LINE_HEIGHT + 1));
-				drawString(planet.getName(), 20, START_Y + 5 + i * (LINE_HEIGHT + 1));
-				drawString(String.valueOf(planet.getPeople()), START_X + 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
-				drawString(String.valueOf((int)planet.getSatisfation()), START_X + 2 + SPACING_X * 1, START_Y + 5 + i * (LINE_HEIGHT + 1));
-				drawString(String.valueOf((int)planet.getFood()), START_X + 2 + SPACING_X * 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
-				drawString(String.valueOf((int)planet.getBuild()), START_X + 2 + SPACING_X * 3, START_Y + 5 + i * (LINE_HEIGHT + 1));
-				drawString(String.valueOf((int)planet.getMoney()), START_X + 2 + SPACING_X * 4, START_Y + 5 + i * (LINE_HEIGHT + 1));
-				drawString(String.valueOf((int)planet.getScience()), START_X + 2 + SPACING_X * 5, START_Y + 5 + i * (LINE_HEIGHT + 1));
-				drawString(String.valueOf((int)planet.getCulture()), START_X + 2 + SPACING_X * 6, START_Y + 5 + i * (LINE_HEIGHT + 1));
-				draw(Art.bt_space_map, START_X + 2 + SPACING_X * 7, START_Y + 2 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawRectangle(4, START_Y + i * (LINE_HEIGHT + 1), Constants.GAME_WIDTH - 8, LINE_HEIGHT, i % 2 == 0 ? Color.rgba8888(0.85f, 0.85f, 1, 0.45f) : Color.rgba8888(0.85f, 0.85f, 1, 0.4f));
+				mainLayer.draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_12], 5, START_Y + 2 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawString(planet.getName(), 20, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawString(String.valueOf(planet.getPeople()), START_X + 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawString(String.valueOf((int)planet.getSatisfation()), START_X + 2 + SPACING_X * 1, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawString(String.valueOf((int)planet.getFood()), START_X + 2 + SPACING_X * 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawString(String.valueOf((int)planet.getBuild()), START_X + 2 + SPACING_X * 3, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawString(String.valueOf((int)planet.getMoney()), START_X + 2 + SPACING_X * 4, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawString(String.valueOf((int)planet.getScience()), START_X + 2 + SPACING_X * 5, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawString(String.valueOf((int)planet.getCulture()), START_X + 2 + SPACING_X * 6, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				mainLayer.draw(Art.bt_space_map, START_X + 2 + SPACING_X * 7, START_Y + 2 + i * (LINE_HEIGHT + 1));
 				i++;
 			}
 		}
@@ -88,7 +88,7 @@ public class PanelGovernmentScreen extends Screen {
 				PlanetModel planet = colonized.get(pos);
 
 				if (x > START_X + 2 + SPACING_X * 7 && x < START_X + 2 + SPACING_X * 7 + 32) {
-					Screen s = back();
+					ScreenBase s = back();
 					if (s instanceof SpaceScreen) {
 						((SpaceScreen)s).gotoPos(planet.getX(), planet.getY());
 					}

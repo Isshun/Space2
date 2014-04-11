@@ -16,7 +16,7 @@ import org.bluebox.space2.ui.View.OnClickListener;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class SpaceActionScreen extends Screen {
+public class SpaceActionScreen extends ScreenBase {
 
 	private static final int 	POS_Y = Constants.GAME_HEIGHT - 65;
 	private static final int 	LIST_START_Y = 19;
@@ -25,7 +25,7 @@ public class SpaceActionScreen extends Screen {
 	protected SystemModel 		mSelectedSystem;
 	protected SystemModel 		mActionSystem;
 
-	public SpaceActionScreen (Screen parent, SystemModel system) {
+	public SpaceActionScreen (ScreenBase parent, SystemModel system) {
 		mParent = parent;
 		mSelectedSystem = system;
 	}
@@ -78,35 +78,35 @@ public class SpaceActionScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
 		System.out.println("SpaceAction: onDraw");
 		
-		drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 65, new Color(0.2f, 0.2f, 0.2f, 0.85f));
+		mainLayer.drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 65, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 
 		System.out.println("SpaceAction: onDraw 1");
 
-		drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
+		mainLayer.drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
 		if (mSelectedSystem != null) {
-			drawString("Selected:", 4, POS_Y + 5);
-			drawString(mSelectedSystem.getName(), Constants.GAME_WIDTH / 2 - mSelectedSystem.getName().length() * 6 - 5, POS_Y + 5);
+			mainLayer.drawString("Selected:", 4, POS_Y + 5);
+			mainLayer.drawString(mSelectedSystem.getName(), Constants.GAME_WIDTH / 2 - mSelectedSystem.getName().length() * 6 - 5, POS_Y + 5);
 			int i = 0;
 			for (FleetModel fleet: mSelectedSystem.getFleets()) {
 				if (fleet.getOwner().equals(GameService.getInstance().getPlayer())) {
-					drawString(fleet.getName(), 4, POS_Y + 20 + i++ * 12);
+					mainLayer.drawString(fleet.getName(), 4, POS_Y + 20 + i++ * 12);
 				}
 			}
 		}
 
 		System.out.println("SpaceAction: onDraw 2");
 
-		drawRectangle(Constants.GAME_WIDTH / 2, POS_Y, 1, 200, new Color(0, 0, 0, 0.45f));
+		mainLayer.drawRectangle(Constants.GAME_WIDTH / 2, POS_Y, 1, 200, new Color(0, 0, 0, 0.45f));
 		System.out.println("SpaceAction: onDraw 3");
-		drawRectangle(Constants.GAME_WIDTH / 2 + 1, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
+		mainLayer.drawRectangle(Constants.GAME_WIDTH / 2 + 1, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
 		System.out.println("SpaceAction: onDraw 4");
-		drawString(mActionSystem == null ? "Target" : "Target:", Constants.GAME_WIDTH / 2 + 5, POS_Y + 5);
+		mainLayer.drawString(mActionSystem == null ? "Target" : "Target:", Constants.GAME_WIDTH / 2 + 5, POS_Y + 5);
 		System.out.println("SpaceAction: onDraw 5");
 		if (mActionSystem != null) {
-			drawString(mActionSystem.getName(), Constants.GAME_WIDTH - mActionSystem.getName().length() * 6 - 5, POS_Y + 5);
+			mainLayer.drawString(mActionSystem.getName(), Constants.GAME_WIDTH - mActionSystem.getName().length() * 6 - 5, POS_Y + 5);
 			int j = 0;
 			for (FleetModel fleet: mActionSystem.getFleets()) {
 				int relation = fleet.getOwner().getRelation(GameService.getInstance().getPlayer());
@@ -118,14 +118,14 @@ public class SpaceActionScreen extends Screen {
 				case RelationModel.RELATION_WAR: str += "/war)"; break;
 				case RelationModel.RELATION_ME: str += ")"; break;
 				}
-				drawString(str, Constants.GAME_WIDTH / 2 + 5, POS_Y + 20 + j++ * 12);
+				mainLayer.drawString(str, Constants.GAME_WIDTH / 2 + 5, POS_Y + 20 + j++ * 12);
 			}
 			
 			System.out.println("SpaceAction: onDraw 6");
 
-			drawRectangle(Constants.GAME_WIDTH - 60, POS_Y + 24, 50, 50, new Color(1, 1, 1, 0.45f));
-			drawString("Move", Constants.GAME_WIDTH - 100, POS_Y + 30);
-			drawString("Cancel", Constants.GAME_WIDTH - 50, POS_Y + 30);
+			mainLayer.drawRectangle(Constants.GAME_WIDTH - 60, POS_Y + 24, 50, 50, new Color(1, 1, 1, 0.45f));
+			mainLayer.drawString("Move", Constants.GAME_WIDTH - 100, POS_Y + 30);
+			mainLayer.drawString("Cancel", Constants.GAME_WIDTH - 50, POS_Y + 30);
 		}
 	}
 

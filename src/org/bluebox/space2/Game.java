@@ -8,7 +8,7 @@ import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.PlayerModel;
 import org.bluebox.space2.screen.ErrorScreen;
 import org.bluebox.space2.screen.PauseScreen;
-import org.bluebox.space2.screen.Screen;
+import org.bluebox.space2.screen.ScreenBase;
 import org.bluebox.space2.screen.SpaceScreen;
 import org.bluebox.space2.service.GameService;
 
@@ -25,11 +25,11 @@ public class Game implements ApplicationListener {
 	private static final long 		serialVersionUID = 1L;
 
 	private static boolean 			sNeedRendering;
-	public static long 				sRender;
+	private static float				sRender;
 
-	private LinkedList<Screen> 	mScreens;
+	private LinkedList<ScreenBase> 	mScreens;
 	private boolean 					mRunning = false;
-	private Screen 					mScreen;
+	private ScreenBase 					mScreen;
 	private final boolean			mStarted = false;
 	private float 						mAccum = 0;
 	private boolean 					mMenuIsOpen;
@@ -37,7 +37,7 @@ public class Game implements ApplicationListener {
 	private double 					mGameTime;
 	private long 						mLastBack;
 	private MainGestureListener 	mGestureListener;
-	private Screen 					mOffScreen;
+	private ScreenBase 					mOffScreen;
 	private SpriteBatch 				mSpriteBatch;
 	private GameData					mData;
 	private int 						mRenderCount;
@@ -81,14 +81,12 @@ public class Game implements ApplicationListener {
 		
 		Gdx.graphics.setContinuousRendering(false);
 		Gdx.graphics.requestRendering();
-		mScreens = new LinkedList<Screen>();
+		mScreens = new LinkedList<ScreenBase>();
 
 		mData = GameDataFactory.create();
 		GameService.getInstance().setData(mData);
 		
 		GameService.getInstance().initDebug(0);
-
-		PathResolver.getInstance().getPath(GameService.getInstance().getPlayers().get(0).getHome().getSystem(), GameService.getInstance().getPlayer().getHome().getSystem());
 		
 		Matrix4 projection = new Matrix4();
 		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
@@ -136,25 +134,25 @@ public class Game implements ApplicationListener {
 		mRunning = true;
 	}
 
-	public void setScreen (Screen newScreen) {
+	public void setScreen (ScreenBase newScreen) {
 //		if (mScreen != null) mScreen.dispose();
 		mScreen = newScreen;
 		mGestureListener.setScreen(newScreen);
 		if (mScreen != null) mScreen.init(this, (int)mGameTime);
 	}
 
-	public void addScreen (Screen newScreen) {
+	public void addScreen (ScreenBase newScreen) {
 		mScreens.add(mScreen);
 		setScreen(newScreen);
 	}
 
-	public boolean isTop (Screen screen) {
+	public boolean isTop (ScreenBase screen) {
 		return mScreens.getLast() != screen;
 	}
 
 	@Override
 	public void render () {
-//		long time = System.currentTimeMillis();
+		long time = System.currentTimeMillis();
 //		if (time - mLastRender < 10) {
 //			return;
 //		}
@@ -179,14 +177,14 @@ public class Game implements ApplicationListener {
 		mSpriteBatch.draw(Art.bg, 0, 0, width, Art.bg.getRegionHeight());
 		mSpriteBatch.end();
 		
-		mScreen.render((int)mGameTime, mCycle, sRender);
+		mScreen.render((int)mGameTime, mCycle, (int)sRender);
 		
 		if (mOffScreen != null) {
 			if (mOffScreen.isEnded()) {
 				mOffScreen.dispose();
 				mOffScreen = null;
 			} else {
-				mOffScreen.render((int)mGameTime, mCycle, sRender);
+				mOffScreen.render((int)mGameTime, mCycle, (int)sRender);
 			}
 		}
 		
@@ -204,6 +202,8 @@ public class Game implements ApplicationListener {
 		}
 		
 		mRenderCount++;
+		
+		sRender = (sRender * 7 + (System.currentTimeMillis() - time)) / 8;
 		
 // batch.begin();
 // font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
@@ -240,14 +240,14 @@ public class Game implements ApplicationListener {
 	public void dispose () {
 	}
 
-	public Screen goBack () {
+	public ScreenBase goBack () {
 		long time = System.currentTimeMillis();
 		if (time - mLastBack < Constants.BACK_MIN_DELAY) {
 			return null;
 		}
 		mLastBack = time;
 		System.out.println("Go back");
-		Screen s = mScreens.pollLast();
+		ScreenBase s = mScreens.pollLast();
 		if (s != null) {
 			if (mScreen != null) {
 				replaceScreen(mScreen, s, null);
@@ -269,7 +269,7 @@ public class Game implements ApplicationListener {
 		return s;
 	}
 
-	public List<Screen> getHistoryScreen () {
+	public List<ScreenBase> getHistoryScreen () {
 		return mScreens;
 	}
 
@@ -278,7 +278,7 @@ public class Game implements ApplicationListener {
 		sNeedRendering = true;
 	}
 
-	public void replaceScreen (Screen oldScreen, Screen newScreen, Anim anim) {
+	public void replaceScreen (ScreenBase oldScreen, ScreenBase newScreen, Anim anim) {
 		if (anim != null) {
 			switch (anim) {
 			case FLIP_LEFT:

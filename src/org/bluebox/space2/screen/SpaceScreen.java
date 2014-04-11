@@ -28,7 +28,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -36,7 +35,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 
-public class SpaceScreen extends Screen {
+public class SpaceScreen extends ScreenBase {
 	private static final int MAP_POS_X = Constants.GAME_WIDTH - 64 - 6;
 	private static final int MAP_POS_Y = 6;
 
@@ -137,7 +136,7 @@ public class SpaceScreen extends Screen {
 	}
 
 	@Override
-	public void onRender (SpriteBatch spriteBatch, int gameTime, int screenTime) {
+	public void onRender (ScreenLayer dynamicLayer, int gameTime, int screenTime) {
 
 //		try {
 //
@@ -180,31 +179,32 @@ public class SpaceScreen extends Screen {
 //			e.printStackTrace();
 //		}
 
-		drawRectangle(spriteBatch, Constants.GAME_WIDTH - 64 - 6, 6, 63, 50, new Color(0, 0.06f, 0.14f, 1));
-		drawRectangle(spriteBatch, Constants.GAME_WIDTH - 64 - 6 - mRealPosX / 20, 6 - mRealPosY / 20, 18, 12, new Color(0.5f, 0.5f, 0.8f, 0.8f));
+		dynamicLayer.drawRectangle(Constants.GAME_WIDTH - 64 - 6, 6, 63, 50, new Color(0, 0.06f, 0.14f, 1));
+		dynamicLayer.drawRectangle(Constants.GAME_WIDTH - 64 - 6 - mRealPosX / 20, 6 - mRealPosY / 20, 18, 12, new Color(0.5f, 0.5f, 0.8f, 0.8f));
 		
 		List<SystemModel> systems = GameService.getInstance().getSystems();
 		
 		// Draw fleets
 		for (SystemModel system: systems) {
 			if (system.getFleets().size() > 0) {
-				drawRectangle(spriteBatch, mRealPosX + system.getX() + 16, mRealPosY + system.getY() - 4, 16, 16, system.getFleets().get(0).getOwner().getColor());
-				draw(spriteBatch, Art.ship, mRealPosX + system.getX() + 16, mRealPosY + system.getY() - 4);
+				dynamicLayer.drawRectangle(system.getX() + 16, system.getY() - 4, 16, 16, system.getFleets().get(0).getOwner().getColor());
+				dynamicLayer.draw(Art.ship, system.getX() + 16, system.getY() - 4);
 				if (system.getFleets().size() > 1) {
-					drawString(spriteBatch, "+" + (system.getFleets().size() - 1), mRealPosX + system.getX() + 28, mRealPosY + system.getY() + 12);
+					dynamicLayer.drawString("+" + (system.getFleets().size() - 1), system.getX() + 28, system.getY() + 12);
 				}
 			}
 		}
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
 
 //		if (mPixmap != null) {
 //			mPixmap.dispose();
 //		}
 		
-		mPixmap = new Pixmap(Constants.MAP_WIDTH, Constants.MAP_HEIGHT, Format.RGBA8888);
+		
+		Pixmap mPixmap = new Pixmap(Constants.MAP_WIDTH, Constants.MAP_HEIGHT, Format.RGBA8888);
 //		mPixmap.setColor(Color.CYAN);
 //		mPixmap.fillRectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
 		
@@ -218,7 +218,7 @@ public class SpaceScreen extends Screen {
 			}
 		}
 
-		draw(mPixmap, 0, 0);
+		mainLayer.draw(mPixmap, 0, 0);
 		
 		mPixmap.dispose();
 
@@ -227,7 +227,7 @@ public class SpaceScreen extends Screen {
 		List<TravelModel> travels = GameService.getInstance().getTraveLines();
 		for (TravelModel travel : travels) {
 			int length = (int)Math.sqrt(Math.pow(Math.abs(travel.getFrom().getX() - travel.getTo().getX()), 2) + Math.pow(Math.abs(travel.getFrom().getY() - travel.getTo().getY()), 2));
-			drawRectangle(
+			mainLayer.drawRectangle(
 				mDeprecatedPosX - length / 2 + Constants.SYSTEM_SIZE / 2 + travel.getX(),
 				mDeprecatedPosY + Constants.SYSTEM_SIZE / 2 + travel.getY(),
 				length,
@@ -240,7 +240,7 @@ public class SpaceScreen extends Screen {
 		if (mTravelPath != null) {
 			for (TravelModel travel : mTravelPath) {
 				int length = (int)Math.sqrt(Math.pow(Math.abs(travel.getFrom().getX() - travel.getTo().getX()), 2) + Math.pow(Math.abs(travel.getFrom().getY() - travel.getTo().getY()), 2));
-				drawRectangle(
+				mainLayer.drawRectangle(
 					mDeprecatedPosX - length / 2 + Constants.SYSTEM_SIZE / 2 + travel.getX(),
 					mDeprecatedPosY - 1 + Constants.SYSTEM_SIZE / 2 + travel.getY(),
 					length,
@@ -250,39 +250,39 @@ public class SpaceScreen extends Screen {
 			}
 			for (SystemModel system: mSystemPath) {
 				if (system != mSelected) {
-					draw(Art.system_selected[system.getType()], mDeprecatedPosX + system.getX(), mDeprecatedPosY + system.getY());
+					mainLayer.draw(Art.system_selected[system.getType()], mDeprecatedPosX + system.getX(), mDeprecatedPosY + system.getY());
 				}
 			}
 			
-			draw(Art.system_selected[mSelected.getType()], mDeprecatedPosX + mSelected.getX(), mDeprecatedPosY + mSelected.getY());
+			mainLayer.draw(Art.system_selected[mSelected.getType()], mDeprecatedPosX + mSelected.getX(), mDeprecatedPosY + mSelected.getY());
 		}
 		
 		// Draw selected system
 		else if (mSelected != null) {
-			draw(Art.system_selected[mSelected.getType()], mDeprecatedPosX + mSelected.getX(), mDeprecatedPosY + mSelected.getY());
+			mainLayer.draw(Art.system_selected[mSelected.getType()], mDeprecatedPosX + mSelected.getX(), mDeprecatedPosY + mSelected.getY());
 		}
 
 		// Draw system
 		List<SystemModel> systems = GameService.getInstance().getSystems();
 		for (SystemModel system : systems) {
-			drawSystem(system);
+			drawSystem(mainLayer, system);
 		}
 		
-		drawInterface(Constants.GAME_WIDTH - 100, 10);
+		drawInterface(UILayer, Constants.GAME_WIDTH - 100, 10);
 	}
 
-	private void drawSystem (SystemModel system) {
-		draw(Art.system[system.getType()], mDeprecatedPosX + system.getX(), mDeprecatedPosY + system.getY());
+	private void drawSystem (ScreenLayer mainLayer, SystemModel system) {
+		mainLayer.draw(Art.system[system.getType()], mDeprecatedPosX + system.getX(), mDeprecatedPosY + system.getY());
 
 		String name = system.getName();
 		PlayerModel owner = system.getOwner();
 		if (owner != null) {
-			setStringColor(owner.getColor());
+			mainLayer.setStringColor(owner.getColor());
 		}
-		drawString(name, mDeprecatedPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mDeprecatedPosY + system.getY() + Constants.SYSTEM_SIZE + 6);
+		mainLayer.drawString(name, mDeprecatedPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mDeprecatedPosY + system.getY() + Constants.SYSTEM_SIZE + 6);
 	}
 
-	private void drawInterface (int posX, int posY) {
+	private void drawInterface (ScreenLayer UILayer, int posX, int posY) {
 		List<SystemModel> systems = GameService.getInstance().getSystems();
 
 //		draw(Art.bt_planets, 6, 6);
@@ -291,19 +291,15 @@ public class SpaceScreen extends Screen {
 //		draw(Art.bt_relations, 44, 6);
 //		drawString("RELS.", posX + 40, posY + 34);
 //
-		mCacheUI.beginCache();
-
-		draw(mCacheUI, Art.map, Constants.GAME_WIDTH - 64 - 6, 6);
+		UILayer.draw(Art.map, Constants.GAME_WIDTH - 64 - 6, 6);
 		//drawString(mCacheUI, "Cycle:  " + mCycle, Constants.GAME_WIDTH - 64 - 4, posY + 49);
 
 		// Mini-map
 		for (SystemModel system : systems) {
 			Color color = system.getOwner() != null ? system.getOwner().getColor() : Color.WHITE;
-			drawRectangle(mCacheUI, MAP_POS_X + system.getX() / 20, MAP_POS_Y + system.getY() / 20, 1, 1, color);
+			UILayer.drawRectangle(MAP_POS_X + system.getX() / 20, MAP_POS_Y + system.getY() / 20, 1, 1, color);
 		}
 		
-		mCacheUIId = mCacheUI.endCache();
-
 	}
 
 	@Override
@@ -364,6 +360,16 @@ public class SpaceScreen extends Screen {
 	@Override
 	public void onMoveEnd (int offsetX, int offsetY) {
 //		notifyChange();
+	}
+
+	@Override
+	public void onPinch () {
+		mZoom = (float)Math.min(2, mZoom + 0.04);
+	}
+
+	@Override
+	public void onZoom () {
+		mZoom = (float)Math.max(1, mZoom - 0.04);
 	}
 
 	public void gotoPos (int x, int y) {

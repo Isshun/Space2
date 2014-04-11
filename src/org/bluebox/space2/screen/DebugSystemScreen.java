@@ -10,7 +10,7 @@ import org.bluebox.space2.ui.TextView;
 import org.bluebox.space2.ui.View.OnClickListener;
 
 
-public class DebugSystemScreen extends Screen {
+public class DebugSystemScreen extends ScreenBase {
 
 	private SystemModel mSystem;
 
@@ -51,7 +51,7 @@ public class DebugSystemScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
 		// TODO Auto-generated method stub
 
 	}

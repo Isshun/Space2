@@ -12,7 +12,7 @@ import org.bluebox.space2.ui.TextView;
 import org.bluebox.space2.ui.View.OnClickListener;
 
 
-public class DebugScreen extends Screen {
+public class DebugScreen extends ScreenBase {
 
 	@Override
 	protected void onCreate () {
@@ -46,8 +46,8 @@ public class DebugScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
-		drawString("map index: " + GameService.getInstance().getData().systemMapIndex, 4, 4);
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+		mainLayer.drawString("map index: " + GameService.getInstance().getData().systemMapIndex, 4, 4);
 		
 
 		PlayerModel player = GameService.getInstance().getPlayer();
@@ -57,7 +57,7 @@ public class DebugScreen extends Screen {
 		}
 		int i = 0;
 		for (ShipModel build: builds) {
-			drawString("build: " + build.getClassName() + " (" + build.getPlanet().getName() + " / " + build.getBuildRemain() + ")", 200, 4 + 10 * i++);
+			mainLayer.drawString("build: " + build.getClassName() + " (" + build.getPlanet().getName() + " / " + build.getBuildRemain() + ")", 200, 4 + 10 * i++);
 		}
 
 	}

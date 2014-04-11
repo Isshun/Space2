@@ -16,7 +16,7 @@ import org.bluebox.space2.ui.View.OnClickListener;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class PanelFleetScreen extends Screen {
+public class PanelFleetScreen extends ScreenBase {
 
 	private static final int GRID_WIDTH = 46;
 	private static final int GRID_HEIGHT = 50;
@@ -60,18 +60,18 @@ public class PanelFleetScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
-		draw(Art.bg_1, 0, 0);
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+		mainLayer.draw(Art.bg_1, 0, 0);
 		
-		setStringSize(StringConfig.SIZE_BIG);
-		drawString(String.format("%s (%d/%d/%d)", mFleet.getName(), (int)mTotInd, (int)mAttInd, (int)mDefInd), 6, 6);
+		mainLayer.setStringSize(StringConfig.SIZE_BIG);
+		mainLayer.drawString(String.format("%s (%d/%d/%d)", mFleet.getName(), (int)mTotInd, (int)mAttInd, (int)mDefInd), 6, 6);
 
 		// Draw location
-		drawString(mFleet.getLocationName(), 6, 24);
+		mainLayer.drawString(mFleet.getLocationName(), 6, 24);
 
-		draw(Art.ship_big, Constants.GAME_WIDTH - 132, 12);
+		mainLayer.draw(Art.ship_big, Constants.GAME_WIDTH - 132, 12);
 
-		drawShipInfo(Constants.GAME_WIDTH - 180, Constants.GAME_HEIGHT - 150);
+		drawShipInfo(mainLayer, Constants.GAME_WIDTH - 180, Constants.GAME_HEIGHT - 150);
 		
 		//drawRectangle(6, 32, 183, 600, Color.rgba8888(0.85f, 0.85f, 1, 0.45f)); 
 		
@@ -80,7 +80,7 @@ public class PanelFleetScreen extends Screen {
 		for (ShipModel ship : ships) {
 			
 			if (i == mSelected) {
-				drawRectangle(
+				mainLayer.drawRectangle(
 					START_X + GRID_PADDING + (i % GRID_COLUMNS) * GRID_WIDTH,
 					START_Y + GRID_PADDING + (int)(i / GRID_COLUMNS) * GRID_HEIGHT,
 					GRID_CONTENT_WIDTH,
@@ -88,11 +88,11 @@ public class PanelFleetScreen extends Screen {
 					Color.rgba8888(0.85f, 1, 0.85f, 0.65f));
 			}
 			
-			draw(Art.ship_32,
+			mainLayer.draw(Art.ship_32,
 				START_X + 7 + GRID_PADDING + (i % GRID_COLUMNS) * GRID_WIDTH,
 				START_Y + 6 + GRID_PADDING + (int)(i / GRID_COLUMNS) * GRID_HEIGHT);
 			
-			drawRectangle(
+			mainLayer.drawRectangle(
 				START_X + 7 + GRID_PADDING + (i % GRID_COLUMNS) * GRID_WIDTH,
 				START_Y + 40 + GRID_PADDING + (int)(i / GRID_COLUMNS) * GRID_HEIGHT,
 				(int)((GRID_CONTENT_WIDTH - 14) * ship.getHullRatio()),
@@ -103,7 +103,7 @@ public class PanelFleetScreen extends Screen {
 		}
 	}
 
-	private void drawShipInfo (int posX, int posY) {
+	private void drawShipInfo (ScreenLayer mainLayer, int posX, int posY) {
 		mSelected = Math.min(mSelected, mFleet.getShips().size() - 1);
 		if (mSelected == -1) {
 			return;
@@ -111,31 +111,31 @@ public class PanelFleetScreen extends Screen {
 		
 		ShipModel ship = mFleet.getShips().get(mSelected);
 
-		setStringSize(StringConfig.SIZE_BIG);
-		drawString(String.valueOf((int)ship.getIndice()), posX + 6, posY + 16);
+		mainLayer.setStringSize(StringConfig.SIZE_BIG);
+		mainLayer.drawString(String.valueOf((int)ship.getIndice()), posX + 6, posY + 16);
 //		draw(Art.ic_info_32, 215, 120);
-		drawString("class:      " + ship.getClassName(),posX + 42, posY);
-		drawString("mass:           " + ship.getMass(), posX + 42, posY + 12 * 1);
-		drawString("crew:         " + ship.getCrew() + "/" + ship.getTotalCrew(), posX + 42, posY + 12 * 2);
-		drawString("special:       " + ship.getSpecialDeviceName(), posX + 42, posY + 12 * 3);
+		mainLayer.drawString("class:      " + ship.getClassName(),posX + 42, posY);
+		mainLayer.drawString("mass:           " + ship.getMass(), posX + 42, posY + 12 * 1);
+		mainLayer.drawString("crew:         " + ship.getCrew() + "/" + ship.getTotalCrew(), posX + 42, posY + 12 * 2);
+		mainLayer.drawString("special:       " + ship.getSpecialDeviceName(), posX + 42, posY + 12 * 3);
 		
-		drawRectangle(posX, posY + 48, 157, 1, Color.rgba8888(1, 1, 1, 0.65f));
+		mainLayer.drawRectangle(posX, posY + 48, 157, 1, Color.rgba8888(1, 1, 1, 0.65f));
 
-		setStringSize(StringConfig.SIZE_BIG);
-		drawString(String.valueOf((int)ship.getAttackIndice()), posX + 6, posY + 64);
+		mainLayer.setStringSize(StringConfig.SIZE_BIG);
+		mainLayer.drawString(String.valueOf((int)ship.getAttackIndice()), posX + 6, posY + 64);
 //		draw(Art.ic_attack_32, 215, 162);
-		drawString("pow. phaser:    " + (int)ship.getPhaserPower(), posX + 42, posY + 18 + 12 * 3);
-		drawString("pow. torpedo:   " + (int)ship.getTorpedoPower(), posX + 42, posY + 18 + 12 * 4);
-		drawString("speed:           " + (int)ship.getVelocity(), posX + 42, posY + 18 + 12 * 5);
+		mainLayer.drawString("pow. phaser:    " + (int)ship.getPhaserPower(), posX + 42, posY + 18 + 12 * 3);
+		mainLayer.drawString("pow. torpedo:   " + (int)ship.getTorpedoPower(), posX + 42, posY + 18 + 12 * 4);
+		mainLayer.drawString("speed:           " + (int)ship.getVelocity(), posX + 42, posY + 18 + 12 * 5);
 
-		drawRectangle(posX, posY + 90, 157, 1, Color.rgba8888(1, 1, 1, 0.65f));
+		mainLayer.drawRectangle(posX, posY + 90, 157, 1, Color.rgba8888(1, 1, 1, 0.65f));
 		
-		setStringSize(StringConfig.SIZE_BIG);
-		drawString(String.valueOf((int)ship.getDefenseIndice()), posX + 6, posY + 106);
+		mainLayer.setStringSize(StringConfig.SIZE_BIG);
+		mainLayer.drawString(String.valueOf((int)ship.getDefenseIndice()), posX + 6, posY + 106);
 //		draw(Art.shield, 215, 204);
-		drawString("hull:       " + ship.getHull() + "/" + ship.getHullBase(), posX + 42, posY + 24 + 12 * 6);
-		drawString("armory:          " + (int)ship.getArmory(), posX + 42, posY + 24 + 12 * 7);
-		drawString("shield:          " + (int)ship.getShieldPower(), posX + 42, posY + 24 + 12 * 8);
+		mainLayer.drawString("hull:       " + ship.getHull() + "/" + ship.getHullBase(), posX + 42, posY + 24 + 12 * 6);
+		mainLayer.drawString("armory:          " + (int)ship.getArmory(), posX + 42, posY + 24 + 12 * 7);
+		mainLayer.drawString("shield:          " + (int)ship.getShieldPower(), posX + 42, posY + 24 + 12 * 8);
 		
 	}
 

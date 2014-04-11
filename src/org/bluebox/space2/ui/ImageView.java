@@ -1,6 +1,6 @@
 package org.bluebox.space2.ui;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class ImageView extends View {
@@ -16,10 +16,10 @@ public class ImageView extends View {
 	}
 
 	@Override
-	public void draw (SpriteBatch spriteBatch) {
+	public void draw (SpriteCache spriteBatch) {
 		int width = mWidth;
 		if (width < 0) width = -width;
-		spriteBatch.draw(mRegion, mPosX, mPosY, width, mRegion.getRegionHeight());
+		spriteBatch.add(mRegion, mPosX, mPosY, width, mRegion.getRegionHeight());
 	}
 
 }

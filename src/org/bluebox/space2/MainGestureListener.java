@@ -1,6 +1,6 @@
 package org.bluebox.space2;
 
-import org.bluebox.space2.screen.Screen;
+import org.bluebox.space2.screen.ScreenBase;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
@@ -11,11 +11,12 @@ public class MainGestureListener implements GestureListener {
 	private static float RATIO_X;
 	private static float RATIO_Y;
 	
-	private Screen 	mScreen;
+	private ScreenBase 	mScreen;
 	private int 		mLastTouchX;
 	private int 		mLastTouchY;
 	private Game 		mGame;
 	private boolean 	mIsMoving;
+	private boolean 	mIsPinch;
 
 	public MainGestureListener (Game game) {
 		RATIO_X = (float)Constants.GAME_WIDTH / Gdx.graphics.getWidth();
@@ -24,7 +25,7 @@ public class MainGestureListener implements GestureListener {
 		mGame = game;
 	}
 
-	public void setScreen (Screen screen) {
+	public void setScreen (ScreenBase screen) {
 		mScreen = screen;
 	}
 
@@ -79,6 +80,10 @@ public class MainGestureListener implements GestureListener {
 
 	@Override
 	public boolean pan (float x, float y, float deltaX, float deltaY) {
+		if (mIsPinch) {
+			return false;
+		}
+
 		System.out.println("pan");
 
 		int x2 = (int)(x * RATIO_X);
@@ -102,29 +107,38 @@ public class MainGestureListener implements GestureListener {
 		int x2 = (int)(x * RATIO_X);
 		int y2 = (int)(y * RATIO_Y);
 
-		if (mScreen != null) {
+		if (mIsPinch == false && mScreen != null) {
 			mScreen.onMoveEnd(x2, y2);
 		}
 
 		mIsMoving = false;
+		mIsPinch = false;
 		
 		return false;
 	}
 
 	@Override
 	public boolean zoom (float initialDistance, float distance) {
-		System.out.println("zoom");
+		System.out.println("zoom: " + distance);
 
 		return false;
 	}
 
 	@Override
 	public boolean pinch (Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-		System.out.println("pinch");
+		int initDistance = (int)Math.abs(initialPointer1.x - initialPointer2.x);
+		int distance = (int)Math.abs(pointer1.x - pointer2.x);
 		
-		mScreen.onBack();
-		mGame.goBack();
-
+		if (distance > initDistance) {
+			mScreen.onZoom();
+		} else {
+			mScreen.onPinch();
+		}
+		
+		mIsPinch = true;
+		
+		System.out.println("pinch: " + initDistance + ", " + distance);
+		
 		return false;
 	}
 

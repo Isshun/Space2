@@ -16,7 +16,7 @@ import org.bluebox.space2.ui.View.OnClickListener;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class PlanetScreen extends Screen {
+public class PlanetScreen extends ScreenBase {
 	private static final int PLANET_REVOLUTION = 100;
 	private static final int MOON_REVOLUTION = 100;
 	private static final int PLANET_SPACING = 64;
@@ -51,7 +51,7 @@ public class PlanetScreen extends Screen {
 		mBtStructure.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
-				Screen s = new PlanetBuildStructureScreen(PlanetScreen.this, mPlanet);
+				ScreenBase s = new PlanetBuildStructureScreen(PlanetScreen.this, mPlanet);
 				s.setTransition(Anim.FLIP_BOTTOM);
 				addScreen(s);
 			}
@@ -60,7 +60,7 @@ public class PlanetScreen extends Screen {
 	}
 
 	@Override
-	public void onDraw (int gameTime, int screenTime) {
+	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
 		int planetX = Constants.GAME_WIDTH - 128 - 40;
 		int planetY = 40;
 		
@@ -72,23 +72,23 @@ public class PlanetScreen extends Screen {
 				// Planet
 				if (i > 0 && !isPlanetDrew) {
 					isPlanetDrew = true;
-					draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], planetX, planetY);
+					mainLayer.draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], planetX, planetY);
 				}
 				// Ships in orbit
 				if (i < -2.23 || i > -0.85) {
 					int shipX = planetX + 128 / 2 + (int)(Math.cos(i) * 90) - 8;
 					int shipY = planetY + 128 / 2 + (int)(Math.sin(i) * 40) - 8;
-					draw(Art.ship, shipX, shipY);
+					mainLayer.draw(Art.ship, shipX, shipY);
 				}
 			}
 		} else {
-			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], planetX, planetY);
+			mainLayer.draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], planetX, planetY);
 		}
 		
 		if (mPlanet.getDock() != null) {
 			int shipX = planetX - 128 / 2;
 			int shipY = planetY;
-			draw(Art.dock, shipX, shipY);
+			mainLayer.draw(Art.dock, shipX, shipY);
 		}
 		
 
@@ -105,7 +105,7 @@ public class PlanetScreen extends Screen {
 //			draw(Art.planets[mPlanet.getClassification().id][Art.PLANET_RES_128], posX, posY);
 //		}
 		
-		drawRectangle(6, 6, Constants.GAME_WIDTH - 12, 20, mColor);
+		mainLayer.drawRectangle(6, 6, Constants.GAME_WIDTH - 12, 20, mColor);
 
 //		if (mPlanet.getOwner() != null) {
 //			drawBigString(mPlanet.getName(), 12, 12, mPlanet.getOwner().getColor());
@@ -113,15 +113,15 @@ public class PlanetScreen extends Screen {
 //		}
 		
 		if (isTop()) {
-			setStringSize(StringConfig.SIZE_BIG);
-			drawString(mPlanet.getName(), 12, 12);
-			drawCharacteristics(6, 32);
-			drawInfos(6, 84);
+			mainLayer.setStringSize(StringConfig.SIZE_BIG);
+			mainLayer.drawString(mPlanet.getName(), 12, 12);
+			drawCharacteristics(mainLayer, 6, 32);
+			drawInfos(mainLayer, 6, 84);
 			mBtShip.setVisibility(mPlanet.getDock() != null ? View.VISIBLE : View.GONE);
 			mBtStructure.setVisibility(View.VISIBLE);
 		} else {
-			setStringSize(StringConfig.SIZE_BIG);
-			drawString("Build on " + mPlanet.getName(), 12, 12);
+			mainLayer.setStringSize(StringConfig.SIZE_BIG);
+			mainLayer.drawString("Build on " + mPlanet.getName(), 12, 12);
 			mBtShip.setVisibility(View.GONE);
 			mBtStructure.setVisibility(View.GONE);
 		}
@@ -130,39 +130,39 @@ public class PlanetScreen extends Screen {
 //		drawString("structure", 126, Constants.GAME_HEIGHT - 20);
 	}
 
-	private void drawCharacteristics (int posX, int posY) {
-		drawRectangle(posX, posY, 134, 46, mColor);
-		drawRectangle(posX, posY, 134, 12, mColor);
-		drawString("Info", posX + 4, posY + 4);
-		drawString("Size:          " + mPlanet.getSizeName(), posX + 4, posY + 4 + 12);
-		drawString("Class:   " + mPlanet.getClassName(), posX + 4, posY + 4 + 22);
-		drawString("Population:         " + mPlanet.getPeople(), posX + 4, posY + 4 + 32);
+	private void drawCharacteristics (ScreenLayer mainLayer, int posX, int posY) {
+		mainLayer.drawRectangle(posX, posY, 134, 46, mColor);
+		mainLayer.drawRectangle(posX, posY, 134, 12, mColor);
+		mainLayer.drawString("Info", posX + 4, posY + 4);
+		mainLayer.drawString("Size:          " + mPlanet.getSizeName(), posX + 4, posY + 4 + 12);
+		mainLayer.drawString("Class:   " + mPlanet.getClassName(), posX + 4, posY + 4 + 22);
+		mainLayer.drawString("Population:         " + mPlanet.getPeople(), posX + 4, posY + 4 + 32);
 	}
 
-	private void drawInfos (int posX, int posY) {
-		drawRectangle(posX, posY, 134, 72, mColor);
-		drawRectangle(posX, posY, 134, 12, mColor);
-		drawString("Production ", posX + 4, posY + 4);
+	private void drawInfos (ScreenLayer mainLayer, int posX, int posY) {
+		mainLayer.drawRectangle(posX, posY, 134, 72, mColor);
+		mainLayer.drawRectangle(posX, posY, 134, 12, mColor);
+		mainLayer.drawString("Production ", posX + 4, posY + 4);
 		
 		posY += 14;
-		draw(Art.res_food, posX + 4, posY);
-		drawString(String.format("Food:        %d (%d)", (int)mPlanet.getFood(), (int)mPlanet.getBaseFood()), posX + 20, posY + 4);
+		mainLayer.draw(Art.res_food, posX + 4, posY);
+		mainLayer.drawString(String.format("Food:        %d (%d)", (int)mPlanet.getFood(), (int)mPlanet.getBaseFood()), posX + 20, posY + 4);
 
 		posY += 12;
-		draw(Art.ic_construction_12, posX + 4, posY);
-		drawString(String.format("Build:       %d (%d)", (int)mPlanet.getBuild(), (int)mPlanet.getBaseBuild()), posX + 20, posY + 4);
+		mainLayer.draw(Art.ic_construction_12, posX + 4, posY);
+		mainLayer.drawString(String.format("Build:       %d (%d)", (int)mPlanet.getBuild(), (int)mPlanet.getBaseBuild()), posX + 20, posY + 4);
 
 		posY += 12;
-		draw(Art.ic_money_12, posX + 4, posY);
-		drawString(String.format("Money:       %d (%d)", (int)mPlanet.getMoney(), (int)mPlanet.getBaseMoney()), posX + 20, posY + 4);
+		mainLayer.draw(Art.ic_money_12, posX + 4, posY);
+		mainLayer.drawString(String.format("Money:       %d (%d)", (int)mPlanet.getMoney(), (int)mPlanet.getBaseMoney()), posX + 20, posY + 4);
 
 		posY += 12;
-		draw(Art.ic_science, posX + 4, posY);
-		drawString(String.format("Science:     %d (%d)", (int)mPlanet.getScience(), (int)mPlanet.getBaseScience()), posX + 20, posY + 4);
+		mainLayer.draw(Art.ic_science, posX + 4, posY);
+		mainLayer.drawString(String.format("Science:     %d (%d)", (int)mPlanet.getScience(), (int)mPlanet.getBaseScience()), posX + 20, posY + 4);
 
 		posY += 12;
-		draw(Art.res_culture, posX + 4, posY);
-		drawString(String.format("Culture:     %d (%d)", (int)mPlanet.getCulture(), (int)mPlanet.getBaseCulture()), posX + 20, posY + 4);
+		mainLayer.draw(Art.res_culture, posX + 4, posY);
+		mainLayer.drawString(String.format("Culture:     %d (%d)", (int)mPlanet.getCulture(), (int)mPlanet.getBaseCulture()), posX + 20, posY + 4);
 	}
 
 	@Override
