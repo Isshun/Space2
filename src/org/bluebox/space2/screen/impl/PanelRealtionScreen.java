@@ -1,16 +1,18 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import java.util.List;
 
 import org.bluebox.space2.Art;
 import org.bluebox.space2.model.PlayerModel;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 import org.bluebox.space2.service.GameService;
 
 
 public class PanelRealtionScreen extends ScreenBase {
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		mainLayer.draw(Art.bg, 0, 0);
 
 		List<PlayerModel> players = GameService.getInstance().getPlayers();

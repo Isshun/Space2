@@ -1,6 +1,5 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2.ui;
 
-import org.bluebox.space2.ui.RectangleView;
 
 import com.badlogic.gdx.graphics.Color;
 

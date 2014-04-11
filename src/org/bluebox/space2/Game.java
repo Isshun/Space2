@@ -3,13 +3,14 @@ package org.bluebox.space2;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.PlayerModel;
-import org.bluebox.space2.screen.ErrorScreen;
-import org.bluebox.space2.screen.PauseScreen;
 import org.bluebox.space2.screen.ScreenBase;
-import org.bluebox.space2.screen.SpaceScreen;
+import org.bluebox.space2.screen.impl.ErrorScreen;
+import org.bluebox.space2.screen.impl.PauseScreen;
+import org.bluebox.space2.screen.impl.SpaceScreen;
 import org.bluebox.space2.service.GameService;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -43,6 +44,10 @@ public class Game implements ApplicationListener {
 	private int 						mRenderCount;
 	protected Timer 					mTimer;
 	private long 						mLastRender;
+
+	public static Random 			sRandom;
+
+	private static boolean sNotifyChange;
 	
 	public enum Anim {
 		NO_TRANSITION,
@@ -58,6 +63,8 @@ public class Game implements ApplicationListener {
 		Art.load();
 		Sound.load();
 		mRunning = true;
+
+		sRandom = new Random(42);
 		
 		double r1 = 320f / Gdx.graphics.getHeight();
 		double r2 = 480f / Gdx.graphics.getWidth();
@@ -66,7 +73,7 @@ public class Game implements ApplicationListener {
 		int ratio = 1;
 		for (int i = 2; i < 10; i++) {
 			System.out.println("window i: " + (Gdx.graphics.getWidth() / i));
-			if ((Gdx.graphics.getWidth() / i) > 320) {
+			if ((Gdx.graphics.getWidth() / i) > 620) {
 				ratio = i;
 			}
 		}
@@ -177,6 +184,10 @@ public class Game implements ApplicationListener {
 		mSpriteBatch.draw(Art.bg, 0, 0, width, Art.bg.getRegionHeight());
 		mSpriteBatch.end();
 		
+		if (sNotifyChange) {
+			mScreen.notifyChange();
+			sNotifyChange = false;
+		}
 		mScreen.render((int)mGameTime, mCycle, (int)sRender);
 		
 		if (mOffScreen != null) {
@@ -226,6 +237,8 @@ public class Game implements ApplicationListener {
 
 		List<PlayerModel> players = GameService.getInstance().getPlayers();
 		for (PlayerModel player: players) {
+			IA.getInstance().play(player);
+			
 			player.update();
 		}
 
@@ -311,5 +324,15 @@ public class Game implements ApplicationListener {
 		mScreen = newScreen;
 		mGestureListener.setScreen(newScreen);
 		if (mScreen != null) mScreen.init(this, (int)mGameTime);
+	}
+
+	public static void notifyChange () {
+		sNotifyChange = true;
+		
+		System.out.println("========================================");
+		System.out.println("========================================");
+		System.out.println("============ GLOBAL CHANGE =============");
+		System.out.println("========================================");
+		System.out.println("========================================");
 	}
 }

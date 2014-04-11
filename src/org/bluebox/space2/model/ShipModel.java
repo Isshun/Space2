@@ -2,6 +2,8 @@ package org.bluebox.space2.model;
 
 import java.util.List;
 
+import org.bluebox.space2.model.DeviceModel.Device;
+
 
 public class ShipModel {
 	private List<ShipDeviceModel>	mDevices;
@@ -24,6 +26,8 @@ public class ShipModel {
 	private PlanetModel		mPlanet;
 	private SystemModel 		mSystem;
 	private ShipClassModel 	mShipClass;
+
+	private FleetModel mFleet;
 	
 	public ShipModel(ShipClassModel shipClass) {
 		mSpeed = 42;
@@ -36,7 +40,6 @@ public class ShipModel {
 		mHull = mHullBase = shipClass.getHull();
 		mPhaserPower = shipClass.getPhaserPower();
 		mTorpedoPower = shipClass.getTorpedoPower();
-		
 		
 		mAttackIndice = mPhaserPower + mTorpedoPower;
 		mDefenseIndice = mShieldPower + mArmory;
@@ -85,5 +88,17 @@ public class ShipModel {
 		}
 		mHull -= damage;
 		return damage;
+	}
+
+	public boolean hasDevice (Device device) {
+		return mShipClass.hasDevice(device);
+	}
+
+	public FleetModel getFleet () {
+		return mFleet;
+	}
+
+	public void setFleet (FleetModel fleet) {
+		mFleet = fleet;
 	}
 }

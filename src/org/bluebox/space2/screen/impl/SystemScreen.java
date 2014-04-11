@@ -1,18 +1,17 @@
 
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import java.util.List;
 
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
-import org.bluebox.space2.Game;
 import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.SystemModel;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SystemScreen extends ScreenBase {
 	private static final int PLANET_REVOLUTION = 96;
@@ -44,7 +43,7 @@ public class SystemScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		mainLayer.draw(Art.bg, 0, 0);
 		mainLayer.draw(Art.sun[mSystem.getType()], -156, Constants.GAME_HEIGHT / 2 - 128);
 		
@@ -86,7 +85,7 @@ public class SystemScreen extends ScreenBase {
 		}
 	}
 
-	private void drawPlanet (ScreenLayer mainLayer, PlanetModel planet, int posX, int posY) {
+	private void drawPlanet (ScreenLayerBase mainLayer, PlanetModel planet, int posX, int posY) {
 		int offsetY = 0;
 		switch (planet.getSize()) {
 		case 0:

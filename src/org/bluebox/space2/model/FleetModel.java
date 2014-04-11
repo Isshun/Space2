@@ -9,6 +9,11 @@ import org.bluebox.space2.path.Vertex;
 
 
 public class FleetModel {
+	public enum Action {
+		NONE,
+		MOVE
+	}
+	
 	private static int 		sCount;
 
 	private List<ShipModel>	mShips;
@@ -20,13 +25,17 @@ public class FleetModel {
 
 	private LinkedList<Vertex> mPath;
 
+	private Action mAction;
+
 	public FleetModel () {
+		mAction = Action.NONE;
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
 		mName = NameGenerator.generate(NameGenerator.KLINGON, sCount++);
 	}
 
 	public FleetModel (String name) {
+		mAction = Action.NONE;
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
 		mName = name;
@@ -38,6 +47,7 @@ public class FleetModel {
 	
 	public void addShip(ShipModel ship) {
 		mShips.add(ship);
+		ship.setFleet(this);
 
 		if (ship.getSpeed() < mSpeed) {
 			mSpeed = ship.getSpeed();
@@ -98,6 +108,8 @@ public class FleetModel {
 	public void go (SystemModel system) {
 		System.out.println("Go to " + system.getName());
 		
+		mAction = Action.MOVE;
+		
 		system.moveTo(this);
 		
 		// Remove casualties
@@ -119,6 +131,9 @@ public class FleetModel {
 			Vertex v = mPath.pollFirst();
 			go (v.getSystem());
 		}
+		else {
+			mAction = Action.NONE;
+		}
 	}
 
 	public void setCourse (SystemModel goal) {
@@ -130,6 +145,10 @@ public class FleetModel {
 				move();
 			}
 		}
+	}
+
+	public Action getAction () {
+		return mAction;
 	}
 
 }

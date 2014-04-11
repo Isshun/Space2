@@ -1,10 +1,12 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import java.util.List;
 
 import org.bluebox.space2.model.FleetModel;
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.SystemModel;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 import org.bluebox.space2.service.GameService;
 import org.bluebox.space2.ui.TextView;
 import org.bluebox.space2.ui.View.OnClickListener;
@@ -51,7 +53,7 @@ public class DebugSystemScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		// TODO Auto-generated method stub
 
 	}

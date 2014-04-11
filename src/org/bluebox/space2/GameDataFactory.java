@@ -80,7 +80,7 @@ public class GameDataFactory {
 		ShipClassModel sc = data.shipClasses.get(0);
 		for (PlayerModel player: data.players) {
 			{
-				FleetModel fleet = new FleetModel(NameGenerator.generate(NameGenerator.KLINGON, player.getfleets().size()));
+				FleetModel fleet = new FleetModel(NameGenerator.generate(NameGenerator.KLINGON, player.getFleets().size()));
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Alpha" : player.getName());
 				fleet.addShip(new ShipModel(sc));
@@ -139,7 +139,7 @@ public class GameDataFactory {
 	private static void initTravelLines (GameData data) {
 		// Create travel lines
 		for (SystemModel s: data.systems) {
-			int r = (int)(Math.random() * 2);
+			int r = (int)(Game.sRandom.nextInt(2));
 			SystemModel s1 = null;
 			SystemModel s2 = null;
 			SystemModel s3 = null;
@@ -204,6 +204,7 @@ public class GameDataFactory {
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
 			sc.addDevice(DeviceModel.get(Device.HULL_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
+			sc.addDevice(DeviceModel.get(Device.COLONIZER));
 			sc.setBuildValue(100);
 			data.shipClasses.add(sc);
 		}
@@ -218,11 +219,13 @@ public class GameDataFactory {
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
+			sc.addDevice(DeviceModel.get(Device.COLONIZER));
 			sc.setBuildValue(200);
 			data.shipClasses.add(sc);
 		}
 		{
 			ShipClassModel sc = new ShipClassModel("Cruiser", 250);
+			sc.addDevice(DeviceModel.get(Device.COLONIZER));
 			sc.setBuildValue(800);
 			data.shipClasses.add(sc);
 		}
@@ -231,6 +234,7 @@ public class GameDataFactory {
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
 			sc.addDevice(DeviceModel.get(Device.HULL_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
+			sc.addDevice(DeviceModel.get(Device.COLONIZER));
 			sc.setBuildValue(60);
 			data.shipClasses.add(sc);
 		}

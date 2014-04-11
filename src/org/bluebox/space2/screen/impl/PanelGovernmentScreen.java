@@ -1,4 +1,4 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +9,8 @@ import java.util.Set;
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
 import org.bluebox.space2.model.PlanetModel;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 import org.bluebox.space2.service.GameService;
 
 import com.badlogic.gdx.graphics.Color;
@@ -26,7 +28,7 @@ public class PanelGovernmentScreen extends ScreenBase {
 	}
 	
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		mainLayer.draw(Art.bg, 0, 0);
 
 		mainLayer.draw(Art.ic_people, START_X, 3);

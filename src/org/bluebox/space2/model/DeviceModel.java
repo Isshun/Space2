@@ -31,7 +31,8 @@ public class DeviceModel {
 		HULL_6,
 		HULL_7,
 		HULL_8,
-		HULL_9
+		HULL_9,
+		COLONIZER
 	}
 	
 	private static final DeviceModel sDevices[] = {
@@ -45,7 +46,8 @@ public class DeviceModel {
 		new DeviceModel(Device.PHASER_8,	"Phaser-8",	1,	8,	0),
 		new DeviceModel(Device.PHASER_9,	"Phaser-9",	1,	9,	0),
 		new DeviceModel(Device.SHIELD_1,	"Shield-1",	1,	0,	1),
-		new DeviceModel(Device.HULL_1,		"Hull-1",	1,	0,	1)
+		new DeviceModel(Device.COLONIZER,"Colonizer",10,0,	0),
+		new DeviceModel(Device.HULL_1,	"Hull-1",	1,	0,	1)
 	};
 
 	public Device 	id;

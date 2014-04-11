@@ -1,15 +1,16 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import java.util.List;
 
 import org.bluebox.space2.Constants;
-import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.Game.Anim;
+import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.model.BuildingClassModel;
 import org.bluebox.space2.model.PlanetModel;
-import org.bluebox.space2.model.ShipClassModel;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 import org.bluebox.space2.service.GameService;
-import org.bluebox.space2.ui.RectangleView;
+import org.bluebox.space2.ui.ButtonView;
 import org.bluebox.space2.ui.ScrollerView;
 import org.bluebox.space2.ui.View.OnClickListener;
 
@@ -73,7 +74,7 @@ public class PlanetBuildStructureScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		int posY = Constants.GAME_HEIGHT - 100;
 		
 		System.out.println("popup width: " + POPUP_WIDTH + ", sep: " + SEP + ", sub: " + (POPUP_WIDTH - SEP));
@@ -92,12 +93,12 @@ public class PlanetBuildStructureScreen extends ScreenBase {
 		}
 	}
 
-	private void drawIcon (ScreenLayer mainLayer, BuildingClassModel building, int posX, int posY, boolean isSelected) {
+	private void drawIcon (ScreenLayerBase mainLayer, BuildingClassModel building, int posX, int posY, boolean isSelected) {
 		mainLayer.drawRectangle(posX, posY, GRID_SIZE - 10, GRID_SIZE - 10, isSelected ? new Color(0.75f, 1, 0.75f, 0.65f) : new Color(1, 1, 1, 0.45f));
 		mainLayer.drawString(building.getShortName(), posX, posY);
 	}
 
-	private void drawInfo (ScreenLayer mainLayer, BuildingClassModel building, int startX, int startY, int width, int height) {
+	private void drawInfo (ScreenLayerBase mainLayer, BuildingClassModel building, int startX, int startY, int width, int height) {
 //		// Background
 //		drawRectangle(startX, startY, width, height, new Color(0.5f, 1, 0.5f, 0.5f));
 

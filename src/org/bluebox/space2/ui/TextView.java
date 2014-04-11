@@ -1,7 +1,7 @@
 package org.bluebox.space2.ui;
 
 import org.bluebox.space2.Art;
-import org.bluebox.space2.screen.ScreenLayer;
+import org.bluebox.space2.screen.ScreenLayerBase;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -43,8 +43,8 @@ public class TextView extends View {
 			if (ch == ')') {
 //				draw(Art.guys[19][10], mPosX + i * 6, mPosY, mColor);
 			}
-			for (int ys = 0; ys < ScreenLayer.CHARS.length; ys++) {
-				int xs = ScreenLayer.CHARS[ys].indexOf(ch);
+			for (int ys = 0; ys < ScreenLayerBase.CHARS.length; ys++) {
+				int xs = ScreenLayerBase.CHARS[ys].indexOf(ch);
 				if (xs >= 0) {
 					if (mColor != null) {
 						Pixmap pixmap = new Pixmap(32, 32, Format.RGBA8888);

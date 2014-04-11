@@ -2,7 +2,7 @@ package org.bluebox.space2.ui;
 
 import org.bluebox.space2.Art;
 import org.bluebox.space2.screen.ScreenBase;
-import org.bluebox.space2.screen.ScreenLayer;
+import org.bluebox.space2.screen.ScreenLayerBase;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -44,8 +44,8 @@ public class RectangleView extends View {
 		if (mText != null) {
 			for (int i = 0; i < mText.length(); i++) {
 				char ch = mText.charAt(i);
-				for (int ys = 0; ys < ScreenLayer.CHARS.length; ys++) {
-					int xs = ScreenLayer.CHARS[ys].indexOf(ch);
+				for (int ys = 0; ys < ScreenLayerBase.CHARS.length; ys++) {
+					int xs = ScreenLayerBase.CHARS[ys].indexOf(ch);
 					if (xs >= 0) {
 						spriteBatch.add(Art.guys[xs][ys + 9], mPosX + i * 6, mPosY, 6,  6);
 					}

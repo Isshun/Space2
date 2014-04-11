@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bluebox.space2.Art;
+import org.bluebox.space2.Game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -26,7 +27,7 @@ public class PlayerModel {
 	public PlayerModel(String name, Color uiColor, Color color) {
 		mName = name;
 		mFleets = new ArrayList<FleetModel>();
-		mFlag = Art.flags[(int)(Math.random() * 9)];
+		mFlag = Art.flags[(int)(Game.sRandom.nextInt(9))];
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new HashSet<PlanetModel>();
 		//mColor = new Color((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
@@ -69,7 +70,7 @@ public class PlayerModel {
 		return "war";
 	}
 
-	public List<FleetModel> getfleets () {
+	public List<FleetModel> getFleets () {
 		return mFleets;
 	}
 
@@ -132,5 +133,5 @@ public class PlayerModel {
 	public Color getUIColor () {
 		return mUIColor;
 	}
-	
+
 }

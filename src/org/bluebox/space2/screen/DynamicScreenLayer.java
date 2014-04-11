@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 
-public class DynamicScreenLayer extends ScreenLayer {
+public class DynamicScreenLayer extends ScreenLayerBase {
 	private SpriteBatch 				mSpriteBatch;
 	
 	public DynamicScreenLayer() {

@@ -1,4 +1,4 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,8 @@ import org.bluebox.space2.model.RelationModel;
 import org.bluebox.space2.model.SystemModel;
 import org.bluebox.space2.model.TravelModel;
 import org.bluebox.space2.path.Vertex;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 import org.bluebox.space2.service.GameService;
 import org.bluebox.space2.ui.RectangleView;
 import org.bluebox.space2.ui.View.OnClickListener;
@@ -50,8 +52,6 @@ public class SpaceActionScreen extends ScreenBase {
 		});
 		addView(btMove);
 
-		System.out.println("SpaceAction: onCreate 2");
-
 		
 		// Button cancel
 		RectangleView btCancel = new RectangleView(Constants.GAME_WIDTH - 60, POS_Y + 24, 50, 50, new Color(1, 0.6f, 0.6f, 0.45f));
@@ -65,7 +65,7 @@ public class SpaceActionScreen extends ScreenBase {
 
 	
 		// Button colonize
-		RectangleView btColonize = new RectangleView(Constants.GAME_WIDTH - 180, POS_Y + 24, 50, 50, new Color(1, 0.6f, 0.6f, 0.45f));
+		RectangleView btColonize = new RectangleView(Constants.GAME_WIDTH - 180, POS_Y + 24, 50, 50, new Color(0.6f, 1f, 0.6f, 0.45f));
 		btColonize.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
@@ -78,7 +78,7 @@ public class SpaceActionScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		System.out.println("SpaceAction: onDraw");
 		
 		mainLayer.drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 65, new Color(0.2f, 0.2f, 0.2f, 0.85f));

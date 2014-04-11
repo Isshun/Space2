@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 
-public class CacheScreenLayer extends ScreenLayer {
+public class CacheScreenLayer extends ScreenLayerBase {
 	private SpriteCache 				mSpriteCache;
 	private int 						mSpriteCacheId;
 	private boolean 					mIsChangeNotified;

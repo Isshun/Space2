@@ -1,15 +1,17 @@
 
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import java.util.List;
 
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
-import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.Game.Anim;
+import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.SystemModel;
-import org.bluebox.space2.ui.ImageView;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
+import org.bluebox.space2.ui.ButtonView;
 import org.bluebox.space2.ui.RectangleView;
 import org.bluebox.space2.ui.View;
 import org.bluebox.space2.ui.View.OnClickListener;
@@ -60,7 +62,7 @@ public class PlanetScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		int planetX = Constants.GAME_WIDTH - 128 - 40;
 		int planetY = 40;
 		
@@ -130,7 +132,7 @@ public class PlanetScreen extends ScreenBase {
 //		drawString("structure", 126, Constants.GAME_HEIGHT - 20);
 	}
 
-	private void drawCharacteristics (ScreenLayer mainLayer, int posX, int posY) {
+	private void drawCharacteristics (ScreenLayerBase mainLayer, int posX, int posY) {
 		mainLayer.drawRectangle(posX, posY, 134, 46, mColor);
 		mainLayer.drawRectangle(posX, posY, 134, 12, mColor);
 		mainLayer.drawString("Info", posX + 4, posY + 4);
@@ -139,7 +141,7 @@ public class PlanetScreen extends ScreenBase {
 		mainLayer.drawString("Population:         " + mPlanet.getPeople(), posX + 4, posY + 4 + 32);
 	}
 
-	private void drawInfos (ScreenLayer mainLayer, int posX, int posY) {
+	private void drawInfos (ScreenLayerBase mainLayer, int posX, int posY) {
 		mainLayer.drawRectangle(posX, posY, 134, 72, mColor);
 		mainLayer.drawRectangle(posX, posY, 134, 12, mColor);
 		mainLayer.drawString("Production ", posX + 4, posY + 4);

@@ -3,10 +3,14 @@ package org.bluebox.space2.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bluebox.space2.Game;
 import org.bluebox.space2.service.FightService;
+
+import com.badlogic.gdx.Gdx;
 
 public class SystemModel implements ILocation {
 	private static final String sSystemNames[] = {"Archer", "Cerberus", "Proxima", "Vega", "Regula", "Tigen", "Idron", "Wolf", "Remus", "Deridia", "Bajor", "Drayan", "Enara", "Ledos", "Rakosa", "Arrakis", "Ocampa", "Telsium Prime", "Banea", "Hanon", "Arcadia", "Caitan", "Halia", "Trillius", "Ardana", "Benzar", "Risa", "Selay", "Antos", "Aaamazzara", "Acamar", "Akaali", "Andoria", "Antica", "Antos", "Ardana", "Argelius", "Arkaria", "Assigner", "Aurelia", "Bajor", "Ba'ku", "Banea", "Barzan", "Benzar", "Betazed", "Bolarus", "Breen", "Brekka", "Brunali", "Bynaus", "Capella", "Cardassia", "Chalna", "Cravic", "Delta", "Deneb", "Denobula", "Dosi", "Draylax", "Drema", "Ekos", "El-Aurian", "Elaysian", "Eminiar", "Excalbia", "Fabrina", "Ferenginar", "Garenor", "Gosis", "Hekaras", "Halkan", "Ilidaria", "Janus", "Kantare", "Karemma", "Kelemane", "Kelis", "Kelva", "Koinonian", "Kolarus", "Kurill", "Kraylor", "Kyrian-Vaskan", "Kzin", "Lissepia", "Loque'eque", "Luria", "Lyssarrian", "Makull", "Mari", "Melkotian", "Mintaka", "Miri", "Mokra", "Nausicaa", "Nechani", "Norcadia", "Ocampa", "Organia", "Orion", "Ornara", "Peliar Zel", "Pendari", "Pralor", "Qomar", "Rakhar", "Rakosa", "Ram Izad", "Remus", "Romulus", "Selay", "Sikaris", "Tagra", "Tak Tak", "Talax", "Tallonian", "Talos", "Tandar", "Tarella", "Tarquin", "Tellar", "Telsius", "Teplan", "T'Lan", "Torothan", "Triannon", "Trill", "Tyrellia", "Tzenketh", "Ullian", "Valakis", "Vaadwaur", "Vendikar", "Vhnori", "Vulcan", "Xindus", "Yadera", "Yridian", "Zahl", "Zakdorn", "Zalkon", "Zeon"};
+	private static final String CLASS_NAME = "SystemModel";
 
 	private static int 			sCount;
 	private String 				mName;
@@ -26,7 +30,7 @@ public class SystemModel implements ILocation {
 		mName = name;
 		mPosX = x;
 		mPosY = y;
-		mType = Math.min((int)(Math.random() * 7), 3);
+		mType = Math.min((int)(Game.sRandom.nextInt(7)), 3);
 	}
 
 	public int getX () {
@@ -156,6 +160,8 @@ public class SystemModel implements ILocation {
 	}
 
 	public void colonize (PlayerModel player) {
+		Gdx.app.log(CLASS_NAME, "Colonize: " + mName);
+		
 		getCapital().setOwner(player);
 		if (mOwner != player) {
 			mOwner = player;

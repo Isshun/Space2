@@ -1,9 +1,9 @@
 
-package org.bluebox.space2.screen;
-
-import java.security.spec.MGF1ParameterSpec;
+package org.bluebox.space2.screen.impl;
 
 import org.bluebox.space2.Art;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -18,7 +18,7 @@ public class PauseScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		parent.render(0, 0, 0);
 		
 		mainLayer.drawRectangle(0, 0, 200, 200, Color.RED);

@@ -3,6 +3,7 @@ package org.bluebox.space2.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bluebox.space2.Game;
 import org.bluebox.space2.service.FightService;
 
 
@@ -13,6 +14,7 @@ public class PlanetModel implements ILocation {
 	private SystemModel 					mSystem;
 	private int 							mPos;
 	private int 							mPeople;
+	private int 							mPeopleTotal;
 	private double 						mBaseFood;
 	private double 						mBaseBuild;
 	private double 						mBaseCulture;
@@ -33,12 +35,13 @@ public class PlanetModel implements ILocation {
 		mPeople = 1;
 		mClass = PlanetClassModel.getFromId(classId);
 		mSize = size;
-		mBaseBuild = 5 + Math.random() * 8;
-		mBaseMoney = Math.random() * 10;
-		mBaseScience = Math.random() * 10;
-		mBaseCulture = Math.random() * 10;
-		mBaseFood = Math.random() * 10;
-		mSatisfaction = Math.random() * 100;
+		mPeopleTotal = 3 + mSize * 2;
+		mBaseBuild = 5 + Game.sRandom.nextInt(8);
+		mBaseMoney = Game.sRandom.nextInt(10);
+		mBaseScience = Game.sRandom.nextInt(10);
+		mBaseCulture = Game.sRandom.nextInt(10);
+		mBaseFood = Game.sRandom.nextInt(10);
+		mSatisfaction = Game.sRandom.nextInt(100);
 	}
 
 	private static int getRandomPlanetClass () {
@@ -48,7 +51,7 @@ public class PlanetModel implements ILocation {
 			totalRand += pc.rand;
 		}
 		
-		int r = (int)(Math.random() * totalRand);
+		int r = (int)(Game.sRandom.nextInt(totalRand));
 		int sum = 0;
 		for (PlanetClassModel pc: PlanetClassModel.sClass) {
 			if (r <= sum + pc.rand) {
@@ -309,9 +312,9 @@ public class PlanetModel implements ILocation {
 		
 		int size = 0;
 		if (pos <= 1) {
-			size = (int)(Math.random() * 3);
+			size = (int)(Game.sRandom.nextInt(3));
 		} else {
-			size = (int)(Math.random() * 5);
+			size = (int)(Game.sRandom.nextInt(5));
 		}
 		
 		PlanetModel planet = new PlanetModel(classId, size);
@@ -329,6 +332,10 @@ public class PlanetModel implements ILocation {
 		}
 		
 		mBuildings.add(buildingClass);
+	}
+
+	public int getTotalPeople () {
+		return mPeopleTotal;
 	}
 
 }

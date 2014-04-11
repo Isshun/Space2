@@ -1,4 +1,4 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,8 @@ import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.PlayerModel;
 import org.bluebox.space2.model.ShipModel;
 import org.bluebox.space2.model.SystemModel;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 import org.bluebox.space2.service.GameService;
 import org.bluebox.space2.ui.TextView;
 import org.bluebox.space2.ui.View.OnClickListener;
@@ -46,7 +48,7 @@ public class DebugScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		mainLayer.drawString("map index: " + GameService.getInstance().getData().systemMapIndex, 4, 4);
 		
 

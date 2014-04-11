@@ -1,5 +1,7 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 import org.bluebox.space2.ui.TextView;
 
 public class ErrorScreen extends ScreenBase {
@@ -18,7 +20,7 @@ public class ErrorScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		// TODO Auto-generated method stub
 
 	}

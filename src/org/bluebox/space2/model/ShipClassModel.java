@@ -70,7 +70,17 @@ public class ShipClassModel {
 	}
 
 	public void addDevice (DeviceModel device) {
+		mDevices.add(device);
 		mPhaserPower += device.attack;
 		mShieldPower += device.defense;
+	}
+
+	public boolean hasDevice (Device device) {
+		for (DeviceModel d: mDevices) {
+			if (d.id == device) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

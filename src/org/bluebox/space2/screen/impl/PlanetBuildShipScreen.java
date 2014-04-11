@@ -1,4 +1,4 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import java.util.List;
 
@@ -8,13 +8,11 @@ import org.bluebox.space2.model.FleetModel;
 import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.ShipClassModel;
 import org.bluebox.space2.model.ShipModel;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 import org.bluebox.space2.service.GameService;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class PlanetBuildShipScreen extends ScreenBase {
 
@@ -38,7 +36,7 @@ public class PlanetBuildShipScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		mainLayer.drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 100, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 
 		mainLayer.drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 3, 14, new Color(1, 1, 1, 0.45f));

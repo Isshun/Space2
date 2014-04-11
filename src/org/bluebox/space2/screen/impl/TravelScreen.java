@@ -1,8 +1,10 @@
 
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import org.bluebox.space2.model.FleetModel;
 import org.bluebox.space2.model.TravelModel;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 
 public class TravelScreen extends ScreenBase {
 
@@ -17,7 +19,7 @@ public class TravelScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {		
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {		
 		int posY = 6;
 		mainLayer.drawString("from: " + mTravel.getFrom().getName(), 6, posY);
 		

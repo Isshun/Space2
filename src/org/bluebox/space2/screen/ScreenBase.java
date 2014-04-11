@@ -33,11 +33,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 public abstract class ScreenBase {
 	private static final int 		TOUCH_INTERVAL = 750;
 	private static final int 		LONG_TOUCH_INTERVAL = 500;
+	private static final String 	CLASS_NAME = "ScreenBase";
 	
-	private ScreenLayer				mMainLayer;
-	private ScreenLayer				mTopLayer;
-	private ScreenLayer				mDynamicLayer;
-	private ScreenLayer				mUILayer;
+	private ScreenLayerBase				mMainLayer;
+	private ScreenLayerBase				mTopLayer;
+	private ScreenLayerBase				mDynamicLayer;
+	private ScreenLayerBase				mUILayer;
 	
 	protected static Random 		sRandom = new Random();
 	protected Game 					mGame;
@@ -148,6 +149,8 @@ public abstract class ScreenBase {
 
 		// Redraw CacheScreenLayer if changed
 		if (mMainLayer.isChange() || mTopLayer.isChange()) {
+			Gdx.app.log(CLASS_NAME, "Redraw");
+			
 			mTopLayer.clear();
 			mMainLayer.clear();
 			mTopLayer.begin();
@@ -183,7 +186,7 @@ public abstract class ScreenBase {
 		mDynamicLayer.draw(mOffsetX - mRealPosX, mOffsetY - mRealPosY, mZoom);
 		mDynamicLayer.begin();
 		onRender(mDynamicLayer, mGameTime, mScreenTime);
-		mDynamicLayer.drawString(String.valueOf(renderTime), 0, 0);
+		mDynamicLayer.drawString(String.valueOf(mCycle), 0, 0);
 		mDynamicLayer.end();
 
 		// Render UI
@@ -214,11 +217,11 @@ public abstract class ScreenBase {
 		}
 	}
 
-	public void onRender(ScreenLayer dynamicLayer, int gameTime, int screenTime) {
+	public void onRender(ScreenLayerBase dynamicLayer, int gameTime, int screenTime) {
 	}
 	
 	protected abstract void onCreate ();
-	protected abstract void onDraw(ScreenLayer mainLayer, ScreenLayer UILayer);
+	protected abstract void onDraw(ScreenLayerBase mainLayer, ScreenLayerBase UILayer);
 	public abstract void onTouch(int x, int y);
 	public abstract void onLongTouch(int x, int y);
 	public abstract void onMove(int offsetX, int offsetY);
@@ -241,7 +244,7 @@ public abstract class ScreenBase {
 	public void onNext () {
 	}
 	
-	protected void notifyChange () {
+	public void notifyChange () {
 		mMainLayer.notifyChange();
 		mUILayer.notifyChange();
 	}

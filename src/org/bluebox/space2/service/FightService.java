@@ -3,6 +3,7 @@ package org.bluebox.space2.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bluebox.space2.Game;
 import org.bluebox.space2.model.FleetModel;
 import org.bluebox.space2.model.ShipModel;
 
@@ -66,14 +67,14 @@ public class FightService {
 		// Attacker round
 		{
 			double diff = a.getAttackIndice() / d.getDefenseIndice();
-			double damage = a.getAttackIndice() * diff * (Math.random() * 0.3 + 0.85);
+			double damage = a.getAttackIndice() * diff * (Game.sRandom.nextFloat() * 0.3 + 0.85);
 			mAttackerDamageDone += d.damage(damage);
 		}
 		
 		// Defender round
 		{
 			double diff = d.getAttackIndice() / a.getDefenseIndice();
-			double damage = d.getAttackIndice() * diff * (Math.random() * 0.3 + 0.85);
+			double damage = d.getAttackIndice() * diff * (Game.sRandom.nextFloat() * 0.3 + 0.85);
 			a.damage(damage);
 			mDefenderDamageDone += d.damage(damage);
 		}

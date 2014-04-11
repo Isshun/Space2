@@ -1,15 +1,16 @@
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
 import java.util.List;
 
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
-import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.Game.Anim;
+import org.bluebox.space2.StringConfig;
 import org.bluebox.space2.model.FleetModel;
-import org.bluebox.space2.model.PlanetModel;
 import org.bluebox.space2.model.ShipModel;
 import org.bluebox.space2.model.SystemModel;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 import org.bluebox.space2.service.GameService;
 import org.bluebox.space2.ui.TextView;
 import org.bluebox.space2.ui.View.OnClickListener;
@@ -60,7 +61,7 @@ public class PanelFleetScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 		mainLayer.draw(Art.bg_1, 0, 0);
 		
 		mainLayer.setStringSize(StringConfig.SIZE_BIG);
@@ -103,7 +104,7 @@ public class PanelFleetScreen extends ScreenBase {
 		}
 	}
 
-	private void drawShipInfo (ScreenLayer mainLayer, int posX, int posY) {
+	private void drawShipInfo (ScreenLayerBase mainLayer, int posX, int posY) {
 		mSelected = Math.min(mSelected, mFleet.getShips().size() - 1);
 		if (mSelected == -1) {
 			return;
@@ -163,7 +164,7 @@ public class PanelFleetScreen extends ScreenBase {
 
 	@Override
 	public void onNext () {
-		List<FleetModel> fleets = mPlayer.getfleets();
+		List<FleetModel> fleets = mPlayer.getFleets();
 		int index = fleets.indexOf(mFleet);
 		if (index < fleets.size() - 1) {
 			FleetModel fleet = fleets.get(Math.min(index + 1, fleets.size() - 1));
@@ -173,7 +174,7 @@ public class PanelFleetScreen extends ScreenBase {
 
 	@Override
 	public void onPrev () {
-		List<FleetModel> fleets = mPlayer.getfleets();
+		List<FleetModel> fleets = mPlayer.getFleets();
 		int index = fleets.indexOf(mFleet);
 		if (index > 0) {
 			FleetModel fleet = fleets.get(Math.max(index - 1, 0));

@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 
-public abstract class ScreenLayer {
+public abstract class ScreenLayerBase {
 	public static final String[]	CHARS = {"abcdefghijklmnopqrstuvwxyz0123456789", ".,!?:;\"'+-=/\\<%   () $^&*@"};
 
 	protected int 						mRealPosX;
@@ -24,7 +24,7 @@ public abstract class ScreenLayer {
 	private Color						mColorGood;
 	private StringConfig				mStringConfig;
 
-	public ScreenLayer() {
+	public ScreenLayerBase() {
 		mColorBad = new Color(220f/255, 40f/255, 50f/255, 1);
 		mColorGood = new Color(0.5f, 1, 0.5f, 1);
 		mStringConfig = new StringConfig();
@@ -62,7 +62,7 @@ public abstract class ScreenLayer {
 
 	abstract void draw (TextureRegion region, int x, int y, int width, int height);
 
-	protected void drawRectangle (int x, int y, int width, int height, Color color, int angle) {
+	public void drawRectangle (int x, int y, int width, int height, Color color, int angle) {
 		Pixmap pixmap = new Pixmap(width, height, Format.RGBA8888);
 		pixmap.setColor(color);
 		pixmap.fillRectangle(0, 0, width, height);
@@ -99,7 +99,7 @@ public abstract class ScreenLayer {
 		draw(sprite);
 	}
 
-	protected void draw (Pixmap pixmap, int x, int y) {
+	public void draw (Pixmap pixmap, int x, int y) {
 		Texture pixmaptex = new Texture(pixmap);
 		TextureRegion region = new TextureRegion(pixmaptex);
 		draw(region, x, y);
@@ -111,23 +111,23 @@ public abstract class ScreenLayer {
 		draw(region, x, y, width, region.getRegionHeight());
 	}
 
-	protected void setStringMaxWidth (int width) {
+	public void setStringMaxWidth (int width) {
 		mStringConfig.maxWidth = width;
 	}
 
-	protected void setStringMultiline (boolean isMultiline) {
+	public void setStringMultiline (boolean isMultiline) {
 		mStringConfig.isMultiline = isMultiline;
 	}
 
-	protected void setStringColorNumbers (boolean isColored) {
+	public void setStringColorNumbers (boolean isColored) {
 		mStringConfig.isNumbersColored = isColored;
 	}
 
-	protected void setStringColor (Color color) {
+	public void setStringColor (Color color) {
 		mStringConfig.color = color;
 	}
 
-	protected void setStringSize(int size) {
+	public void setStringSize(int size) {
 		mStringConfig.size = size;
 	}
 

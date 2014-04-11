@@ -1,39 +1,25 @@
 
-package org.bluebox.space2.screen;
+package org.bluebox.space2.screen.impl;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.bluebox.space2.Art;
 import org.bluebox.space2.Constants;
-import org.bluebox.space2.model.FleetModel;
 import org.bluebox.space2.model.PlayerModel;
 import org.bluebox.space2.model.SystemModel;
 import org.bluebox.space2.model.TravelModel;
+import org.bluebox.space2.screen.ScreenBase;
+import org.bluebox.space2.screen.ScreenLayerBase;
 import org.bluebox.space2.service.GameService;
 import org.bluebox.space2.ui.ImageView;
 import org.bluebox.space2.ui.TextView;
 import org.bluebox.space2.ui.View;
 import org.bluebox.space2.ui.View.OnClickListener;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Matrix4;
 
 public class SpaceScreen extends ScreenBase {
 	private static final int MAP_POS_X = Constants.GAME_WIDTH - 64 - 6;
@@ -58,31 +44,13 @@ public class SpaceScreen extends ScreenBase {
 		mCurrentTravelCache = new SpriteCache(100, true);
 		mCurrentTravelCacheId = -1;
 		mMap = new Color[Constants.MAP_WIDTH][Constants.MAP_HEIGHT];
-		mRefreshOnUpdate = true;
+//		mRefreshOnUpdate = true;
 	}
 	
 	@Override
 	protected void onCreate () {
 
-		for (int x = 0; x < Constants.MAP_WIDTH; x++) {
-			for (int y = 0; y < Constants.MAP_HEIGHT; y++) {
-				mMap[x][y] = null;
-			}
-		}
-
-		List<SystemModel> systems = GameService.getInstance().getSystems();
-		for (int x = 0; x < 80; x++) {
-			for (SystemModel system: systems) {
-				if (system.getOwner() != null) {
-					int x2 = system.getX() + Constants.SYSTEM_SIZE / 2;
-					int y2 = system.getY() + Constants.SYSTEM_SIZE / 2;
-					
-					for (int i = 0; i < 1000; i++) {
-						setPoint((int)Math.round(x2+Math.cos(i) * x), (int)Math.round(y2+Math.sin(i) * x), system.getOwner().getSpaceColor());
-					}
-				}
-			}
-		}
+		drawArea();
 		
 		// Button planets
 		mBtPlanets = new ImageView(Art.bt_planets, 6, 6);
@@ -129,6 +97,30 @@ public class SpaceScreen extends ScreenBase {
 		addView(new TextView("ARMADA", 122, 40));
 	}
 	
+	private void drawArea () {
+		// Clear
+		for (int x = 0; x < Constants.MAP_WIDTH; x++) {
+			for (int y = 0; y < Constants.MAP_HEIGHT; y++) {
+				mMap[x][y] = null;
+			}
+		}
+
+		// Draw
+		List<SystemModel> systems = GameService.getInstance().getSystems();
+		for (int x = 0; x < 80; x++) {
+			for (SystemModel system: systems) {
+				if (system.getOwner() != null) {
+					int x2 = system.getX() + Constants.SYSTEM_SIZE / 2;
+					int y2 = system.getY() + Constants.SYSTEM_SIZE / 2;
+					
+					for (int i = 0; i < 1000; i++) {
+						setPoint((int)Math.round(x2+Math.cos(i) * x), (int)Math.round(y2+Math.sin(i) * x), system.getOwner().getSpaceColor());
+					}
+				}
+			}
+		}
+	}
+
 	private void setPoint (int x, int y, Color color) {
 		if (x >= 0 && y >= 0 && x < Constants.MAP_WIDTH && y < Constants.MAP_HEIGHT && mMap[x][y] == null) {
 			mMap[x][y] = color;
@@ -136,7 +128,7 @@ public class SpaceScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onRender (ScreenLayer dynamicLayer, int gameTime, int screenTime) {
+	public void onRender (ScreenLayerBase dynamicLayer, int gameTime, int screenTime) {
 
 //		try {
 //
@@ -197,12 +189,13 @@ public class SpaceScreen extends ScreenBase {
 	}
 
 	@Override
-	public void onDraw (ScreenLayer mainLayer, ScreenLayer UILayer) {
+	public void onDraw (ScreenLayerBase mainLayer, ScreenLayerBase UILayer) {
 
 //		if (mPixmap != null) {
 //			mPixmap.dispose();
 //		}
 		
+		drawArea();
 		
 		Pixmap mPixmap = new Pixmap(Constants.MAP_WIDTH, Constants.MAP_HEIGHT, Format.RGBA8888);
 //		mPixmap.setColor(Color.CYAN);
@@ -271,7 +264,7 @@ public class SpaceScreen extends ScreenBase {
 		drawInterface(UILayer, Constants.GAME_WIDTH - 100, 10);
 	}
 
-	private void drawSystem (ScreenLayer mainLayer, SystemModel system) {
+	private void drawSystem (ScreenLayerBase mainLayer, SystemModel system) {
 		mainLayer.draw(Art.system[system.getType()], mDeprecatedPosX + system.getX(), mDeprecatedPosY + system.getY());
 
 		String name = system.getName();
@@ -282,7 +275,7 @@ public class SpaceScreen extends ScreenBase {
 		mainLayer.drawString(name, mDeprecatedPosX + system.getX() + Constants.SYSTEM_SIZE / 2 - name.length() * 3, mDeprecatedPosY + system.getY() + Constants.SYSTEM_SIZE + 6);
 	}
 
-	private void drawInterface (ScreenLayer UILayer, int posX, int posY) {
+	private void drawInterface (ScreenLayerBase UILayer, int posX, int posY) {
 		List<SystemModel> systems = GameService.getInstance().getSystems();
 
 //		draw(Art.bt_planets, 6, 6);
