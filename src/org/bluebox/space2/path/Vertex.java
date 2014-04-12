@@ -1,6 +1,6 @@
 package org.bluebox.space2.path;
 
-import org.bluebox.space2.model.SystemModel;
+import org.bluebox.space2.game.model.SystemModel;
 
 public class Vertex {
 	  final private String id;
