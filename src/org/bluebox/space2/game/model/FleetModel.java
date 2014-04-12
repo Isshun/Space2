@@ -15,8 +15,6 @@ public class FleetModel implements IShipCollectionModel {
 		MOVE
 	}
 	
-	private static int 		sCount;
-
 	private List<ShipModel>	mShips;
 	private PlayerModel 		mOwner;
 	private double 			mSpeed;
@@ -32,7 +30,7 @@ public class FleetModel implements IShipCollectionModel {
 		mAction = Action.NONE;
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
-		mName = NameGenerator.generate(NameGenerator.KLINGON, sCount++);
+		mName = NameGenerator.generate(NameGenerator.KLINGON, owner.getFleets().size());
 		mOwner = owner;
 		owner.addFleet(this);
 	}

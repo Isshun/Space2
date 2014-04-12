@@ -19,6 +19,8 @@ public class MainGestureListener implements GestureListener {
 	private Game 		mGame;
 	private boolean 	mIsMoving;
 	private boolean 	mIsPinch;
+	private int mTouchX;
+	private int mTouchY;
 
 	public MainGestureListener (Game game) {
 		RATIO_X = (float)Constants.GAME_WIDTH / Gdx.graphics.getWidth();
@@ -33,8 +35,8 @@ public class MainGestureListener implements GestureListener {
 
 	@Override
 	public boolean touchDown (float x, float y, int pointer, int button) {
-		mLastTouchX = (int)(x * RATIO_X);
-		mLastTouchY = (int)(y * RATIO_Y);
+		mTouchX = mLastTouchX = (int)(x * RATIO_X);
+		mTouchY = mLastTouchY = (int)(y * RATIO_Y);
 
 		return false;
 	}
@@ -76,6 +78,12 @@ public class MainGestureListener implements GestureListener {
 		} else if (velocityX < -1000) {
 			mScreen.onNext();
 		}
+		
+		if (velocityY > 1000) {
+			mScreen.onDown(mTouchX, mTouchY);
+		} else if (velocityY < -1000) {
+			mScreen.onUp(mTouchX, mTouchY);
+		}
 
 		return false;
 	}
@@ -92,7 +100,7 @@ public class MainGestureListener implements GestureListener {
 		int y2 = (int)(y * RATIO_Y);
 
 		if (mScreen != null) {
-			mScreen.onMove((int)x2 - mLastTouchX, (int)y2 - mLastTouchY);
+			mScreen.onMove(mTouchX, mTouchY, (int)x2 - mLastTouchX, (int)y2 - mLastTouchY);
 		}
 		
 		mLastTouchX = (int)x2;

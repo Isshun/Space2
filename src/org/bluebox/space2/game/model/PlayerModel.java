@@ -18,7 +18,7 @@ public class PlayerModel {
 	private Color					mColor;
 	private List<SystemModel> 	mSystems;
 	private Set<PlanetModel> 	mPlanets;
-	private List<FleetModel> 	mFleets;
+	private Set<FleetModel> 	mFleets;
 	private PlanetModel 			mHome;
 	private Color 					mSpaceColor;
 	private Color 					mDarkColor;
@@ -28,7 +28,7 @@ public class PlayerModel {
 	
 	public PlayerModel(String name, Color uiColor, Color color, boolean isAI) {
 		mName = name;
-		mFleets = new ArrayList<FleetModel>();
+		mFleets = new HashSet<FleetModel>();
 		mFlag = (int)(Game.sRandom.nextInt(9));
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new HashSet<PlanetModel>();
@@ -76,7 +76,7 @@ public class PlayerModel {
 		return "war";
 	}
 
-	public List<FleetModel> getFleets () {
+	public Set<FleetModel> getFleets () {
 		return mFleets;
 	}
 

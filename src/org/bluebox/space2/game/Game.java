@@ -22,6 +22,7 @@ import org.bluebox.space2.path.PathResolver;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Timer;
@@ -55,6 +56,8 @@ public class Game implements ApplicationListener {
 
 	private IArtManager mArt;
 
+	private TextureRegion mBg;
+
 	public enum Anim {
 		NO_TRANSITION,
 		FLIP_LEFT,
@@ -73,6 +76,8 @@ public class Game implements ApplicationListener {
 		Art.init(mArt);
 		//Sound.init();
 		mRunning = true;
+		
+		mBg = Art.bg;
 
 		sRandom = new Random(42);
 		
@@ -189,10 +194,12 @@ public class Game implements ApplicationListener {
 		Matrix4 projection = new Matrix4();
 		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
 
+		mScreenBG.setCamera(0, 0);
+		mScreenBG.draw(0, 0, 1);
 		mScreenBG.begin();
-		int width = Art.bg.getRegionWidth();
-		if (width < 0) width = -width;
-		mScreenBG.draw(Art.bg, 0, 0);
+//		int width = mBg.getRegionWidth();
+//		if (width < 0) width = -width;
+		mScreenBG.draw(mBg, 0, 0);
 		mScreenBG.end();
 		
 		if (sNotifyChange) {
@@ -249,7 +256,7 @@ public class Game implements ApplicationListener {
 		List<PlayerModel> players = GameService.getInstance().getPlayers();
 		for (PlayerModel player: players) {
 			if (player.isAI()) {
-				AI.getInstance().play(player);
+				//AI.getInstance().play(player);
 			}
 			player.update();
 		}
@@ -350,5 +357,9 @@ public class Game implements ApplicationListener {
 
 	public BaseScreen getScreen () {
 		return mScreen;
+	}
+
+	public void setBg (TextureRegion bg) {
+		mBg = bg;
 	}
 }

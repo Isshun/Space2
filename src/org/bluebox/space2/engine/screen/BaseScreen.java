@@ -222,7 +222,7 @@ public abstract class BaseScreen {
 	protected abstract void onDraw(BaseScreenLayer mainLayer, BaseScreenLayer UILayer);
 	public abstract void onTouch(int x, int y);
 	public abstract void onLongTouch(int x, int y);
-	public abstract void onMove(int offsetX, int offsetY);
+	public abstract void onMove(int startX, int startY, int offsetX, int offsetY);
 	public void onMoveEnd(int x, int y) {
 		
 	}
@@ -249,7 +249,7 @@ public abstract class BaseScreen {
 
 	public void tap (int x, int y) {
 		for (View view: mViews) {
-			if (view.isVisible() && view.isClickable() && view.contains(x, y)) {
+			if (view.isVisible() && view.isClickable() && view.contains(x + mOffsetX, y + mOffsetY)) {
 				view.click();
 				mGameTimeAtStart = mGameTime;
 				return;
@@ -312,6 +312,15 @@ public abstract class BaseScreen {
 	}
 
 	public void onZoom () {
+	}
+
+	public void onDown () {
+	}
+
+	public void onUp (int x, int y) {
+	}
+
+	public void onDown (int x, int y) {
 	}
 
 }

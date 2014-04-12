@@ -44,6 +44,8 @@ public class SpaceScreen extends BaseScreen {
 	protected void onCreate () {
 		drawArea();
 		
+		mGame.setBg(Art.bg);
+		
 		// Button planets
 		mBtPlanets = new ImageView(Art.bt_planets, 6, 6);
 		mBtPlanets.setOnClickListener(new OnClickListener() {
@@ -336,7 +338,7 @@ public class SpaceScreen extends BaseScreen {
 	}
 
 	@Override
-	public void onMove (int offsetX, int offsetY) {
+	public void onMove (int startX, int startY, int offsetX, int offsetY) {
 		mRealPosX += offsetX;
 		mRealPosY += offsetY;
 		mParalaxNotified = true;

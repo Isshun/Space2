@@ -58,7 +58,7 @@ public class PauseScreen extends BaseScreen {
 	}
 
 	@Override
-	public void onMove (int offsetX, int offsetY) {
+	public void onMove (int startX, int startY, int offsetX, int offsetY) {
 		// TODO Auto-generated method stub
 		
 	}

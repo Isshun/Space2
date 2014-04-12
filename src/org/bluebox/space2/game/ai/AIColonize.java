@@ -130,7 +130,7 @@ public class AIColonize {
 	private static ShipModel getColonizer (PlayerModel player) {
 		
 		// Check fleets
-		List<FleetModel> fleets = player.getFleets();
+		List<FleetModel> fleets = new ArrayList<FleetModel>(player.getFleets());
 		for (FleetModel f: fleets) {
 			for (ShipModel s: f.getShips()) {
 				if (s.hasDevice(Device.COLONIZER)) {

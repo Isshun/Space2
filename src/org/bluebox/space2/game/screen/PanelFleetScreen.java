@@ -1,5 +1,6 @@
 package org.bluebox.space2.game.screen;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bluebox.space2.engine.Art;
@@ -49,6 +50,8 @@ public class PanelFleetScreen extends BaseScreen {
 
 	@Override
 	protected void onCreate () {
+		mGame.setBg(Art.bg_1);
+
 		List<SystemModel> systems = GameService.getInstance().getSystems();
 		int i = 0;
 		for (final SystemModel system: systems) {
@@ -75,8 +78,6 @@ public class PanelFleetScreen extends BaseScreen {
 
 	@Override
 	public void onDraw (BaseScreenLayer mainLayer, BaseScreenLayer UILayer) {
-		mainLayer.draw(Art.bg_1, 0, 0);
-		
 		mainLayer.setStringSize(StringConfig.SIZE_BIG);
 		mainLayer.drawString(String.format("%s (%d/%d/%d)", mShipCollection.getName(), (int)mTotInd, (int)mAttInd, (int)mDefInd), 6, 6);
 
@@ -164,7 +165,7 @@ public class PanelFleetScreen extends BaseScreen {
 	}
 
 	@Override
-	public void onMove (int offsetX, int offsetY) {
+	public void onMove (int startX, int startY, int offsetX, int offsetY) {
 		// TODO Auto-generated method stub
 
 	}
@@ -177,7 +178,7 @@ public class PanelFleetScreen extends BaseScreen {
 
 	@Override
 	public void onNext () {
-		List<FleetModel> fleets = mPlayer.getFleets();
+		List<FleetModel> fleets = new ArrayList<FleetModel>(mPlayer.getFleets());
 		int index = fleets.indexOf(mShipCollection);
 		if (index < fleets.size() - 1) {
 			FleetModel fleet = fleets.get(Math.min(index + 1, fleets.size() - 1));
@@ -187,7 +188,7 @@ public class PanelFleetScreen extends BaseScreen {
 
 	@Override
 	public void onPrev () {
-		List<FleetModel> fleets = mPlayer.getFleets();
+		List<FleetModel> fleets = new ArrayList<FleetModel>(mPlayer.getFleets());
 		int index = fleets.indexOf(mShipCollection);
 		if (index > 0) {
 			FleetModel fleet = fleets.get(Math.max(index - 1, 0));

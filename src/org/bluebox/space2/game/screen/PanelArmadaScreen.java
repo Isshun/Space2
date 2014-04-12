@@ -1,5 +1,6 @@
 package org.bluebox.space2.game.screen;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bluebox.space2.engine.Art;
@@ -22,7 +23,7 @@ public class PanelArmadaScreen extends BaseScreen {
 
 	@Override
 	protected void onCreate () {
-		mFleets = mPlayer.getFleets();
+		mFleets = new ArrayList<FleetModel>(mPlayer.getFleets());
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class PanelArmadaScreen extends BaseScreen {
 	}
 
 	@Override
-	public void onMove (int offsetX, int offsetY) {
+	public void onMove (int startX, int startY, int offsetX, int offsetY) {
 		// TODO Auto-generated method stub
 
 	}

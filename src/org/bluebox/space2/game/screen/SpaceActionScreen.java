@@ -26,6 +26,7 @@ public class SpaceActionScreen extends BaseScreen {
 	
 	protected SystemModel 		mSelectedSystem;
 	protected SystemModel 		mActionSystem;
+	private boolean mIsOpen;
 
 	public SpaceActionScreen (BaseScreen parent, SystemModel system) {
 		mParent = parent;
@@ -36,8 +37,10 @@ public class SpaceActionScreen extends BaseScreen {
 	protected void onCreate () {
 		System.out.println("SpaceAction: onCreate");
 
+		setOffsetY(-POS_Y, -POS_Y);
+		
 		// Button move
-		RectangleView btMove = new RectangleView(Constants.GAME_WIDTH - 120, POS_Y + 24, 50, 50, new Color(1, 1, 1, 0.45f));
+		RectangleView btMove = new RectangleView(Constants.GAME_WIDTH - 120, 24, 50, 50, new Color(1, 1, 1, 0.45f));
 		btMove.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
@@ -54,7 +57,7 @@ public class SpaceActionScreen extends BaseScreen {
 
 		
 		// Button cancel
-		RectangleView btCancel = new RectangleView(Constants.GAME_WIDTH - 60, POS_Y + 24, 50, 50, new Color(1, 0.6f, 0.6f, 0.45f));
+		RectangleView btCancel = new RectangleView(Constants.GAME_WIDTH - 60, 24, 50, 50, new Color(1, 0.6f, 0.6f, 0.45f));
 		btCancel.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
@@ -65,7 +68,7 @@ public class SpaceActionScreen extends BaseScreen {
 
 	
 		// Button colonize
-		RectangleView btColonize = new RectangleView(Constants.GAME_WIDTH - 180, POS_Y + 24, 50, 50, new Color(0.6f, 1f, 0.6f, 0.45f));
+		RectangleView btColonize = new RectangleView(Constants.GAME_WIDTH - 180, 24, 50, 50, new Color(0.6f, 1f, 0.6f, 0.45f));
 		btColonize.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
@@ -79,34 +82,27 @@ public class SpaceActionScreen extends BaseScreen {
 
 	@Override
 	public void onDraw (BaseScreenLayer mainLayer, BaseScreenLayer UILayer) {
-		System.out.println("SpaceAction: onDraw");
-		
-		mainLayer.drawRectangle(0, POS_Y, Constants.GAME_WIDTH, 65, new Color(0.2f, 0.2f, 0.2f, 0.85f));
+		mainLayer.drawRectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 
-		System.out.println("SpaceAction: onDraw 1");
-
-		mainLayer.drawRectangle(0, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
+		mainLayer.drawRectangle(0, 0, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
 		if (mSelectedSystem != null) {
-			mainLayer.drawString("Selected:", 4, POS_Y + 5);
-			mainLayer.drawString(mSelectedSystem.getName(), Constants.GAME_WIDTH / 2 - mSelectedSystem.getName().length() * 6 - 5, POS_Y + 5);
+			mainLayer.drawString("Selected:", 4, 5);
+			mainLayer.drawString(mSelectedSystem.getName(), Constants.GAME_WIDTH / 2 - mSelectedSystem.getName().length() * 6 - 5, 5);
 			int i = 0;
 			for (FleetModel fleet: mSelectedSystem.getFleets()) {
 				if (fleet.getOwner().equals(GameService.getInstance().getPlayer())) {
-					mainLayer.drawString(fleet.getName(), 4, POS_Y + 20 + i++ * 12);
+					mainLayer.drawString(fleet.getName(), 4, 20 + i++ * 12);
 				}
 			}
 		}
 
-		System.out.println("SpaceAction: onDraw 2");
-
-		mainLayer.drawRectangle(Constants.GAME_WIDTH / 2, POS_Y, 1, 200, new Color(0, 0, 0, 0.45f));
-		System.out.println("SpaceAction: onDraw 3");
-		mainLayer.drawRectangle(Constants.GAME_WIDTH / 2 + 1, POS_Y, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
-		System.out.println("SpaceAction: onDraw 4");
-		mainLayer.drawString(mActionSystem == null ? "Target" : "Target:", Constants.GAME_WIDTH / 2 + 5, POS_Y + 5);
-		System.out.println("SpaceAction: onDraw 5");
+		// Separator
+		mainLayer.drawRectangle(Constants.GAME_WIDTH / 2, 0, 1, Constants.GAME_HEIGHT, new Color(0, 0, 0, 0.45f));
+		
+		mainLayer.drawRectangle(Constants.GAME_WIDTH / 2 + 1, 0, Constants.GAME_WIDTH / 2, 14, new Color(1, 1, 1, 0.45f));
+		mainLayer.drawString(mActionSystem == null ? "Target" : "Target:", Constants.GAME_WIDTH / 2 + 5, 5);
 		if (mActionSystem != null) {
-			mainLayer.drawString(mActionSystem.getName(), Constants.GAME_WIDTH - mActionSystem.getName().length() * 6 - 5, POS_Y + 5);
+			mainLayer.drawString(mActionSystem.getName(), Constants.GAME_WIDTH - mActionSystem.getName().length() * 6 - 5, 5);
 			int j = 0;
 			for (FleetModel fleet: mActionSystem.getFleets()) {
 				int relation = fleet.getOwner().getRelation(GameService.getInstance().getPlayer());
@@ -118,14 +114,12 @@ public class SpaceActionScreen extends BaseScreen {
 				case RelationModel.RELATION_WAR: str += "/war)"; break;
 				case RelationModel.RELATION_ME: str += ")"; break;
 				}
-				mainLayer.drawString(str, Constants.GAME_WIDTH / 2 + 5, POS_Y + 20 + j++ * 12);
+				mainLayer.drawString(str, Constants.GAME_WIDTH / 2 + 5, 20 + j++ * 12);
 			}
-			
-			System.out.println("SpaceAction: onDraw 6");
 
-			mainLayer.drawRectangle(Constants.GAME_WIDTH - 60, POS_Y + 24, 50, 50, new Color(1, 1, 1, 0.45f));
-			mainLayer.drawString("Move", Constants.GAME_WIDTH - 100, POS_Y + 30);
-			mainLayer.drawString("Cancel", Constants.GAME_WIDTH - 50, POS_Y + 30);
+			mainLayer.drawRectangle(Constants.GAME_WIDTH - 60, 24, 50, 50, new Color(1, 1, 1, 0.45f));
+			mainLayer.drawString("Move", Constants.GAME_WIDTH - 100, 30);
+			mainLayer.drawString("Cancel", Constants.GAME_WIDTH - 50, 30);
 		}
 	}
 
@@ -165,14 +159,30 @@ public class SpaceActionScreen extends BaseScreen {
 	}
 	
 	@Override
-	public void onMove (int offsetX, int offsetY) {
-		mParent.onMove(offsetX, offsetY);
+	public void onMove (int startX, int startY, int offsetX, int offsetY) {
+		if (mIsOpen == false && startY < POS_Y) {
+			mParent.onMove(0, 0, offsetX, offsetY);
+		}
 	}
 
 	@Override
 	public void onLongTouch (int x, int y) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void onUp (int x, int y) {
+		if (y > POS_Y) {
+			setOffsetY(-POS_Y, 0);
+			mIsOpen = true;
+		}
+	}
+
+	@Override
+	public void onDown (int x, int y) {
+		setOffsetY(0, -POS_Y);
+		mIsOpen = false;
 	}
 
 	public void setActionSystem (SystemModel system) {
