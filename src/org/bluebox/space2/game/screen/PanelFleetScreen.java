@@ -6,11 +6,13 @@ import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.engine.screen.BaseScreen;
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
 import org.bluebox.space2.engine.screen.BaseScreenLayer.StringConfig;
+import org.bluebox.space2.engine.ui.ButtonView;
 import org.bluebox.space2.engine.ui.TextView;
 import org.bluebox.space2.engine.ui.View.OnClickListener;
 import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.Game.Anim;
 import org.bluebox.space2.game.model.FleetModel;
+import org.bluebox.space2.game.model.IShipCollectionModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.service.GameService;
@@ -28,16 +30,17 @@ public class PanelFleetScreen extends BaseScreen {
 	private static final int START_Y = 36;
 	private static final int START_X = 5;
 	
-	FleetModel mFleet;
-	private int mSelected;
-	private double mTotInd;
-	private double mAttInd;
-	private double mDefInd;
+	IShipCollectionModel 	mShipCollection;
+	private int 				mSelected;
+	private double 			mTotInd;
+	private double 			mAttInd;
+	private double 			mDefInd;
+	private ButtonView mBtNewFleet;
 
-	public PanelFleetScreen (FleetModel fleet) {
-		mFleet = fleet;
+	public PanelFleetScreen (IShipCollectionModel collection) {
+		mShipCollection = collection;
 		
-		for (ShipModel ship: mFleet.getShips()) {
+		for (ShipModel ship: mShipCollection.getShips()) {
 			mTotInd += ship.getIndice();
 			mAttInd += ship.getAttackIndice();
 			mDefInd += ship.getDefenseIndice();
@@ -53,11 +56,21 @@ public class PanelFleetScreen extends BaseScreen {
 			text.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick () {
-					mFleet.setCourse(system);
+					mShipCollection.setCourse(system);
 				}
 			});
 			addView(text);
 		}
+		
+		mBtNewFleet = new ButtonView(300, 4, 42, 20, Color.RED);
+		mBtNewFleet.setText("new fleet");
+		mBtNewFleet.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				addScreen(new PanelCreateFleet(mShipCollection));
+			}
+		});
+		addView(mBtNewFleet);
 	}
 
 	@Override
@@ -65,10 +78,10 @@ public class PanelFleetScreen extends BaseScreen {
 		mainLayer.draw(Art.bg_1, 0, 0);
 		
 		mainLayer.setStringSize(StringConfig.SIZE_BIG);
-		mainLayer.drawString(String.format("%s (%d/%d/%d)", mFleet.getName(), (int)mTotInd, (int)mAttInd, (int)mDefInd), 6, 6);
+		mainLayer.drawString(String.format("%s (%d/%d/%d)", mShipCollection.getName(), (int)mTotInd, (int)mAttInd, (int)mDefInd), 6, 6);
 
 		// Draw location
-		mainLayer.drawString(mFleet.getLocationName(), 6, 24);
+		mainLayer.drawString(mShipCollection.getLocationName(), 6, 24);
 
 		mainLayer.draw(Art.ship_big, Constants.GAME_WIDTH - 132, 12);
 
@@ -76,7 +89,7 @@ public class PanelFleetScreen extends BaseScreen {
 		
 		//drawRectangle(6, 32, 183, 600, Color.rgba8888(0.85f, 0.85f, 1, 0.45f)); 
 		
-		List<ShipModel> ships = mFleet.getShips();
+		List<ShipModel> ships = mShipCollection.getShips();
 		int i = 0;
 		for (ShipModel ship : ships) {
 			
@@ -105,12 +118,12 @@ public class PanelFleetScreen extends BaseScreen {
 	}
 
 	private void drawShipInfo (BaseScreenLayer mainLayer, int posX, int posY) {
-		mSelected = Math.min(mSelected, mFleet.getShips().size() - 1);
+		mSelected = Math.min(mSelected, mShipCollection.getShips().size() - 1);
 		if (mSelected == -1) {
 			return;
 		}
 		
-		ShipModel ship = mFleet.getShips().get(mSelected);
+		ShipModel ship = mShipCollection.getShips().get(mSelected);
 
 		mainLayer.setStringSize(StringConfig.SIZE_BIG);
 		mainLayer.drawString(String.valueOf((int)ship.getIndice()), posX + 6, posY + 16);
@@ -144,7 +157,7 @@ public class PanelFleetScreen extends BaseScreen {
 	public void onTouch (int x, int y) {
 		if (x > START_X && y > START_Y) {
 			int i = (x - START_X) / GRID_WIDTH + (y - START_Y) / GRID_HEIGHT * GRID_COLUMNS;
-			if (i < mFleet.getNbShip()) {
+			if (i < mShipCollection.getNbShip()) {
 				mSelected = i;
 			}
 		}
@@ -165,7 +178,7 @@ public class PanelFleetScreen extends BaseScreen {
 	@Override
 	public void onNext () {
 		List<FleetModel> fleets = mPlayer.getFleets();
-		int index = fleets.indexOf(mFleet);
+		int index = fleets.indexOf(mShipCollection);
 		if (index < fleets.size() - 1) {
 			FleetModel fleet = fleets.get(Math.min(index + 1, fleets.size() - 1));
 			mGame.replaceScreen(this, new PanelFleetScreen(fleet), Anim.FLIP_RIGHT);
@@ -175,7 +188,7 @@ public class PanelFleetScreen extends BaseScreen {
 	@Override
 	public void onPrev () {
 		List<FleetModel> fleets = mPlayer.getFleets();
-		int index = fleets.indexOf(mFleet);
+		int index = fleets.indexOf(mShipCollection);
 		if (index > 0) {
 			FleetModel fleet = fleets.get(Math.max(index - 1, 0));
 			mGame.replaceScreen(this, new PanelFleetScreen(fleet), Anim.FLIP_LEFT);

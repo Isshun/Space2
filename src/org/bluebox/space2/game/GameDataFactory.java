@@ -4,6 +4,7 @@ import org.bluebox.space2.game.model.BuildingClassModel;
 import org.bluebox.space2.game.model.DeviceModel;
 import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.NameGenerator;
+import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.model.ShipClassModel;
 import org.bluebox.space2.game.model.ShipModel;
@@ -84,7 +85,7 @@ public class GameDataFactory {
 		ShipClassModel sc = data.shipClasses.get(0);
 		for (PlayerModel player: data.players) {
 			{
-				FleetModel fleet = new FleetModel(NameGenerator.generate(NameGenerator.KLINGON, player.getFleets().size()));
+				FleetModel fleet = new FleetModel(player, NameGenerator.generate(NameGenerator.KLINGON, player.getFleets().size()));
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Alpha" : player.getName());
 				fleet.addShip(new ShipModel(sc));
@@ -103,7 +104,7 @@ public class GameDataFactory {
 				data.fleets.add(fleet);
 			}
 			{
-				FleetModel fleet = new FleetModel();
+				FleetModel fleet = new FleetModel(player);
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Beta" : player.getName());
 				fleet.addShip(new ShipModel(sc));
@@ -116,7 +117,7 @@ public class GameDataFactory {
 				data.fleets.add(fleet);
 			}
 			{
-				FleetModel fleet = new FleetModel();
+				FleetModel fleet = new FleetModel(player);
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Omega" : player.getName());
 				fleet.addShip(new ShipModel(sc));
@@ -138,7 +139,9 @@ public class GameDataFactory {
 			// Add random planets if system is within 3 planet
 			int nbPlanetToAdd = Math.max(0, 3 - data.systems.get(i).getPlanets().size());
 			for (int j = 0; j < nbPlanetToAdd; j++) {
-				data.systems.get(i).addRandomPlanet();
+				PlanetModel p = PlanetModel.create(data.systems.get(i).getPlanets().size());
+				data.systems.get(i).addPlanet(p);
+				data.planets.add(p);
 			}
 			player.colonize(data.systems.get(i).getRicherPlanet());
 			i += offset;
@@ -213,7 +216,6 @@ public class GameDataFactory {
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
 			sc.addDevice(DeviceModel.get(Device.HULL_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
-			sc.addDevice(DeviceModel.get(Device.COLONIZER));
 			sc.setBuildValue(100);
 			data.shipClasses.add(sc);
 		}
@@ -228,14 +230,18 @@ public class GameDataFactory {
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
-			sc.addDevice(DeviceModel.get(Device.COLONIZER));
 			sc.setBuildValue(200);
 			data.shipClasses.add(sc);
 		}
 		{
 			ShipClassModel sc = new ShipClassModel("Cruiser", 250);
-			sc.addDevice(DeviceModel.get(Device.COLONIZER));
 			sc.setBuildValue(800);
+			data.shipClasses.add(sc);
+		}
+		{
+			ShipClassModel sc =new ShipClassModel("Colonizer", 40);
+			sc.addDevice(DeviceModel.get(Device.COLONIZER));
+			sc.setBuildValue(42);
 			data.shipClasses.add(sc);
 		}
 		{
@@ -243,7 +249,6 @@ public class GameDataFactory {
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
 			sc.addDevice(DeviceModel.get(Device.HULL_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
-			sc.addDevice(DeviceModel.get(Device.COLONIZER));
 			sc.setBuildValue(60);
 			data.shipClasses.add(sc);
 		}

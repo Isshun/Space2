@@ -115,7 +115,6 @@ public abstract class BaseScreen {
 	}
 
 	public BaseScreen back () {
-		onBack();
 		return mGame.goBack();
 	}
 

@@ -11,8 +11,8 @@ package org.bluebox.space2.game;
 public class Constants {
 //	public static int GAME_WIDTH = 480;
 //	public static int GAME_HEIGHT = 320;
-	public static int GAME_WIDTH = 1280;
-	public static int GAME_HEIGHT = 780;
+	public static int GAME_WIDTH = 1200;
+	public static int GAME_HEIGHT = 724;
 	public static final long TOUCH_MOVE_DELAY = 50;
 	public static final int SYSTEM_SIZE = 22;
 	public static final int TOUCH_RECOVERY = 500;

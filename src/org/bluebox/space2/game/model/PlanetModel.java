@@ -2,8 +2,10 @@ package org.bluebox.space2.game.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bluebox.space2.game.Game;
+import org.bluebox.space2.game.model.BuildingClassModel.Type;
 import org.bluebox.space2.game.service.FightService;
 
 
@@ -22,15 +24,17 @@ public class PlanetModel implements ILocation {
 	private double 						mBaseMoney;
 	private double 						mSatisfaction;
 	private int 							mSize;
-	private List<ShipModel>				mBuilds;
+	private List<ShipModel>				mShipsToBuild;
 	private List<BuildingClassModel>	mBuildings;
+	private List<BuildingClassModel>	mStructuresToBuilds;
 	private List<FleetModel> 			mFleets;
 	private DockModel 					mDock;
 	private PlayerModel 					mOwner;
 
 	public PlanetModel (int classId, int size) {
-		mBuilds = new ArrayList<ShipModel>();
+		mShipsToBuild = new ArrayList<ShipModel>();
 		mBuildings = new ArrayList<BuildingClassModel>();
+		mStructuresToBuilds = new ArrayList<BuildingClassModel>();
 		mFleets = new ArrayList<FleetModel>();
 		mPeople = 1;
 		mClass = PlanetClassModel.getFromId(classId);
@@ -188,6 +192,10 @@ public class PlanetModel implements ILocation {
 		mSize = size;
 	}
 
+	public void buildShip(ShipClassModel sc) {
+		buildShip(new ShipModel(sc));
+	}
+
 	public void buildShip(ShipModel sc) {
 		if (mDock == null) {
 			System.out.println("addBuild: planet has no spacedock");
@@ -195,17 +203,23 @@ public class PlanetModel implements ILocation {
 		
 		System.out.println("Add build: " + sc.getClassName());
 		sc.setPlanet(this);
-		mBuilds.add(sc);
+		mShipsToBuild.add(sc);
 	}
 
 	public List<ShipModel> getBuilds () {
-		return mBuilds;
+		return mShipsToBuild;
 	}
 
 	public void update () {
-		if (mBuilds.size() > 0 && mBuilds.get(0).build(mBaseBuild * mPeople)) {
-			mDock.addShip(mBuilds.get(0));
-			mBuilds.remove(0);
+		
+		// Planet has ship in todo list
+		if (mShipsToBuild.size() > 0) {
+			
+			// Ship construction is done
+			if (mShipsToBuild.get(0).build(mBaseBuild * mPeople)) {
+				mDock.addShip(mShipsToBuild.get(0));
+				mShipsToBuild.remove(0);
+			}
 		}
 	}
 
@@ -328,10 +342,14 @@ public class PlanetModel implements ILocation {
 
 	public void buildStructure(BuildingClassModel buildingClass) {
 		if (mDock == null && buildingClass.type == BuildingClassModel.Type.DOCK) {
-			mDock = new DockModel();
+			mDock = new DockModel(this);
 		}
 		
 		mBuildings.add(buildingClass);
+	}
+
+	public void addStructure(BuildingClassModel.Type type) {
+		buildStructure(BuildingClassModel.create(type));
 	}
 
 	public int getTotalPeople () {
@@ -341,6 +359,31 @@ public class PlanetModel implements ILocation {
 	@Override
 	public List<FleetModel> getFleets () {
 		return mFleets;
+	}
+
+	public int getShipBuildRemainder () {
+		int eta = 0;
+		for (ShipModel s: mShipsToBuild) {
+			eta += getBuildETA(s.getBuildRemain());
+		}
+		return eta;
+	}
+
+	public boolean hasBuilding (Type type) {
+		for (BuildingClassModel building: mBuildings) {
+			if (building.type.equals(type)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public List<BuildingClassModel> getStructuresToBuild () {
+		return mStructuresToBuilds;
+	}
+
+	public boolean hasDock () {
+		return mDock != null;
 	}
 
 }

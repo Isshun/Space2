@@ -63,6 +63,7 @@ public class SystemScreen extends BaseScreen {
 			mainLayer.setStringSize(StringConfig.SIZE_BIG);
 			mainLayer.drawString(mSystem.getName(), 12, 12);
 		}
+		mainLayer.drawString("indice: " + mSystem.getIndice(), Constants.GAME_WIDTH - 68, 32);
 
 		List<PlanetModel> planets = mSystem.getPlanets();
 		int pos = 0;

@@ -160,7 +160,7 @@ public class SystemModel implements ILocation {
 	}
 
 	public void colonize (PlayerModel player) {
-		Gdx.app.log(CLASS_NAME, "Colonize: " + mName);
+		System.out.println("Colonize: " + mName);
 		if (getCapital() == null) {
 			throw new GameException("cannot colonize system with no capital");
 		}
@@ -214,9 +214,13 @@ public class SystemModel implements ILocation {
 		
 		return system;
 	}
-	
-	public void addRandomPlanet() {
-		addPlanet(PlanetModel.create(mPlanets.size()));
-	}
 
+	public int getIndice () {
+		int indice = 0;
+		for (PlanetModel p: mPlanets) {
+			indice += p.getIndice();
+		}
+		return indice;
+	}
+	
 }

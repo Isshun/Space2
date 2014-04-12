@@ -31,13 +31,18 @@ public class PlanetScreen extends BaseScreen {
 	private Color mColor;
 	private RectangleView mBtShip;
 	private RectangleView mBtStructure;
+	private ButtonView mBtDock;
 
 	public PlanetScreen (SystemModel system, PlanetModel planet) {
 		mPlanet = planet;
 		mSystem = system;
 		//mColor = planet.getOwner() != null ? planet.getOwner().getUIColor() : new Color(1, 0.5f, 0.5f, 0.5f);
 		mColor = new Color(1, 1, 1, 0.45f);
-		
+	}
+
+	@Override
+	protected void onCreate () {
+		// Button ship
 		mBtShip = new ButtonView(6, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
 		mBtShip.setText("ship");
 		mBtShip.setOnClickListener(new OnClickListener() {
@@ -48,6 +53,7 @@ public class PlanetScreen extends BaseScreen {
 		});
 		addView(mBtShip);
 
+		// Button structure
 		mBtStructure = new ButtonView(126, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
 		mBtStructure.setText("structure");
 		mBtStructure.setOnClickListener(new OnClickListener() {
@@ -59,6 +65,19 @@ public class PlanetScreen extends BaseScreen {
 			}
 		});
 		addView(mBtStructure);
+		
+		// Dock
+		mBtDock = new ButtonView(Constants.GAME_WIDTH - 200, 100, 42, 42, Color.RED);
+		mBtDock.setText("dock");
+		mBtDock.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				PanelFleetScreen s = new PanelFleetScreen(mPlanet.getDock());
+				s.setTransition(Anim.FLIP_BOTTOM);
+				addScreen(s);
+			}
+		});
+		addView(mBtDock);
 	}
 
 	@Override
@@ -91,6 +110,9 @@ public class PlanetScreen extends BaseScreen {
 			int shipX = planetX - 128 / 2;
 			int shipY = planetY;
 			mainLayer.draw(Art.dock, shipX, shipY);
+			mBtDock.setVisibility(View.VISIBLE);
+		} else {
+			mBtDock.setVisibility(View.GONE);
 		}
 		
 
@@ -195,10 +217,6 @@ public class PlanetScreen extends BaseScreen {
 	public void onMove (int offsetX, int offsetY) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	protected void onCreate () {
 	}
 
 	@Override

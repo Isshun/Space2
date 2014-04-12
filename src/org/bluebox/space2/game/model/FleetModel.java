@@ -9,7 +9,7 @@ import org.bluebox.space2.path.PathResolver;
 import org.bluebox.space2.path.Vertex;
 
 
-public class FleetModel {
+public class FleetModel implements IShipCollectionModel {
 	public enum Action {
 		NONE,
 		MOVE
@@ -28,18 +28,22 @@ public class FleetModel {
 
 	private Action mAction;
 
-	public FleetModel () {
+	public FleetModel (PlayerModel owner) {
 		mAction = Action.NONE;
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
 		mName = NameGenerator.generate(NameGenerator.KLINGON, sCount++);
+		mOwner = owner;
+		owner.addFleet(this);
 	}
 
-	public FleetModel (String name) {
+	public FleetModel (PlayerModel owner, String name) {
 		mAction = Action.NONE;
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
 		mName = name;
+		mOwner = owner;
+		owner.addFleet(this);
 	}
 
 	public double getSpeed () {

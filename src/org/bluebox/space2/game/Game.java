@@ -9,9 +9,11 @@ import org.bluebox.space2.engine.IArtManager;
 import org.bluebox.space2.engine.MainGestureListener;
 import org.bluebox.space2.engine.screen.BaseScreen;
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
+import org.bluebox.space2.game.ai.AI;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.screen.ErrorScreen;
+import org.bluebox.space2.game.screen.PanelCreateFleet;
 import org.bluebox.space2.game.screen.PauseScreen;
 import org.bluebox.space2.game.screen.SpaceScreen;
 import org.bluebox.space2.game.service.GameService;
@@ -81,7 +83,7 @@ public class Game implements ApplicationListener {
 		int ratio = 1;
 		for (int i = 2; i < 10; i++) {
 			System.out.println("window i: " + (Gdx.graphics.getWidth() / i));
-			if ((Gdx.graphics.getWidth() / i) > 620) {
+			if ((Gdx.graphics.getWidth() / i) > 320) {
 				ratio = i;
 			}
 		}
@@ -117,6 +119,7 @@ public class Game implements ApplicationListener {
 			setScreen(new ErrorScreen(ErrorScreen.RESOLUTION_NOT_SUPPORTED));
 		} else {
 			setScreen(new SpaceScreen());
+//			setScreen(new PanelCreateFleet(GameService.getInstance().getPlayer().getHome().getDock()));
 		}
 		
 		
@@ -246,7 +249,7 @@ public class Game implements ApplicationListener {
 		List<PlayerModel> players = GameService.getInstance().getPlayers();
 		for (PlayerModel player: players) {
 			if (player.isAI()) {
-				IA.getInstance().play(player);
+				AI.getInstance().play(player);
 			}
 			player.update();
 		}

@@ -48,6 +48,17 @@ public class GameService {
 //			system.setOwner(mPlayers.get((int)(Math.random() * 3)));
 //		}
 //		
+		
+		GameService.getInstance().getPlayer().getHome().addStructure(BuildingClassModel.Type.DOCK);
+		GameService.getInstance().getPlayer().getHome().getDock().addShip(new ShipModel(GameService.getInstance().getShipClasses().get(0)));
+		GameService.getInstance().getPlayer().getHome().getDock().addShip(new ShipModel(GameService.getInstance().getShipClasses().get(0)));
+		GameService.getInstance().getPlayer().getHome().getDock().addShip(new ShipModel(GameService.getInstance().getShipClasses().get(0)));
+		GameService.getInstance().getPlayer().getHome().getDock().addShip(new ShipModel(GameService.getInstance().getShipClasses().get(0)));
+		GameService.getInstance().getPlayer().getHome().getDock().addShip(new ShipModel(GameService.getInstance().getShipClasses().get(0)));
+		GameService.getInstance().getPlayer().getHome().getDock().addShip(new ShipModel(GameService.getInstance().getShipClasses().get(0)));
+		GameService.getInstance().getPlayer().getHome().getDock().addShip(new ShipModel(GameService.getInstance().getShipClasses().get(0)));
+		GameService.getInstance().getPlayer().getHome().getDock().addShip(new ShipModel(GameService.getInstance().getShipClasses().get(0)));
+		GameService.getInstance().getPlayer().getHome().getDock().addShip(new ShipModel(GameService.getInstance().getShipClasses().get(0)));
 	}
 
 	private void addPlanet (SystemModel system, PlanetModel p) {

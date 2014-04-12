@@ -22,7 +22,7 @@ public class ShipModel {
 	private double 	mPhaserPower;
 	private double 	mTorpedoPower;
 	private int 		mTotalBuild;
-	private int			mBuild;
+	private double				mBuild;
 	private PlanetModel		mPlanet;
 	private SystemModel 		mSystem;
 	private ShipClassModel 	mShipClass;
@@ -63,7 +63,7 @@ public class ShipModel {
 	public double 			getShieldPower () { return mShieldPower; }
 	public double 			getArmory () { return mArmory; }
 	public String 			getSpecialDeviceName () { return "none"; }
-	public int 				getBuildRemain () { return mTotalBuild - mBuild; }
+	public int 				getBuildRemain () { return (int)(mTotalBuild - mBuild); }
 	public PlanetModel 	getPlanet () { return mPlanet; }
 	public SystemModel 	getSystem () { return mSystem; }
 

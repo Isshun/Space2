@@ -54,4 +54,8 @@ public class BuildingClassModel {
 		mDesc = desc;
 	}
 
+	public static BuildingClassModel create (Type type) {
+		return new BuildingClassModel(type);
+	}
+
 }

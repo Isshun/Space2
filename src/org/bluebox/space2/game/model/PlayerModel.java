@@ -24,6 +24,7 @@ public class PlayerModel {
 	private Color 					mDarkColor;
 	private Color 					mUIColor;
 	private boolean 				mIsAI;
+	public AIOrders				aiOrders;
 	
 	public PlayerModel(String name, Color uiColor, Color color, boolean isAI) {
 		mName = name;
@@ -32,6 +33,9 @@ public class PlayerModel {
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new HashSet<PlanetModel>();
 		mIsAI = isAI;
+		if (isAI) {
+			aiOrders = new AIOrders();
+		}
 		//mColor = new Color((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
 		mColor = color;
 		mUIColor = uiColor;
