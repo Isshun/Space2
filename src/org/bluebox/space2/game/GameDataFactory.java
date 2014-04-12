@@ -197,10 +197,10 @@ public class GameDataFactory {
 	}
 
 	public static void initPlayers (GameData data) {
-		data.player = new PlayerModel("me", new Color(0.9f, 0.9f, 0, 0.65f), Color.YELLOW);
-		data.players.add(new PlayerModel("player-1", new Color(0.55f, 0, 0, 0.65f), new Color(0.55f, 0, 0, 1)));
-		data.players.add(new PlayerModel("player-2", new Color(80f/255, 120f/255, 182f/255, 0.65f), new Color(80f/255, 120f/255, 182f/255, 1)));
-		data.players.add(new PlayerModel("player-3", new Color(160f/255, 190f/255, 24f/255, 0.65f), Color.PINK));
+		data.player = new PlayerModel("me", new Color(0.9f, 0.9f, 0, 0.65f), Color.YELLOW, false);
+		data.players.add(new PlayerModel("player-1", new Color(0.55f, 0, 0, 0.65f), new Color(0.55f, 0, 0, 1), true));
+		data.players.add(new PlayerModel("player-2", new Color(80f/255, 120f/255, 182f/255, 0.65f), new Color(80f/255, 120f/255, 182f/255, 1), true));
+		data.players.add(new PlayerModel("player-3", new Color(160f/255, 190f/255, 24f/255, 0.65f), Color.PINK, true));
 		data.players.add(data.player);
 	}
 

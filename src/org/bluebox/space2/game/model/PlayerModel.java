@@ -23,13 +23,15 @@ public class PlayerModel {
 	private Color 					mSpaceColor;
 	private Color 					mDarkColor;
 	private Color 					mUIColor;
+	private boolean 				mIsAI;
 	
-	public PlayerModel(String name, Color uiColor, Color color) {
+	public PlayerModel(String name, Color uiColor, Color color, boolean isAI) {
 		mName = name;
 		mFleets = new ArrayList<FleetModel>();
 		mFlag = (int)(Game.sRandom.nextInt(9));
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new HashSet<PlanetModel>();
+		mIsAI = isAI;
 		//mColor = new Color((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
 		mColor = color;
 		mUIColor = uiColor;
@@ -132,6 +134,10 @@ public class PlayerModel {
 	
 	public Color getUIColor () {
 		return mUIColor;
+	}
+
+	public boolean isAI () {
+		return mIsAI;
 	}
 
 }

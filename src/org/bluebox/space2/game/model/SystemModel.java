@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bluebox.space2.game.Game;
+import org.bluebox.space2.game.model.DeviceModel.Device;
 import org.bluebox.space2.game.service.FightService;
 
 import com.badlogic.gdx.Gdx;
@@ -160,12 +161,35 @@ public class SystemModel implements ILocation {
 
 	public void colonize (PlayerModel player) {
 		Gdx.app.log(CLASS_NAME, "Colonize: " + mName);
+		if (getCapital() == null) {
+			throw new GameException("cannot colonize system with no capital");
+		}
+		
+		ShipModel colonizer = getColonizer(player);
+		if (colonizer == null) {
+			throw new GameException("cannot colonize system without colonizer");
+		}
+		
+		colonizer.getFleet().removeShip(colonizer);
 		
 		getCapital().setOwner(player);
 		if (mOwner != player) {
 			mOwner = player;
 			player.addSystem(this);
 		}
+	}
+
+	private ShipModel getColonizer (PlayerModel player) {
+		for (FleetModel fleet: mFleets) {
+			if (fleet.getOwner().equals(player)) {
+				for (ShipModel ship: fleet.getShips()) {
+					if (ship.hasDevice(Device.COLONIZER)) {
+						return ship;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	public static SystemModel create (int posX, int posY) {

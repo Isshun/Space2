@@ -47,10 +47,7 @@ public class FleetModel {
 	}
 	
 	public void addShip(ShipModel ship) throws GameException {
-		if (mLocation == null) {
-			throw new GameException("Cannot move ship to fleet with different location");
-		}
-		
+
 		// Ship is already in a fleet
 		if (ship.getFleet() != null) {
 			// new and old fleets are at the same location
@@ -71,7 +68,7 @@ public class FleetModel {
 		}
 	}
 
-	private void removeShip (ShipModel ship) {
+	public void removeShip (ShipModel ship) {
 		mShips.remove(ship);
 		
 		ship.setFleet(null);

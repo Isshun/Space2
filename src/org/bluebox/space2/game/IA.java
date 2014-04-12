@@ -30,19 +30,38 @@ public class IA {
 	}
 
 	private void playColonize (PlayerModel player) {
-		boolean startColonize = isStartColonize(player);
+		if (isStartColonize(player) == false) {
+			return;
+		}
+		
 		ShipModel ship = getColonizer(player);
-		SystemModel system = getSystemToColonize(player);
-		System.out.println("debug: " + startColonize + ", " + ship + ", " + system);
-		if (startColonize && ship != null && system != null) {
-			System.out.println("debug: " + ship.getFleet().getAction());
-			if (ship.getFleet().getAction() == Action.NONE) {
-				colonizeNewSystem(player, system, ship);
-			}
+		if (ship == null) {
+			buildColonizer();
+			return;
+		}
+		
+		SystemModel system = getSystemToColonize(player, 1);
+		if (system == null) {
+			return;
+		}
+
+		System.out.println("debug: startColonize, " + ship + ", " + system);
+		System.out.println("debug: " + ship.getFleet().getAction());
+		if (ship.getFleet().getAction() == Action.NONE) {
+			colonizeNewSystem(player, system, ship);
 		}
 	}
 
-	private SystemModel getSystemToColonize (PlayerModel player) {
+	private void buildColonizer () {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private SystemModel getSystemToColonize (PlayerModel player, int level) {
+		if (level == 0) {
+			return null;
+		}
+		
 		// Get free system at proximity
 		List<SystemModel> neighbors = new ArrayList<SystemModel>();
 		for (TravelModel t: GameService.getInstance().getTraveLines()) {

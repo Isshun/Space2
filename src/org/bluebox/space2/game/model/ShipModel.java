@@ -101,4 +101,8 @@ public class ShipModel {
 	public void setFleet (FleetModel fleet) {
 		mFleet = fleet;
 	}
+
+	public ShipClassModel getShipClass () {
+		return mShipClass;
+	}
 }
