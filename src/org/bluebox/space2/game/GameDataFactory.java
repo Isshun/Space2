@@ -85,7 +85,7 @@ public class GameDataFactory {
 		ShipClassModel sc = data.shipClasses.get(0);
 		for (PlayerModel player: data.players) {
 			{
-				FleetModel fleet = new FleetModel(player, NameGenerator.generate(NameGenerator.KLINGON, player.getFleets().size()));
+				FleetModel fleet = new FleetModel(player, NameGenerator.generate(player.getNameGeneratorLanguage(), player.getFleets().size()));
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Alpha" : player.getName());
 				fleet.addShip(new ShipModel(sc));
@@ -205,6 +205,7 @@ public class GameDataFactory {
 		data.players.add(new PlayerModel("player-2", new Color(80f/255, 120f/255, 182f/255, 0.65f), new Color(80f/255, 120f/255, 182f/255, 1), true));
 		data.players.add(new PlayerModel("player-3", new Color(160f/255, 190f/255, 24f/255, 0.65f), Color.PINK, true));
 		data.players.add(data.player);
+		data.player.setNameGeneratorLanguage(NameGenerator.GREC);
 	}
 
 	public static void initShipClasses (GameData data) {

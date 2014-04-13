@@ -13,7 +13,7 @@ import org.bluebox.space2.game.ai.AI;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.screen.ErrorScreen;
-import org.bluebox.space2.game.screen.PanelCreateFleet;
+import org.bluebox.space2.game.screen.FleetCreateScreen;
 import org.bluebox.space2.game.screen.PauseScreen;
 import org.bluebox.space2.game.screen.SpaceScreen;
 import org.bluebox.space2.game.service.GameService;

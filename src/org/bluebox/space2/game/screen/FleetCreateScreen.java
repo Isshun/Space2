@@ -1,5 +1,6 @@
 package org.bluebox.space2.game.screen;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bluebox.space2.engine.Art;
@@ -16,7 +17,7 @@ import org.bluebox.space2.game.service.GameService;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class PanelCreateFleet extends BaseScreen {
+public class FleetCreateScreen extends BaseScreen {
 
 	private static final int 			ITEM_MARGIN = 5;
 	private static final int			ITEM_WIDTH = Constants.GAME_WIDTH / 2 - ITEM_MARGIN * 2;
@@ -30,7 +31,7 @@ public class PanelCreateFleet extends BaseScreen {
 	private ButtonView 					mBtCancel;
 	private ButtonView 					mBtDone;
 
-	public PanelCreateFleet (IShipCollectionModel shipCollection) {
+	public FleetCreateScreen (IShipCollectionModel shipCollection) {
 		mShipCollection = shipCollection;
 		mNewFleet = new FleetModel(GameService.getInstance().getPlayer());
 		mNewFleet.setLocation(shipCollection.getLocation());
@@ -63,9 +64,11 @@ public class PanelCreateFleet extends BaseScreen {
 	}
 
 	protected void cancelFleet () {
-		for (ShipModel ship: mNewFleet.getShips()) {
+		List<ShipModel> cpy = new ArrayList<ShipModel>(mNewFleet.getShips());
+		for (ShipModel ship: cpy) {
 			mShipCollection.addShip(ship);
 		}
+		mNewFleet.destroy();
 	}
 
 	@Override

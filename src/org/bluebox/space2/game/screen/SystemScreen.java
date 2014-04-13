@@ -7,6 +7,8 @@ import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.engine.screen.BaseScreen;
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
 import org.bluebox.space2.engine.screen.BaseScreenLayer.StringConfig;
+import org.bluebox.space2.engine.ui.ButtonView;
+import org.bluebox.space2.engine.ui.View.OnClickListener;
 import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.SystemModel;
@@ -24,6 +26,7 @@ public class SystemScreen extends BaseScreen {
 	private int mTouchX;
 	private int mTouchY;
 	private int mPlanetRevolution;
+	private ButtonView mBtCancel;
 
 	public SystemScreen (SystemModel system) {
 		System.out.println("Open system: " + system.getName());
@@ -145,6 +148,16 @@ public class SystemScreen extends BaseScreen {
 	@Override
 	protected void onCreate () {
 		System.out.println("System pos:" + mSystem.getX() + ", " + mSystem.getY());
+
+		mBtCancel = new ButtonView(Constants.GAME_WIDTH - 64, 4, 60, 20, Color.RED);
+		mBtCancel.setText("Cancel");
+		mBtCancel.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				back();
+			}
+		});
+		addView(mBtCancel);
 	}
 
 	@Override

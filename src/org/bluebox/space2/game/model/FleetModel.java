@@ -32,7 +32,7 @@ public class FleetModel implements IShipCollectionModel {
 		mAction = Action.NONE;
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
-		mName = NameGenerator.generate(NameGenerator.KLINGON, owner.getFleets().size());
+		mName = NameGenerator.generate(owner.getNameGeneratorLanguage(), owner.getFleets().size());
 		mOwner = owner;
 		owner.addFleet(this);
 	}
@@ -249,6 +249,15 @@ public class FleetModel implements IShipCollectionModel {
 	@Override
 	public boolean isDock () {
 		return false;
+	}
+
+	public void destroy (DockModel dock) {
+		if (dock != null) {
+			for (ShipModel ship: mShips) {
+				dock.addShip(ship);
+			}
+		}
+		destroy();
 	}
 
 }

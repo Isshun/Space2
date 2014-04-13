@@ -38,6 +38,7 @@ public class Art {
 	public static TextureRegion 		ic_people;
 	public static TextureRegion 		ic_satisfaction;
 	public static TextureRegion 		ic_construction_16;
+	public static TextureRegion 		ic_move;
 	public static TextureRegion 		bt_debug;
 	public static TextureRegion 		ship_big;
 	public static TextureRegion 		ship_32;
@@ -49,10 +50,13 @@ public class Art {
 	public static TextureRegion 		ic_info_32;
 	public static TextureRegion 		dock;
 	public static TextureRegion 		bt_space_map;
+	public static TextureRegion 		bt_move;
 	public static TextureRegion 		system_selected_origin;
 	public static TextureRegion 		spacedock;
 	public static TextureRegion[] 	systems;
 	private static IArtManager 		mArt;
+	public static TextureRegion 		bt_cancel;
+	public static TextureRegion 		bt_bg;
 
 	public static void load () {
 		ship_big = mArt.load("res/ship7.png", 128, 87);
@@ -60,6 +64,10 @@ public class Art {
 		ship_32 = mArt.load("res/ship_1_32.png", 32, 32);
 		ship_64 = mArt.load("res/ship_1_64.png", 64, 64);
 		ship_128 = mArt.load("res/ship_1_128.png", 128, 128);
+		bt_cancel = mArt.load("res/bt_cancel.png", 60, 13);
+		bt_move = mArt.load("res/bt_move.png", 60, 13);
+		bt_bg = mArt.load("res/bt_bg.png", 60, 13);
+		ic_move = mArt.load("res/ic_move.png", 11, 11);
 		
 		spacedock = mArt.load("res/spacedock.png", 108, 80);
 		shield = mArt.load("res/shield.png", 32, 32);

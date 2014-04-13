@@ -25,6 +25,7 @@ public class PlayerModel {
 	private Color 					mUIColor;
 	private boolean 				mIsAI;
 	public AIOrders				aiOrders;
+	private int mNameGeneratorLanguage;
 	
 	public PlayerModel(String name, Color uiColor, Color color, boolean isAI) {
 		mName = name;
@@ -146,6 +147,14 @@ public class PlayerModel {
 
 	public boolean isAI () {
 		return mIsAI;
+	}
+
+	public int getNameGeneratorLanguage () {
+		return mNameGeneratorLanguage;
+	}
+
+	public void setNameGeneratorLanguage (int language) {
+		mNameGeneratorLanguage = language;
 	}
 
 }

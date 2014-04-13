@@ -60,7 +60,7 @@ public class PanelArmadaScreen extends BaseScreen {
 		if (y > START_Y) {
 			int pos = (y - START_Y) / (LINE_HEIGHT + 1);
 			if (mFleets.size() > pos) {
-				addScreen(new PanelFleetScreen(mFleets.get(pos)));
+				addScreen(new FleetInfoScreen(mFleets.get(pos)));
 			}
 		}
 	}

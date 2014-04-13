@@ -32,6 +32,7 @@ public class PlanetScreen extends BaseScreen {
 	private RectangleView mBtShip;
 	private RectangleView mBtStructure;
 	private ButtonView mBtDock;
+	private ButtonView mBtCancel;
 
 	public PlanetScreen (SystemModel system, PlanetModel planet) {
 		mPlanet = planet;
@@ -52,6 +53,16 @@ public class PlanetScreen extends BaseScreen {
 			}
 		});
 		addView(mBtShip);
+		
+		mBtCancel = new ButtonView(Constants.GAME_WIDTH - 64, 4, 60, 20, Color.RED);
+		mBtCancel.setText("Cancel");
+		mBtCancel.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				back();
+			}
+		});
+		addView(mBtCancel);
 
 		// Button structure
 		mBtStructure = new ButtonView(126, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
@@ -72,7 +83,7 @@ public class PlanetScreen extends BaseScreen {
 		mBtDock.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
-				PanelFleetScreen s = new PanelFleetScreen(mPlanet.getDock());
+				FleetInfoScreen s = new FleetInfoScreen(mPlanet.getDock());
 				s.setTransition(Anim.FLIP_BOTTOM);
 				addScreen(s);
 			}

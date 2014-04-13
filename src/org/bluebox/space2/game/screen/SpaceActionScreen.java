@@ -17,6 +17,7 @@ import org.bluebox.space2.engine.ui.View.OnClickListener;
 import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 import org.bluebox.space2.game.model.FleetModel;
+import org.bluebox.space2.game.model.IShipCollectionModel;
 import org.bluebox.space2.game.model.RelationModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
@@ -42,7 +43,7 @@ public class SpaceActionScreen extends BaseScreen {
 	protected SystemModel 		mActionSystem;
 	private boolean 				mIsOpen;
 	private ImageView 			mImgTarget;
-	private RectangleView 		btMove;
+	private ButtonView 			btMove;
 	private RectangleView 		btColonize;
 	protected boolean 			mIsOnMove;
 	private Color 					mColor;
@@ -52,6 +53,8 @@ public class SpaceActionScreen extends BaseScreen {
 	private ButtonView btConfirm;
 	private ButtonView btCancel;
 	private TextView lbTooltip;
+	private ButtonView btNewFleet;
+	private ButtonView btInfo;
 
 	public SpaceActionScreen (BaseScreen parent, SystemModel system) {
 		mParent = parent;
@@ -85,9 +88,9 @@ public class SpaceActionScreen extends BaseScreen {
 		addView(mLbFleets);
 
 		// Button move
-		btMove = new RectangleView(Constants.GAME_WIDTH - 70, 10, 60, 14, Color.RED);
+		btMove = new ButtonView(Constants.GAME_WIDTH - 62, 2, 60, 14, null);
 		btMove.setText("move");
-		btMove.setPadding(4);
+		btMove.setIcon(Art.ic_move);
 		btMove.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
@@ -99,7 +102,7 @@ public class SpaceActionScreen extends BaseScreen {
 		addView(btMove);
 
 		// Button colonize
-		btColonize = new RectangleView(Constants.GAME_WIDTH - 70, 30, 60, 14, Color.GREEN);
+		btColonize = new RectangleView(Constants.GAME_WIDTH - 118, 2, 60, 14, Color.GREEN);
 		btColonize.setText("Colonize");
 		btColonize.setPadding(4);
 		btColonize.setOnClickListener(new OnClickListener() {
@@ -111,19 +114,46 @@ public class SpaceActionScreen extends BaseScreen {
 			}
 		});
 		addView(btColonize);
-		
-		// Button destroy fleet
-		btDestroy = new ButtonView(Constants.GAME_WIDTH - 140, 10, 60, 14, Color.PINK);
+
+		// Destroy fleet
+		btDestroy = new ButtonView(Constants.GAME_WIDTH - 125, 2, 60, 14, null);
 		btDestroy.setText("Dismantle");
 		btDestroy.setPadding(4);
 		btDestroy.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
+				addScreen(new FleetDestroyScreen(mSelectedFleets));
 			}
 		});
 		addView(btDestroy);
+		
+		// Display fleet info
+		btInfo = new ButtonView(Constants.GAME_WIDTH - 251, 2, 60, 14, null);
+		btInfo.setText("Info");
+		btInfo.setPadding(4);
+		btInfo.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				addScreen(new FleetInfoScreen(mSelectedFleets.iterator().next(), new ArrayList<IShipCollectionModel>(mSelectedFleets)));
+			}
+		});
+		addView(btInfo);
 
-		// Button destroy fleet
+		// Create new fleet
+		btNewFleet = new ButtonView(Constants.GAME_WIDTH - 188, 2, 60, 14, null);
+		btNewFleet.setText("Subdivide");
+		btNewFleet.setPadding(4);
+		btNewFleet.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				if (mSelectedFleets.size() > 0) {
+					addScreen(new FleetCreateScreen(mSelectedFleets.iterator().next()));
+				}
+			}
+		});
+		addView(btNewFleet);
+
+		// Merge fleet
 		btMerge = new ButtonView(Constants.GAME_WIDTH - 140, 30, 60, 14, Color.BLUE);
 		btMerge.setText("Merge");
 		btMerge.setPadding(4);
@@ -192,12 +222,15 @@ public class SpaceActionScreen extends BaseScreen {
 				fleet.setCourse(mActionSystem);
 			}
 		}
+		
+		mSelectedFleets.clear();
+		back();
 	}
 
 	@Override
 	public void onDraw (BaseScreenLayer mainLayer, BaseScreenLayer UILayer) {
 		mainLayer.drawRectangle(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
-		mainLayer.drawRectangle(0, 0, Constants.GAME_WIDTH, 14, new Color(1, 1, 1, 0.45f));
+		mainLayer.drawRectangle(0, 0, Constants.GAME_WIDTH, 17, new Color(1, 1, 1, 0.45f));
 		if (mSelectedSystem != null) {
 //			mainLayer.drawString(mSelectedSystem.getName(), Constants.GAME_WIDTH / 2 - mSelectedSystem.getName().length() * 6 - 5, 5);
 			int i = 0;
@@ -252,10 +285,12 @@ public class SpaceActionScreen extends BaseScreen {
 	}
 
 	private void drawRightPanel () {
-		btMove.setVisibility(View.VISIBLE);
-		btDestroy.setVisibility(View.VISIBLE);
 		btColonize.setVisibility(hasColonizerInSelection() ? View.VISIBLE : View.GONE);
-		btMerge.setVisibility(View.VISIBLE);
+		btMerge.setVisibility(mSelectedFleets.size() > 1 ? View.VISIBLE : View.GONE);
+		btMove.setVisibility(mSelectedFleets.size() > 0 ? View.VISIBLE : View.GONE);
+		btNewFleet.setVisibility(mSelectedFleets.size() > 0 ? View.VISIBLE : View.GONE);
+		btDestroy.setVisibility(mSelectedFleets.size() > 0 ? View.VISIBLE : View.GONE);
+		btInfo.setVisibility(mSelectedFleets.size() > 0 ? View.VISIBLE : View.GONE);
 		lbTooltip.setVisibility(View.GONE);
 		btConfirm.setVisibility(View.GONE);
 		btCancel.setVisibility(View.GONE);
@@ -403,6 +438,15 @@ public class SpaceActionScreen extends BaseScreen {
 	}
 
 	@Override
+	public void onReturn () {
+		reSelectFleetFromSystem();
+
+		if (mSelectedFleets.size() == 0) {
+			back();
+		}
+	}
+
+	@Override
 	public void onDown (int x, int y) {
 		// big window
 		if (mIsOpen) {
@@ -458,8 +502,12 @@ public class SpaceActionScreen extends BaseScreen {
 		mSelectedSystem = system;
 		((SpaceScreen)mParent).setSelected(system);
 		
+		reSelectFleetFromSystem();
+	}
+
+	private void reSelectFleetFromSystem () {
 		mSelectedFleets.clear();
-		for (FleetModel f: system.getFleets()) {
+		for (FleetModel f: mSelectedSystem.getFleets()) {
 			if (f.getOwner().equals(mPlayer)) {
 				mSelectedFleets.add(f);
 			}

@@ -17,7 +17,7 @@ public class RectangleView extends View {
 
 	private Color 	mColor;
 	private int 	mAngle;
-	private String mText;
+	protected String mText;
 
 	public RectangleView (int x, int y, int width, int height, Color color) {
 		super(x, y);
@@ -29,17 +29,19 @@ public class RectangleView extends View {
 
 	@Override
 	public void draw (SpriteCache spriteBatch) {
-		Pixmap pixmap = new Pixmap(mWidth, mHeight, Format.RGBA8888);
-		pixmap.setColor(mColor);
-		pixmap.fillRectangle(0, 0, mWidth, mHeight);
-		Texture pixmaptex = new Texture(pixmap);
-		Sprite line = new Sprite(pixmaptex);
-		if (mAngle != 0) {
-			line.setRotation(mAngle);
+		if (mColor != null) {
+			Pixmap pixmap = new Pixmap(mWidth, mHeight, Format.RGBA8888);
+			pixmap.setColor(mColor);
+			pixmap.fillRectangle(0, 0, mWidth, mHeight);
+			Texture pixmaptex = new Texture(pixmap);
+			Sprite line = new Sprite(pixmaptex);
+			if (mAngle != 0) {
+				line.setRotation(mAngle);
+			}
+			line.setPosition(mPosX, mPosY);
+			spriteBatch.add(line);
+			pixmap.dispose();
 		}
-		line.setPosition(mPosX, mPosY);
-		spriteBatch.add(line);
-		pixmap.dispose();
 		
 		if (mText != null) {
 			for (int i = 0; i < mText.length(); i++) {

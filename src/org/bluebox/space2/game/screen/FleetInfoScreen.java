@@ -20,7 +20,7 @@ import org.bluebox.space2.game.service.GameService;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class PanelFleetScreen extends BaseScreen {
+public class FleetInfoScreen extends BaseScreen {
 
 	private static final int GRID_WIDTH = 46;
 	private static final int GRID_HEIGHT = 50;
@@ -36,11 +36,22 @@ public class PanelFleetScreen extends BaseScreen {
 	private double 			mTotInd;
 	private double 			mAttInd;
 	private double 			mDefInd;
-	private ButtonView mBtNewFleet;
+	private ButtonView		mBtNewFleet;
+	private List<IShipCollectionModel> mShipCollections;
+	private ButtonView mBtBack;
 
-	public PanelFleetScreen (IShipCollectionModel collection) {
+	public FleetInfoScreen (IShipCollectionModel collection, List<IShipCollectionModel> collections) {
 		mShipCollection = collection;
-		
+		mShipCollections = collections;
+		init();
+	}
+
+	public FleetInfoScreen (IShipCollectionModel collection) {
+		mShipCollection = collection;
+		init();
+	}
+
+	private void init () {
 		for (ShipModel ship: mShipCollection.getShips()) {
 			mTotInd += ship.getIndice();
 			mAttInd += ship.getAttackIndice();
@@ -65,15 +76,26 @@ public class PanelFleetScreen extends BaseScreen {
 			addView(text);
 		}
 		
-		mBtNewFleet = new ButtonView(300, 4, 42, 20, Color.RED);
+		mBtNewFleet = new ButtonView(Constants.GAME_WIDTH - 132, 4, 42, 20, Color.RED);
 		mBtNewFleet.setText("new fleet");
 		mBtNewFleet.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
-				addScreen(new PanelCreateFleet(mShipCollection));
+				addScreen(new FleetCreateScreen(mShipCollection));
 			}
 		});
 		addView(mBtNewFleet);
+
+		// Back button
+		mBtBack = new ButtonView(Constants.GAME_WIDTH - 64, 4, 42, 20, Color.RED);
+		mBtBack.setText("close");
+		mBtBack.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				back();
+			}
+		});
+		addView(mBtBack);
 	}
 
 	@Override
@@ -178,21 +200,23 @@ public class PanelFleetScreen extends BaseScreen {
 
 	@Override
 	public void onNext () {
-		List<FleetModel> fleets = new ArrayList<FleetModel>(mPlayer.getFleets());
-		int index = fleets.indexOf(mShipCollection);
-		if (index < fleets.size() - 1) {
-			FleetModel fleet = fleets.get(Math.min(index + 1, fleets.size() - 1));
-			mGame.replaceScreen(this, new PanelFleetScreen(fleet), Anim.FLIP_RIGHT);
+		if (mShipCollections != null) {
+			int index = mShipCollections.indexOf(mShipCollection);
+			if (index < mShipCollections.size() - 1) {
+				IShipCollectionModel fleet = mShipCollections.get(Math.min(index + 1, mShipCollections.size() - 1));
+				mGame.replaceScreen(this, new FleetInfoScreen(fleet, mShipCollections), Anim.FLIP_RIGHT);
+			}
 		}
 	}
 
 	@Override
 	public void onPrev () {
-		List<FleetModel> fleets = new ArrayList<FleetModel>(mPlayer.getFleets());
-		int index = fleets.indexOf(mShipCollection);
-		if (index > 0) {
-			FleetModel fleet = fleets.get(Math.max(index - 1, 0));
-			mGame.replaceScreen(this, new PanelFleetScreen(fleet), Anim.FLIP_LEFT);
+		if (mShipCollections != null) {
+			int index = mShipCollections.indexOf(mShipCollection);
+			if (index > 0) {
+				IShipCollectionModel fleet = mShipCollections.get(Math.max(index - 1, 0));
+				mGame.replaceScreen(this, new FleetInfoScreen(fleet, mShipCollections), Anim.FLIP_LEFT);
+			}
 		}
 	}
 
