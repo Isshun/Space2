@@ -280,6 +280,7 @@ public class Game implements ApplicationListener {
 		mLastBack = time;
 		System.out.println("Go back");
 		BaseScreen s = mScreens.pollLast();
+		s.onReturn();
 		if (s != null) {
 			if (mScreen != null) {
 				replaceScreen(mScreen, s, null);

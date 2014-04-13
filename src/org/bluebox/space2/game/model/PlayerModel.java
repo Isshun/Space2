@@ -84,6 +84,10 @@ public class PlayerModel {
 		fleet.setOwner(this);
 		mFleets.add(fleet);
 	}
+	
+	public void removeFleet (FleetModel fleet) {
+		mFleets.remove(fleet);
+	}
 
 	public PlanetModel getHome () {
 		return mHome;

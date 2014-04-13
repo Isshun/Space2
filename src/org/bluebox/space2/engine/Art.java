@@ -50,6 +50,8 @@ public class Art {
 	public static TextureRegion 		dock;
 	public static TextureRegion 		bt_space_map;
 	public static TextureRegion 		system_selected_origin;
+	public static TextureRegion 		spacedock;
+	public static TextureRegion[] 	systems;
 	private static IArtManager 		mArt;
 
 	public static void load () {
@@ -59,6 +61,7 @@ public class Art {
 		ship_64 = mArt.load("res/ship_1_64.png", 64, 64);
 		ship_128 = mArt.load("res/ship_1_128.png", 128, 128);
 		
+		spacedock = mArt.load("res/spacedock.png", 108, 80);
 		shield = mArt.load("res/shield.png", 32, 32);
 		dock = mArt.load("res/dock_16.png", 16, 16);
 		ic_attack_32 = mArt.load("res/ic_attack_32.png", 32, 32);
@@ -72,6 +75,13 @@ public class Art {
 		system[1] = mArt.load("res/system_1.png", 22, 22);
 		system[2] = mArt.load("res/system_2.png", 22, 22);
 		system[3] = mArt.load("res/system_3.png", 22, 22);
+		
+		systems = new TextureRegion[4];
+		systems[0] = mArt.load("res/system_0_64.png", 64, 64);
+		systems[1] = mArt.load("res/system_1_64.png", 64, 64);
+		systems[2] = mArt.load("res/system_2_64.png", 64, 64);
+		systems[3] = mArt.load("res/system_3_64.png", 64, 64);
+		
 		sun = new TextureRegion[4];
 		sun[0] = mArt.load("res/sun_0_256.png", 256, 256);
 		sun[1] = mArt.load("res/sun_1_256.png", 256, 256);

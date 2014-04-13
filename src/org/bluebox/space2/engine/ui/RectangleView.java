@@ -47,16 +47,16 @@ public class RectangleView extends View {
 				for (int ys = 0; ys < BaseScreenLayer.CHARS.length; ys++) {
 					int xs = BaseScreenLayer.CHARS[ys].indexOf(ch);
 					if (xs >= 0) {
-						spriteBatch.add(Art.guys[xs][ys + 9], mPosX + i * 6, mPosY, 6,  6);
+						spriteBatch.add(Art.guys[xs][ys + 9], mPadding - 1 + mPosX + i * 6, mPadding + mPosY, 6,  6);
 					}
 				}
 			}
 		}
-		
+
 	}
 
 	public void setText (String text) {
-		mText = text;
+		mText = text.toLowerCase();
 	}
 
 	public void setHeight (int height) {
@@ -70,6 +70,10 @@ public class RectangleView extends View {
 
 	public void setWidth (int width) {
 		mWidth = width;
+	}
+
+	public void setPadding (int padding) {
+		mPadding = padding;
 	}
 
 }

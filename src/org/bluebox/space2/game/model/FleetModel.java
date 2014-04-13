@@ -25,6 +25,8 @@ public class FleetModel implements IShipCollectionModel {
 	private LinkedList<Vertex> mPath;
 
 	private Action mAction;
+	private double mAttackIndice;
+	private double mDefenseIndice;
 
 	public FleetModel (PlayerModel owner) {
 		mAction = Action.NONE;
@@ -64,6 +66,9 @@ public class FleetModel implements IShipCollectionModel {
 		
 		mShips.add(ship);
 		ship.setFleet(this);
+		
+		mAttackIndice += ship.getAttackIndice();
+		mDefenseIndice += ship.getDefenseIndice();
 
 		if (ship.getSpeed() < mSpeed) {
 			mSpeed = ship.getSpeed();
@@ -215,6 +220,35 @@ public class FleetModel implements IShipCollectionModel {
 
 	public LinkedList<Vertex> getPath() {
 		return mPath;
+	}
+
+	public double getAttackIndice () {
+		return mAttackIndice;
+	}
+
+	public double getDefenseIndice () {
+		return mDefenseIndice;
+	}
+
+	public double getIndice () {
+		return mAttackIndice + mDefenseIndice;
+	}
+
+	public void addShips (List<ShipModel> ships) {
+		List<ShipModel> cpy = new ArrayList<ShipModel>(ships);
+		for (ShipModel ship: cpy) {
+			addShip(ship);
+		}
+	}
+
+	public void destroy () {
+		getOwner().removeFleet(this);
+		getLocation().removeFleet(this);
+	}
+
+	@Override
+	public boolean isDock () {
+		return false;
 	}
 
 }

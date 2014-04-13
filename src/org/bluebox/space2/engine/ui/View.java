@@ -27,6 +27,10 @@ public abstract class View {
 		mVisibility = VISIBLE;
 	}
 
+	public void setPadding (int padding) {
+		mPadding = padding;
+	}
+
 	public boolean isClickable () {
 		return true;
 	}

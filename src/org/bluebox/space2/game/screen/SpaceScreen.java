@@ -89,6 +89,9 @@ public class SpaceScreen extends BaseScreen {
 		});
 		addView(mBtArmada);
 		addView(new TextView("ARMADA", 122, 40));
+		
+		mActionScreen = new SpaceActionScreen(this, GameService.getInstance().getPlayer().getHome().getSystem());
+		addScreen(mActionScreen);
 	}
 	
 	private void drawArea () {
@@ -241,7 +244,9 @@ public class SpaceScreen extends BaseScreen {
 				}
 			}
 			
-			mainLayer.draw(Art.system_selected[mSelected.getType()], mDeprecatedPosX + mSelected.getX(), mDeprecatedPosY + mSelected.getY());
+			if (mSelected != null) {
+				mainLayer.draw(Art.system_selected[mSelected.getType()], mDeprecatedPosX + mSelected.getX(), mDeprecatedPosY + mSelected.getY());
+			}
 		}
 		
 		// Draw selected system
@@ -304,7 +309,7 @@ public class SpaceScreen extends BaseScreen {
 			SystemModel system = GameService.getInstance().getSystemAtPos(x - mRealPosX, y - mRealPosY);
 			if (system != null && mSelected != system) {
 				mActionSystem = system;
-				mActionScreen.setActionSystem(system);
+				mActionScreen.setSelected(system);
 			}
 		}
 		
@@ -347,6 +352,13 @@ public class SpaceScreen extends BaseScreen {
 	@Override
 	public void onMoveEnd (int offsetX, int offsetY) {
 //		notifyChange();
+	}
+	
+	@Override
+	public void onReturn() {
+		mActionScreen = null;
+		mSelected = null;
+		mTravelPath = null;
 	}
 
 	@Override

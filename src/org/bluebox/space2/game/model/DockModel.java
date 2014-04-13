@@ -40,4 +40,9 @@ public class DockModel extends BuildingModel implements IShipCollectionModel {
 		return mPlanet;
 	}
 
+	@Override
+	public boolean isDock () {
+		return true;
+	}
+
 }

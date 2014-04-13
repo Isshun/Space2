@@ -30,18 +30,18 @@ public class TextView extends View {
 
 		mWidth = text.length() * 6;
 		mHeight = 6;
-		mText = text.toUpperCase();
+		mText = text.toLowerCase();
 	}
 
 	@Override
 	public void draw (SpriteCache spriteBatch) {
-		for (int i = 0; i < mText.length(); i++) {
-			char ch = mText.charAt(i);
-			if (ch == '(') {
-//				draw(Art.guys[18][10], mPosX + i * 6, mPosY, mColor);
-			}
-			if (ch == ')') {
-//				draw(Art.guys[19][10], mPosX + i * 6, mPosY, mColor);
+		int j = 0;
+		int i = 0;
+		for (int l = 0; l < mText.length(); l++) {
+			char ch = mText.charAt(l);
+			if (ch == '\n') {
+				j++;
+				i = -1;
 			}
 			for (int ys = 0; ys < BaseScreenLayer.CHARS.length; ys++) {
 				int xs = BaseScreenLayer.CHARS[ys].indexOf(ch);
@@ -55,12 +55,17 @@ public class TextView extends View {
 						spriteBatch.add(region, mPosX, mPosY, 3, 4);
 						pixmap.dispose();
 					} else {
-						spriteBatch.add(Art.guys[xs][ys + 9], mPosX + i * 6, mPosY, 6,  6);
+						spriteBatch.add(Art.guys[xs][ys + 9], mPosX + mPadding + i * 6, mPosY + j * 8 + mPadding, 6,  6);
 					}
 //					draw(, mPosX + i * 6, mPosY, mColor);
 				}
 			}
+			i++;
 		}
+	}
+
+	public void setText (String text) {
+		mText = text.toLowerCase();
 	}
 
 }

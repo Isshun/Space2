@@ -121,6 +121,9 @@ public abstract class BaseScreen {
 	public void onBack () {
 	}
 
+	public void onReturn() {
+	}
+	
 	protected void addView(View v) {
 		mViews.add(v);
 	}

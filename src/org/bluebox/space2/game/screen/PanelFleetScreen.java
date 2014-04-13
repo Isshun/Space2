@@ -84,7 +84,7 @@ public class PanelFleetScreen extends BaseScreen {
 		// Draw location
 		mainLayer.drawString(mShipCollection.getLocationName(), 6, 24);
 
-		mainLayer.draw(Art.ship_big, Constants.GAME_WIDTH - 132, 12);
+		mainLayer.draw(mShipCollection.isDock() ? Art.spacedock : Art.ship_big, Constants.GAME_WIDTH - 132, 12);
 
 		drawShipInfo(mainLayer, Constants.GAME_WIDTH - 180, Constants.GAME_HEIGHT - 150);
 		

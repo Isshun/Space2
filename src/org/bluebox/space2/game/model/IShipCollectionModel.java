@@ -11,4 +11,5 @@ public interface IShipCollectionModel {
 	String		getName ();
 	int 			getNbShip ();
 	ILocation 	getLocation ();
+	boolean 		isDock ();
 }
