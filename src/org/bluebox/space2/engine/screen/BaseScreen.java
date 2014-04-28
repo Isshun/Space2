@@ -64,6 +64,10 @@ public abstract class BaseScreen {
 	protected boolean 				mRefreshOnUpdate;
 	protected Anim 					mOutTransition;
 	private boolean 					mIsInitialized;
+	private int 						mAnimationWidth;
+	private int 						mFinalAnimationWidth;
+	private int 						mAnimationHeight;
+	private int 						mFinalAnimationHeight;
 	
 	public BaseScreen() {
 		mMainLayer = BaseScreenLayer.create(BaseScreenLayer.CACHE);
@@ -74,6 +78,8 @@ public abstract class BaseScreen {
 		mViews = new ArrayList<View>();
 		mParalaxNotified = true;
 		mZoom = 1;
+		mFinalAnimationWidth = mAnimationWidth = Constants.GAME_WIDTH;
+		mFinalAnimationHeight = mAnimationHeight = Constants.GAME_HEIGHT;
 	}
 
 	public void dispose () {
@@ -85,21 +91,23 @@ public abstract class BaseScreen {
 	public final void init (Game game, int gameTime) {
 		System.out.println("Screen init: " + this.getClass().getName());
 		
-		if (mIsInitialized) {
-			mMainLayer.notifyChange();
-			return;
-		}
-		
-		mIsInitialized = true;
 		mGameTime = gameTime;
 		mGameTimeAtStart = gameTime;
 		mPlayer = GameService.getInstance().getPlayer();
 		mGame = game;
 		mScreenTime = 0;//Constants.TOUCH_RECOVERY / 2;
 		mBackHistory = 0;
-		mMainLayer.notifyChange();
 
 		onCreate();
+		
+		if (mIsInitialized) {
+			mMainLayer.notifyChange();
+			mTopLayer.notifyChange();
+			mUILayer.notifyChange();
+			return;
+		}
+		
+		mIsInitialized = true;
 	}
 
 	public boolean isTop () {
@@ -132,8 +140,10 @@ public abstract class BaseScreen {
 	public void render (int gameTime, int cycle, long renderTime) {
 		long time = System.currentTimeMillis();
 		
-		if (mCycle != cycle && mRefreshOnUpdate) {
-			mMainLayer.notifyChange();
+		if (mCycle != cycle) {
+			 if (mRefreshOnUpdate) {
+				 mMainLayer.notifyChange();
+			 }
 		}
 		
 		mScreenTime = gameTime - mGameTimeAtStart;
@@ -165,6 +175,7 @@ public abstract class BaseScreen {
 		if (mUILayer.isChange()) {
 			mUILayer.clear();
 			mUILayer.begin();
+			mUILayer.setProjectionSize(mAnimationWidth, mAnimationHeight);
 			for (View view: mViews) {
 				if (view.isVisible()) {
 					mUILayer.draw(view);
@@ -179,11 +190,14 @@ public abstract class BaseScreen {
 		}
 
 		// Render main layer
+		mMainLayer.setProjectionSize(mAnimationWidth, mAnimationHeight);
 		mMainLayer.draw(mOffsetX - mRealPosX, mOffsetY - mRealPosY, mZoom);
+		mTopLayer.setProjectionSize(mAnimationWidth, mAnimationHeight);
 		mTopLayer.draw(mOffsetX, mOffsetY, 1);
 		
 		// Render dynamic elements
 		mDynamicLayer.clear();
+		mDynamicLayer.setProjectionSize(mAnimationWidth, mAnimationHeight);
 		mDynamicLayer.draw(mOffsetX - mRealPosX, mOffsetY - mRealPosY, mZoom);
 		mDynamicLayer.begin();
 		onRender(mDynamicLayer, mGameTime, mScreenTime);
@@ -214,6 +228,16 @@ public abstract class BaseScreen {
 		
 		if (mOffsetY > mFinalOffsetY) {
 			mOffsetY = Math.max(mFinalOffsetY, mOffsetY - Constants.SCREEN_TRANSITION_OFFSET);
+			Gdx.graphics.requestRendering();
+		}
+		
+		if (mAnimationWidth < mFinalAnimationWidth) {
+			mAnimationWidth = (int)Math.min(mFinalAnimationWidth, mAnimationWidth + (Constants.GAME_WIDTH / 20));
+			Gdx.graphics.requestRendering();
+		}
+
+		if (mAnimationHeight < mFinalAnimationHeight) {
+			mAnimationHeight = (int)Math.min(mFinalAnimationHeight, mAnimationHeight + (Constants.GAME_HEIGHT / 20));
 			Gdx.graphics.requestRendering();
 		}
 	}
@@ -285,6 +309,12 @@ public abstract class BaseScreen {
 		case FLIP_LEFT:
 			break;
 		case FLIP_RIGHT:
+			break;
+		case ZOOM:
+			mAnimationWidth = 0;
+			mFinalAnimationWidth = Constants.GAME_WIDTH;
+			mAnimationHeight = 0;
+			mFinalAnimationHeight = Constants.GAME_HEIGHT;
 			break;
 		}
 	}

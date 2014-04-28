@@ -1,11 +1,11 @@
 package org.bluebox.space2.game.model;
 
 public class PlanetSizeModel {
-	public static String sSize1 = "Tiny (--)";
-	public static String sSize2 = "Small(-)";
-	public static String sSize3 = "Medium (-)";
-	public static String sSize4 = "Large (++)";
-	public static String sSize5 = "Giant (+++)";
+	public static String sSize1 = "Tiny";
+	public static String sSize2 = "Small";
+	public static String sSize3 = "Medium";
+	public static String sSize4 = "Large";
+	public static String sSize5 = "Giant";
 
 	public static String sShortSize1 = "--";
 	public static String sShortSize2 = "-";

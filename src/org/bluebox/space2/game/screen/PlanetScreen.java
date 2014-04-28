@@ -3,6 +3,7 @@ package org.bluebox.space2.game.screen;
 
 import java.util.List;
 
+import org.bluebox.space2.Utils;
 import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.engine.screen.BaseScreen;
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
@@ -13,6 +14,7 @@ import org.bluebox.space2.engine.ui.View;
 import org.bluebox.space2.engine.ui.View.OnClickListener;
 import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.Game.Anim;
+import org.bluebox.space2.game.model.BuildingModel;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.SystemModel;
 
@@ -33,18 +35,20 @@ public class PlanetScreen extends BaseScreen {
 	private RectangleView mBtStructure;
 	private ButtonView mBtDock;
 	private ButtonView mBtCancel;
+	private ButtonView mBtBuildings;
 
 	public PlanetScreen (SystemModel system, PlanetModel planet) {
 		mPlanet = planet;
 		mSystem = system;
 		//mColor = planet.getOwner() != null ? planet.getOwner().getUIColor() : new Color(1, 0.5f, 0.5f, 0.5f);
 		mColor = new Color(1, 1, 1, 0.45f);
+		mRefreshOnUpdate = true;
 	}
 
 	@Override
 	protected void onCreate () {
 		// Button ship
-		mBtShip = new ButtonView(6, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
+		mBtShip = new ButtonView(6, Constants.GAME_HEIGHT - 20, 60, 20, mColor);
 		mBtShip.setText("ship");
 		mBtShip.setOnClickListener(new OnClickListener() {
 			@Override
@@ -65,7 +69,7 @@ public class PlanetScreen extends BaseScreen {
 		addView(mBtCancel);
 
 		// Button structure
-		mBtStructure = new ButtonView(126, Constants.GAME_HEIGHT - 20, 100, 20, mColor);
+		mBtStructure = new ButtonView(126, Constants.GAME_HEIGHT - 20, 60, 20, mColor);
 		mBtStructure.setText("structure");
 		mBtStructure.setOnClickListener(new OnClickListener() {
 			@Override
@@ -77,8 +81,22 @@ public class PlanetScreen extends BaseScreen {
 		});
 		addView(mBtStructure);
 		
+		// Button building
+		mBtBuildings = new ButtonView(200, Constants.GAME_HEIGHT - 20, 60, 20, mColor);
+		mBtBuildings.setText("installations");
+		mBtBuildings.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				BaseScreen s = new PlanetStructureScreen(PlanetScreen.this, mPlanet);
+				s.setTransition(Anim.ZOOM);
+				addScreen(s);
+			}
+		});
+		addView(mBtBuildings);
+		
 		// Dock
-		mBtDock = new ButtonView(Constants.GAME_WIDTH - 200, 100, 42, 42, Color.RED);
+		mBtDock = new ButtonView(280, Constants.GAME_HEIGHT - 20, 60, 20, mColor);
+		//mBtDock = new ButtonView(Constants.GAME_WIDTH - 200, 100, 42, 60, Color.RED);
 		mBtDock.setText("dock");
 		mBtDock.setOnClickListener(new OnClickListener() {
 			@Override
@@ -147,16 +165,22 @@ public class PlanetScreen extends BaseScreen {
 //		} else {
 //		}
 		
+		mainLayer.setStringSize(StringConfig.SIZE_BIG);
+		mainLayer.drawString(mPlanet.getName(), 12, 12);
+		mainLayer.drawString("" + mPlanet.getSizeName() + " / " + mPlanet.getClassName(), 20 + 12 * mPlanet.getName().length(), 17);
+
 		if (isTop()) {
-			mainLayer.setStringSize(StringConfig.SIZE_BIG);
-			mainLayer.drawString(mPlanet.getName(), 12, 12);
-			drawCharacteristics(mainLayer, 6, 32);
-			drawInfos(mainLayer, 6, 84);
+			mBtCancel.setVisibility(View.VISIBLE);
+//			mainLayer.drawString("Population:         " + mPlanet.getPeople(), posX + 4, posY + 4 + 32);
+			//drawCharacteristics(mainLayer, 6, 32);
+			drawCurrentBuilding(mainLayer, 6, 32);
+			drawCurrentDock(mainLayer, 6, 85);
+			//drawInfos(mainLayer, 6, 84);
 			mBtShip.setVisibility(mPlanet.getDock() != null ? View.VISIBLE : View.GONE);
 			mBtStructure.setVisibility(View.VISIBLE);
 		} else {
-			mainLayer.setStringSize(StringConfig.SIZE_BIG);
-			mainLayer.drawString("Build on " + mPlanet.getName(), 12, 12);
+			mBtCancel.setVisibility(View.GONE);
+			//mainLayer.drawString("Build on " + mPlanet.getName(), 12, 12);
 			mBtShip.setVisibility(View.GONE);
 			mBtStructure.setVisibility(View.GONE);
 		}
@@ -172,6 +196,52 @@ public class PlanetScreen extends BaseScreen {
 		mainLayer.drawString("Size:          " + mPlanet.getSizeName(), posX + 4, posY + 4 + 12);
 		mainLayer.drawString("Class:   " + mPlanet.getClassName(), posX + 4, posY + 4 + 22);
 		mainLayer.drawString("Population:         " + mPlanet.getPeople(), posX + 4, posY + 4 + 32);
+	}
+
+	private void drawCurrentBuilding(BaseScreenLayer mainLayer, int posX, int posY) {
+		mainLayer.drawRectangle(posX, posY, 138, 48, mColor);
+		mainLayer.drawRectangle(posX, posY, 138, 12, mColor);
+		mainLayer.drawString("Building on planet", posX + 4, posY + 4);
+		int size = mPlanet.getStructuresToBuild().size();
+		int totalETA = 0;
+		for (int i = 0; i < Math.min(size, 4); i++) {
+			if (i < 3) {
+				BuildingModel structure = mPlanet.getStructuresToBuild().get(i);
+				totalETA += mPlanet.getBuildETA(mPlanet.getStructuresToBuild().get(i).getBuildRemain());
+				String eta = Utils.getFormatedTime(totalETA);
+				String shortName = structure.getShortName();
+				if (shortName != null && shortName.length() > 3) {
+					shortName = shortName.substring(0, 3) + ".";
+				}
+				mainLayer.draw(structure.getIcon(), posX + 2 + 34 * i, posY + 14);
+				mainLayer.drawRectangle(posX + 2 + 34 * i, posY + 30, 32, 16, new Color(0, 0, 0, 0.5f));
+				mainLayer.drawString(shortName, posX + 4 + 34 * i, posY + 32);
+				mainLayer.drawString(eta, posX + 4 + 34 * i, posY + 39);
+			} else {
+				mainLayer.drawRectangle(posX + 2 + 34 * i, posY + 14, 32, 32, new Color(0.5f, 0.5f, 0.2f, 1));
+				mainLayer.drawString("+" + (size - 3), posX + 2 + 34 * i, posY + 16);
+			}
+		}
+	}
+
+	private void drawCurrentDock(BaseScreenLayer mainLayer, int posX, int posY) {
+		mainLayer.drawRectangle(posX, posY, 134, 46, mColor);
+		mainLayer.drawRectangle(posX, posY, 134, 12, mColor);
+		mainLayer.drawString("Building at dock", posX + 4, posY + 4);
+		int size = mPlanet.getBuilds().size();
+		int totalETA = 0;
+		for (int i = 0; i < Math.min(size, 4); i++) {
+			mainLayer.drawRectangle(posX + 4 + 31 * i, posY + 16, 26, 26, new Color(0.5f, 0.5f, 0.2f, 1));
+			if (i < 3) {
+				totalETA += mPlanet.getBuildETA(mPlanet.getStructuresToBuild().get(i).getBuildRemain());
+				String eta = Utils.getFormatedTime(totalETA);
+				String className = mPlanet.getBuilds().get(i).getClassName().substring(0, 3) + ".";
+				mainLayer.drawString(className, posX + 4 + 31 * i, posY + 16);
+				mainLayer.drawString(eta, posX + 4 + 31 * i, posY + 24);
+			} else {
+				mainLayer.drawString("+" + (size - 3), posX + 4 + 31 * i, posY + 16);
+			}
+		}
 	}
 
 	private void drawInfos (BaseScreenLayer mainLayer, int posX, int posY) {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.GameData;
 import org.bluebox.space2.game.model.BuildingClassModel;
+import org.bluebox.space2.game.model.BuildingModel;
 import org.bluebox.space2.game.model.DeviceModel;
 import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.NameGenerator;
@@ -165,6 +166,15 @@ public class GameService {
 		for (BuildingClassModel buildingClass: mData.buildingClasses) {
 			if (buildingClass.type == type) {
 				return buildingClass;
+			}
+		}
+		return null;
+	}
+
+	public BuildingModel createBuilding (Type type, PlanetModel planet) {
+		for (BuildingClassModel buildingClass: mData.buildingClasses) {
+			if (buildingClass.type == type) {
+				return new BuildingModel(buildingClass, planet);
 			}
 		}
 		return null;

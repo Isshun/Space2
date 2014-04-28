@@ -1,9 +1,14 @@
 package org.bluebox.space2.game;
 
+import java.util.List;
+
+import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.game.model.BuildingClassModel;
 import org.bluebox.space2.game.model.DeviceModel;
 import org.bluebox.space2.game.model.FleetModel;
+import org.bluebox.space2.game.model.IBuildingCondition;
 import org.bluebox.space2.game.model.NameGenerator;
+import org.bluebox.space2.game.model.PlanetClassModel;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.model.ShipClassModel;
@@ -12,10 +17,121 @@ import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
 import org.bluebox.space2.game.model.BuildingClassModel.Type;
 import org.bluebox.space2.game.model.DeviceModel.Device;
+import org.bluebox.space2.game.model.TechnologyModel;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GameDataFactory {
+
+//	private String 	mName;
+//	private String 	mEffect;
+//	private String 	mDesc;
+//	private String 	mShortName;
+//	private int			mBuildValue; 
+//	public Type 		type;
+//	private TextureRegion mIcon;
+
+	
+	public class TestClass {
+		public String test;
+		public int test2;
+	}
+
+	private static final BuildingClassModel sBuildingClasses[] = {
+		new BuildingClassModel("Fermes",								"Fermes", 			"^+20%", 				0, Type.HYDROPONICS, 		Art.buildings[0], "L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.", new IBuildingCondition() {
+			@Override
+			public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
+				switch (planet.getClassification().id) {
+				case PlanetClassModel.CLASS_L_JUNGLE: return 1;
+				case PlanetClassModel.CLASS_L: return 1;
+				case PlanetClassModel.CLASS_P: return 1;
+				case PlanetClassModel.CLASS_K_LOW_OXYGEN: return 1;
+				case PlanetClassModel.CLASS_M: return 1;
+				}
+
+				requires.add(Strings.REQUIRES_FARMING_LANDS);
+
+				switch (planet.getClassification().id) {
+				case PlanetClassModel.CLASS_K: return 0;
+				}
+
+				return -1;
+			}
+		}),
+
+		new BuildingClassModel("Fermes Hydroponiques",				"Hydro.", 			"^+20%", 				0, Type.HYDROPONICS, 		Art.buildings[0], "L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.", new IBuildingCondition() {
+			@Override
+			public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
+				if (player.hasTech(TechnologyModel.Type.HYDROPONICS)) {
+					return 1;
+				}
+				requires.add(Strings.REQUIRES_HYDROPONICS_TECH);
+				return 0;
+			}
+		}),
+		
+		new BuildingClassModel("Centre économique", 				"Eco.", 				"$+20% @+5% pop+5", 	0, Type.ECONOMIC_CENTER, 	Art.buildings[1], "", null),
+		new BuildingClassModel("Dock spatial", 					"Sp. Dock", 		"*+20%",					0, Type.DOCK, 					Art.buildings[2], "Dock for spaceships located in low orbit, they provide facilities to build and repair spacecraft.", null),
+		new BuildingClassModel("Habitats colonial", 				"C-Hab.", 			"pop+50", 						0, Type.COLONIAL_HABITAT, 		Art.buildings[3], "", null),
+		new BuildingClassModel("Résaux de transport",			"Trans.", 			"*+20% $+20% @+20% &+20%", 						0, Type.TRANSPORTATION, 		Art.buildings[4], "", null),
+		
+		new BuildingClassModel("Centrales marémotrice",			"Centrales maré.","*+20% ~+5%",	 					0, Type.TIDAL_POWER, 		Art.buildings[5], "", new IBuildingCondition() {
+			@Override
+			public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
+				switch (planet.getClassification().id) {
+				case PlanetClassModel.CLASS_K_OCEAN: return 1;
+				case PlanetClassModel.CLASS_M: return 1;
+				}
+				requires.add(Strings.REQUIRES_OCEAN);
+				return -1;
+			}
+		}),
+		
+		new BuildingClassModel("Eoliennes océanique", 			"Eol. Océanique","*+20% ~+5%", 						0, Type.OFFSHORE_TURBINE, 		Art.buildings[6], "", new IBuildingCondition() {
+			@Override
+			public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
+				switch (planet.getClassification().id) {
+				case PlanetClassModel.CLASS_K_OCEAN: return 1;
+				case PlanetClassModel.CLASS_M: return 1;
+				}
+				requires.add(Strings.REQUIRES_OCEAN);
+				return -1;
+			}
+		}),
+
+		new BuildingClassModel("Eoliennes", 						"Eol.", 				"*+20%", 						0, Type.WIND_TURBINE, 		Art.buildings[7], "", null),
+		new BuildingClassModel("Centre de recherche", 			"Rech.", 			"&+20% *+10%", 						0, Type.RECHERCHE_CENTER, 		Art.buildings[8], "", null),
+		new BuildingClassModel("Connexion au réseau commun",	"Reseaux commun",	"~+50%", 						0, Type.COMMUN_NETWORK, 		Art.buildings[9], "", new IBuildingCondition() {
+			@Override
+			public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
+				int ret = 0;
+				
+				List<SystemModel> neighbors = planet.getSystem().getNeighbors();
+				for (SystemModel neighbor: neighbors) {
+					if (player.equals(neighbor.getOwner())) {
+						ret = 1;
+					}
+				}
+				if (ret == 0) {
+					requires.add(Strings.REQUIRES_TRAVEL_LINE_TO_EMPIRE);
+				}
+
+				if (player.hasTech(TechnologyModel.Type.COMMUN_NETWORK) == false) {
+					requires.add(Strings.REQUIRES_COMMUN_NETWORK_TECH);
+					ret = 0;
+				}
+
+				return 0;
+			}
+		}),
+		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null),
+		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null),
+		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null),
+		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null),
+		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null),
+		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null)
+	};
 
 	private static final int sSystemMap[][][] = {
 		{{276, 196},{407, 202},{311, 391},{244, 299},{320, 286},{476, 281},{487, 402},{355, 482},{438, 612},{601, 606},{554, 518},{684, 407},{597, 315},{639, 124},{489, 131},{596, 210},{273, 79},{109, 228},{134, 416},{279, 486},{158, 657},{397, 681},{798, 676},{620, 783},{297, 622},{892, 542},{944, 370},{757, 297},{740, 407},{842, 422},{743, 204},{916, 244}},
@@ -51,32 +167,85 @@ public class GameDataFactory {
 	}
 
 	public static void initBuildingClasses (GameData data) {
-		{
-			BuildingClassModel b = new BuildingClassModel(Type.HYDROPONICS);
-			b.setName("Hydroponic farms");
-			b.setShortName("Hydroponics.");
-			b.setEffect("^+20%");
-			b.setDesc("L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.");
-			data.buildingClasses.add(b);
+		for (BuildingClassModel buildingClass: sBuildingClasses) {
+			data.buildingClasses.add(buildingClass);
 		}
+		
+//		{
+//			BuildingClassModel b = new BuildingClassModel(Type.HYDROPONICS);
+//			b.setName("Hydroponic farms");
+//			b.setShortName("Hydroponics.");
+//			b.setEffect("^+20%");
+//			b.setDesc("L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.");
+//			b.setIcon(Art.buildings[0]);
+//			data.buildingClasses.add(b);
+//		}
+//
+//		{
+//			BuildingClassModel b = new BuildingClassModel(Type.ECONOMIC_CENTER);
+//			b.setName("Economic center");
+//			b.setShortName("Centre eco.");
+//			b.setEffect("$+20% @+5% pop+5");
+//			b.setDesc("L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.");
+//			b.setIcon(Art.buildings[1]);
+//			data.buildingClasses.add(b);
+//		}
+//
+//		{
+//			BuildingClassModel b = new BuildingClassModel(Type.DOCK);
+//			b.setName("Space dock");
+//			b.setShortName("space dock");
+//			b.setEffect("*+20%");
+//			b.setDesc("Dock for spaceships located in low orbit, they provide facilities to build and repair spacecraft.");
+//			b.setIcon(Art.buildings[2]);
+//			data.buildingClasses.add(b);
+//		}
+//
+//		for (int i = 0; i < 30; i++)
+//		{
+//			BuildingClassModel b = new BuildingClassModel(tempMethode(i));
+//			b.setName("random building " + i);
+//			b.setShortName("rnd "  + i);
+//			b.setEffect("*+20%");
+//			b.setDesc("rnd rnd rnd rnd rnd rnd rnd rnd rnd rnd rnd rnd rnd rnd rnd rnd");
+//			b.setIcon(Art.buildings[3 + i]);
+//			data.buildingClasses.add(b);
+//		}
+	}
 
-		{
-			BuildingClassModel b = new BuildingClassModel(Type.ECONOMIC_CENTER);
-			b.setName("Economic center");
-			b.setShortName("Centre eco.");
-			b.setEffect("$+20% @+5% pop+5");
-			b.setDesc("L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.");
-			data.buildingClasses.add(b);
+	private static Type tempMethode (int i) {
+		switch (i) {
+		case 1: return Type.RANDOM_1;
+		case 2: return Type.RANDOM_2;
+		case 3: return Type.RANDOM_3;
+		case 4: return Type.RANDOM_4;
+		case 5: return Type.RANDOM_5;
+		case 6: return Type.RANDOM_6;
+		case 7: return Type.RANDOM_7;
+		case 8: return Type.RANDOM_8;
+		case 9: return Type.RANDOM_9;
+		case 10: return Type.RANDOM_10;
+		case 11: return Type.RANDOM_11;
+		case 12: return Type.RANDOM_12;
+		case 13: return Type.RANDOM_13;
+		case 14: return Type.RANDOM_14;
+		case 15: return Type.RANDOM_15;
+		case 16: return Type.RANDOM_16;
+		case 17: return Type.RANDOM_17;
+		case 18: return Type.RANDOM_18;
+		case 19: return Type.RANDOM_19;
+		case 20: return Type.RANDOM_20;
+		case 21: return Type.RANDOM_21;
+		case 22: return Type.RANDOM_22;
+		case 23: return Type.RANDOM_23;
+		case 24: return Type.RANDOM_24;
+		case 25: return Type.RANDOM_25;
+		case 26: return Type.RANDOM_26;
+		case 27: return Type.RANDOM_27;
+		case 28: return Type.RANDOM_28;
+		case 29: return Type.RANDOM_29;
 		}
-
-		{
-			BuildingClassModel b = new BuildingClassModel(Type.DOCK);
-			b.setName("Space dock");
-			b.setShortName("space dock");
-			b.setEffect("*+20%");
-			b.setDesc("Dock for spaceships located in low orbit, they provide facilities to build and repair spacecraft.");
-			data.buildingClasses.add(b);
-		}
+		return Type.RANDOM_30;
 	}
 
 	public static void initFleets (GameData data) {
@@ -180,11 +349,17 @@ public class GameDataFactory {
 			}
 			//System.out.println(s.getName() + ", link to: " + s1.getName() + ", " + s2.getName());
 			data.travelLines.add(new TravelModel(s, s1));
+			s.addNeighbor(s1);
+			s1.addNeighbor(s);
 			if (s2 != null) {
 				data.travelLines.add(new TravelModel(s, s2));
+				s.addNeighbor(s2);
+				s2.addNeighbor(s);
 			}
 			if (s3 != null) {
 				data.travelLines.add(new TravelModel(s, s3));
+				s.addNeighbor(s3);
+				s3.addNeighbor(s);
 			}
 		}
 	}

@@ -47,7 +47,7 @@ public class PlanetClassModel {
 	public PlanetClassModel (int classification, int rand, String name, String subName, String STShortName, String humanShortName) {
 		this.id = classification;
 		this.rand = rand;
-		this.name = name + " (" + humanShortName + ")";
+		this.name = name;
 		this.subName = subName;
 		this.shortName = humanShortName;
 	}
@@ -67,6 +67,10 @@ public class PlanetClassModel {
 			}
 		}
 		return null;
+	}
+
+	public int getId () {
+		return this.id;
 	}
 	
 }

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.bluebox.space2.engine.screen.BaseScreenLayer;
 import org.bluebox.space2.game.Game;
 import org.bluebox.space2.game.model.BuildingClassModel.Type;
 import org.bluebox.space2.game.service.FightService;
+import org.bluebox.space2.game.service.GameService;
 
 
 public class PlanetModel implements ILocation {
@@ -25,16 +27,16 @@ public class PlanetModel implements ILocation {
 	private double 						mSatisfaction;
 	private int 							mSize;
 	private List<ShipModel>				mShipsToBuild;
-	private List<BuildingClassModel>	mBuildings;
-	private List<BuildingClassModel>	mStructuresToBuilds;
+	private List<BuildingModel>		mBuildings;
+	private List<BuildingModel>		mStructuresToBuilds;
 	private List<FleetModel> 			mFleets;
 	private DockModel 					mDock;
 	private PlayerModel 					mOwner;
 
 	public PlanetModel (int classId, int size) {
 		mShipsToBuild = new ArrayList<ShipModel>();
-		mBuildings = new ArrayList<BuildingClassModel>();
-		mStructuresToBuilds = new ArrayList<BuildingClassModel>();
+		mBuildings = new ArrayList<BuildingModel>();
+		mStructuresToBuilds = new ArrayList<BuildingModel>();
 		mFleets = new ArrayList<FleetModel>();
 		mPeople = 1;
 		mClass = PlanetClassModel.getFromId(classId);
@@ -211,7 +213,6 @@ public class PlanetModel implements ILocation {
 	}
 
 	public void update () {
-		
 		// Planet has ship in todo list
 		if (mShipsToBuild.size() > 0) {
 			
@@ -221,6 +222,17 @@ public class PlanetModel implements ILocation {
 				mShipsToBuild.remove(0);
 			}
 		}
+		
+		// Planet has structure in todo list
+		if (mStructuresToBuilds.size() > 0) {
+			
+			// Ship construction is done
+			if (mStructuresToBuilds.get(0).build(mBaseBuild * mPeople)) {
+				mBuildings.add(mStructuresToBuilds.get(0));
+				mStructuresToBuilds.remove(0);
+			}
+		}
+		
 	}
 
 	public List<FleetModel> getOrbit () {
@@ -340,16 +352,20 @@ public class PlanetModel implements ILocation {
 		return mOwner;
 	}
 
-	public void buildStructure(BuildingClassModel buildingClass) {
-		if (mDock == null && buildingClass.type == BuildingClassModel.Type.DOCK) {
+	public void buildStructure(BuildingClassModel.Type type) {
+		if (mDock == null && type == BuildingClassModel.Type.DOCK) {
 			mDock = new DockModel(this);
 		}
 		
-		mBuildings.add(buildingClass);
+		mStructuresToBuilds.add(GameService.getInstance().createBuilding(type, this));
 	}
 
 	public void addStructure(BuildingClassModel.Type type) {
-		buildStructure(BuildingClassModel.create(type));
+		if (mDock == null && type == BuildingClassModel.Type.DOCK) {
+			mDock = new DockModel(this);
+		}
+		
+		mBuildings.add(GameService.getInstance().createBuilding(type, this));
 	}
 
 	public int getTotalPeople () {
@@ -370,20 +386,24 @@ public class PlanetModel implements ILocation {
 	}
 
 	public boolean hasBuilding (Type type) {
-		for (BuildingClassModel building: mBuildings) {
-			if (building.type.equals(type)) {
+		for (BuildingModel building: mBuildings) {
+			if (building.getType().equals(type)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public List<BuildingClassModel> getStructuresToBuild () {
+	public List<BuildingModel> getStructuresToBuild () {
 		return mStructuresToBuilds;
 	}
 
 	public boolean hasDock () {
 		return mDock != null;
+	}
+
+	public List<BuildingModel> getStructures() {
+		return mBuildings;
 	}
 
 }

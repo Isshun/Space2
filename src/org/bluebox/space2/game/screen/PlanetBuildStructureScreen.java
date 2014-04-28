@@ -7,6 +7,8 @@ import org.bluebox.space2.engine.screen.BaseScreenLayer;
 import org.bluebox.space2.engine.screen.BaseScreenLayer.StringConfig;
 import org.bluebox.space2.engine.ui.ButtonView;
 import org.bluebox.space2.engine.ui.ScrollerView;
+import org.bluebox.space2.engine.ui.TextView;
+import org.bluebox.space2.engine.ui.View;
 import org.bluebox.space2.engine.ui.View.OnClickListener;
 import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.Game.Anim;
@@ -22,8 +24,9 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 	private static final int POPUP_TOP = 26; 
 	private static final int POPUP_WIDTH = Constants.GAME_WIDTH - POPUP_PADDING * 2; 
 	private static final int POPUP_HEIGHT = Constants.GAME_HEIGHT - POPUP_TOP - POPUP_PADDING * 2;
-	private static final int GRID_SIZE = 80;
-	private static final int GRID_NB_COLUMNS = 4;
+	private static final int GRID_SIZE = 36;
+	private static final int ITEM_BY_PAGE = 5;
+	private static final int GRID_NB_COLUMNS = 1;
 	private static final int SEP = POPUP_WIDTH / 5 * 3;
 	
 	private ButtonView 						mBtBuild;
@@ -32,6 +35,8 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 	protected List<BuildingClassModel> 	mBuildings;
 	private ButtonView mBtClose;
 	private ScrollerView mScroller;
+	private int mPageIndex;
+	private TextView mLbPage;
 
 	public PlanetBuildStructureScreen (BaseScreen parent, PlanetModel planet) {
 		mParent = parent;
@@ -45,20 +50,26 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 	protected void onCreate () {
 		int btWidth = POPUP_WIDTH / 2 - 12;
 		
-		mBtBuild = new ButtonView(POPUP_PADDING + 8, POPUP_TOP + POPUP_PADDING + POPUP_HEIGHT - 30, btWidth, 22, new Color(0.2f, 1, 0.2f, 1));
+		mLbPage = new TextView("page: 1 / " + (int)(mBuildings.size() / ITEM_BY_PAGE + 1), POPUP_PADDING, POPUP_TOP + POPUP_PADDING + POPUP_HEIGHT - 12);
+		addView(mLbPage);
+		
+		mBtBuild = new ButtonView(POPUP_PADDING + SEP + 10, POPUP_TOP + POPUP_PADDING + POPUP_HEIGHT - 30, 60, 22, new Color(0.2f, 1, 0.2f, 1));
 		mBtBuild.setText("build");
 		mBtBuild.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
 				if (mSelected < mBuildings.size()) {
-					mPlanet.buildStructure(mBuildings.get(mSelected));
-					back();
+					BuildingClassModel toBuild =  mBuildings.get(mSelected);
+					mPlanet.buildStructure(toBuild.getType());
+					mBuildings.remove(toBuild);
+					notifyChange();
+//					back();
 				}
 			}
 		});
 		addView(mBtBuild);
 		
-		mBtClose = new ButtonView(POPUP_PADDING + 8 + btWidth + 8, POPUP_TOP + POPUP_PADDING + POPUP_HEIGHT - 30, btWidth, 22, new Color(1, 1, 1, 0.55f));
+		mBtClose = new ButtonView(POPUP_PADDING + SEP + 80, POPUP_TOP + POPUP_PADDING + POPUP_HEIGHT - 30, 60, 22, new Color(1, 1, 1, 0.55f));
 		mBtClose.setText("close");
 		mBtClose.setOnClickListener(new OnClickListener() {
 			@Override
@@ -80,22 +91,31 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 		System.out.println("popup width: " + POPUP_WIDTH + ", sep: " + SEP + ", sub: " + (POPUP_WIDTH - SEP));
 
 		// Background
-		mainLayer.drawRectangle(POPUP_PADDING, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH, POPUP_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
+		mainLayer.drawRectangle(POPUP_PADDING + SEP, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH, POPUP_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
 				
 		int i = 0;
 		for (BuildingClassModel b: mBuildings) {
-			drawIcon(mainLayer, b, POPUP_PADDING + 10 + (i % GRID_NB_COLUMNS) * GRID_SIZE, POPUP_PADDING + POPUP_TOP + 10 + (i / GRID_NB_COLUMNS) * GRID_SIZE, mSelected == i);
+			if (i >= mPageIndex * ITEM_BY_PAGE && i < (mPageIndex + 1) * ITEM_BY_PAGE) {
+				int j = i - mPageIndex * ITEM_BY_PAGE;
+				drawIcon(mainLayer, b, POPUP_PADDING + (j % GRID_NB_COLUMNS) * GRID_SIZE, POPUP_PADDING + POPUP_TOP + (j / GRID_NB_COLUMNS) * GRID_SIZE, mSelected == j);
+			}
 			i++;
 		}
 		
-		if (mSelected < mBuildings.size()) {
-			drawInfo(mainLayer, mBuildings.get(mSelected), POPUP_PADDING + SEP, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH - SEP, POPUP_HEIGHT - 38);
+		if (mSelected + mPageIndex * ITEM_BY_PAGE < mBuildings.size()) {
+			drawInfo(mainLayer, mBuildings.get(mSelected + mPageIndex * ITEM_BY_PAGE), POPUP_PADDING + SEP, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH - SEP, POPUP_HEIGHT - 38);
 		}
 	}
 
 	private void drawIcon (BaseScreenLayer mainLayer, BuildingClassModel building, int posX, int posY, boolean isSelected) {
-		mainLayer.drawRectangle(posX, posY, GRID_SIZE - 10, GRID_SIZE - 10, isSelected ? new Color(0.75f, 1, 0.75f, 0.65f) : new Color(1, 1, 1, 0.45f));
-		mainLayer.drawString(building.getShortName(), posX, posY);
+		mainLayer.drawRectangle(posX, posY, SEP - 4, 32, isSelected ? new Color(0.75f, 1, 0.75f, 0.65f) : new Color(1, 1, 1, 0.45f));
+		mainLayer.draw(building.getIcon(), posX, posY);
+		List<String> requires = building.getRequires(mPlayer, mPlanet);
+//		if (building.isAvailable(mPlayer, mPlanet) == false) {
+		if (requires != null) {
+			mainLayer.setStringColor(Color.RED);
+		}
+		mainLayer.drawString(building.getShortName(), posX + 34, posY + 4);
 	}
 
 	private void drawInfo (BaseScreenLayer mainLayer, BuildingClassModel building, int startX, int startY, int width, int height) {
@@ -115,6 +135,19 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 		mainLayer.setStringColorNumbers(true);
 		mainLayer.drawString(building.getEffect(), startX + 10, startY + 7 + (lines * 20));
 		
+		// Requires
+		int i = 0;
+		List<String> requires = building.getRequires(mPlayer, mPlanet);
+		if (requires != null) {
+			mainLayer.drawString("Requires:", startX + 10, startY + 20 + (lines * 20));
+			for (String req: requires) {
+				mainLayer.setStringColor(Color.RED);
+				mainLayer.drawString(req, startX + 10, startY + 30 + (lines * 20) + i * 10);
+				i++;
+			}
+		}
+
+		
 //		// Building description
 //		setStringMultiline(true);
 //		setStringMaxWidth(width - 22);
@@ -123,6 +156,7 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 		mScroller.setPosition(startX + 10, startY + 20 + (lines * 20));
 		mScroller.setWidth(width - 22);
 		mScroller.setHeight(height - 20 - (lines * 20));
+		mScroller.setVisibility(View.GONE);
 		
 //		// Button build
 //		drawRectangle(startX + 11, startY + height - 32, width - 22, 22, new Color(0.8f, 1, 0.8f, 0.5f));
@@ -135,11 +169,12 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 
 	@Override
 	public void onTouch (int x, int y) {
-		int startX = POPUP_PADDING + 10;
-		int startY = POPUP_PADDING + 10;
+		int startX = POPUP_PADDING;
+		int startY = POPUP_PADDING - 12;
 		
-		if (x > startX && x < startX + GRID_SIZE * GRID_NB_COLUMNS && y > startY) {
-			int index = (y - startY) / GRID_SIZE * GRID_NB_COLUMNS + (x - startX) / GRID_SIZE;
+		if (x > startX && x < startX + GRID_SIZE * 6 && y > startY) {
+//			int index = (y - startY) / GRID_SIZE * GRID_NB_COLUMNS + (x - startX) / GRID_SIZE;
+			int index = (y - startY) / GRID_SIZE - 1;
 			mSelected = index;
 		}
 	}
@@ -154,6 +189,22 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 	public void onLongTouch (int x, int y) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void onUp (int x, int y) {
+		if (mPageIndex < (int)(mBuildings.size() / ITEM_BY_PAGE)) {
+			mPageIndex++;
+			mLbPage.setText("page: " + (mPageIndex + 1) + " / " + (int)(mBuildings.size() / ITEM_BY_PAGE + 1));
+			notifyChange();
+		}
+	}
+
+	public void onDown (int x, int y) {
+		if (mPageIndex > 0) {
+			mPageIndex--;
+			mLbPage.setText("page: " + (mPageIndex + 1) + " / " + (int)(mBuildings.size() / ITEM_BY_PAGE + 1));
+			notifyChange();
+		}
 	}
 
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 
 
-public class ShipModel {
+public class ShipModel implements IBuilding  {
 	private List<ShipDeviceModel>	mDevices;
 
 	private double 	mSpeed;

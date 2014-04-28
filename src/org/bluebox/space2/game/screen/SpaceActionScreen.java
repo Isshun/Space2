@@ -288,9 +288,9 @@ public class SpaceActionScreen extends BaseScreen {
 		btColonize.setVisibility(hasColonizerInSelection() ? View.VISIBLE : View.GONE);
 		btMerge.setVisibility(mSelectedFleets.size() > 1 ? View.VISIBLE : View.GONE);
 		btMove.setVisibility(mSelectedFleets.size() > 0 ? View.VISIBLE : View.GONE);
-		btNewFleet.setVisibility(mSelectedFleets.size() > 0 ? View.VISIBLE : View.GONE);
+		btNewFleet.setVisibility(mSelectedFleets.size() == 1 ? View.VISIBLE : View.GONE);
 		btDestroy.setVisibility(mSelectedFleets.size() > 0 ? View.VISIBLE : View.GONE);
-		btInfo.setVisibility(mSelectedFleets.size() > 0 ? View.VISIBLE : View.GONE);
+		btInfo.setVisibility(mSelectedFleets.size() == 1 ? View.VISIBLE : View.GONE);
 		lbTooltip.setVisibility(View.GONE);
 		btConfirm.setVisibility(View.GONE);
 		btCancel.setVisibility(View.GONE);

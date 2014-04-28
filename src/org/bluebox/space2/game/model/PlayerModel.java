@@ -13,19 +13,20 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class PlayerModel {
 	
-	private String 				mName;
-	private int 					mFlag;
-	private Color					mColor;
-	private List<SystemModel> 	mSystems;
-	private Set<PlanetModel> 	mPlanets;
-	private Set<FleetModel> 	mFleets;
-	private PlanetModel 			mHome;
-	private Color 					mSpaceColor;
-	private Color 					mDarkColor;
-	private Color 					mUIColor;
-	private boolean 				mIsAI;
-	public AIOrders				aiOrders;
-	private int mNameGeneratorLanguage;
+	private String 					mName;
+	private int 						mFlag;
+	private Color						mColor;
+	private List<SystemModel>	 	mSystems;
+	private Set<PlanetModel>	 	mPlanets;
+	private Set<FleetModel> 		mFleets;
+	private PlanetModel 				mHome;
+	private Color 						mSpaceColor;
+	private Color 						mDarkColor;
+	private Color 						mUIColor;
+	private boolean 					mIsAI;
+	public AIOrders					aiOrders;
+	private int 						mNameGeneratorLanguage;
+	private Set<TechnologyModel>	mTechs;
 	
 	public PlayerModel(String name, Color uiColor, Color color, boolean isAI) {
 		mName = name;
@@ -33,6 +34,7 @@ public class PlayerModel {
 		mFlag = (int)(Game.sRandom.nextInt(9));
 		mSystems = new ArrayList<SystemModel>();
 		mPlanets = new HashSet<PlanetModel>();
+		mTechs = new HashSet<TechnologyModel>();
 		mIsAI = isAI;
 		if (isAI) {
 			aiOrders = new AIOrders();
@@ -155,6 +157,10 @@ public class PlayerModel {
 
 	public void setNameGeneratorLanguage (int language) {
 		mNameGeneratorLanguage = language;
+	}
+
+	public boolean hasTech (TechnologyModel.Type tech) {
+		return mTechs.contains(tech);
 	}
 
 }

@@ -24,10 +24,39 @@ public class CacheScreenLayer extends BaseScreenLayer {
 		Gdx.gl.glEnable(GL30.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 
+		//mFinalAnimationWidth
+		
+		
+		int left = -mRealPosX + offsetX;
+		int right = (int)(Constants.GAME_WIDTH * zoom - mRealPosX + offsetX);
+		int bottom = (int)(Constants.GAME_HEIGHT * zoom - mRealPosY + offsetY);
+		int top = -mRealPosY + offsetY;
+		
+		int width = right - left;
+//		mProjectionWidth = 200;
+//		int rest = (width - mProjectionWidth) / 2;
+//		System.out.println("VALUE = " + (left) + " x " + right);
+		
 		Matrix4 projection = new Matrix4();
-		projection.setToOrtho(-mRealPosX + offsetX, Constants.GAME_WIDTH * zoom - mRealPosX + offsetX, Constants.GAME_HEIGHT * zoom - mRealPosY + offsetY, -mRealPosY + offsetY, -1, 1);
+		projection.setToOrtho(
+			left,
+			right,
+			bottom,
+			top,
+			-1,
+			1);
+		
+		float scaleX = (float)(mProjectionWidth) / Constants.GAME_WIDTH;
+		float scaleY = (float)(mProjectionHeight) / Constants.GAME_HEIGHT;
+		
+		int animOffsetX = (Constants.GAME_WIDTH / 2) - (mProjectionWidth / 2);
+		int animOffsetY = (Constants.GAME_HEIGHT / 2) - (mProjectionHeight / 2);
+		projection.translate(animOffsetX, animOffsetY, 0);
+		projection.scl(scaleX, scaleY, 0);
 
-		mSpriteCache.setProjectionMatrix(projection);  
+		System.out.println("scale = " + animOffsetY + " x " + Constants.GAME_HEIGHT);
+		
+		mSpriteCache.setProjectionMatrix(projection);
 		mSpriteCache.begin();  
 		mSpriteCache.draw(mSpriteCacheId);  
 		mSpriteCache.end();

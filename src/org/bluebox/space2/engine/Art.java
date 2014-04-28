@@ -21,6 +21,7 @@ public class Art {
 	public static TextureRegion[][]	guys;
 	public static TextureRegion[][] 	bigText;
 	public static TextureRegion[][] 	planets;
+	public static TextureRegion[] 	buildings;
 	public static TextureRegion[] 	system;
 	public static TextureRegion[] 	flags;
 	public static TextureRegion[] 	sun;
@@ -113,6 +114,7 @@ public class Art {
 		ic_science = mArt.load("res/res_science.png", 12, 12);
 		ic_people = mArt.load("res/ic_people.png", 12, 12);
 		ic_satisfaction = mArt.load("res/ic_satisfaction.png", 12, 12);
+		buildings = mArt.split2("res/buildings_small.png", 32, 32);
 		guys = mArt.split("res/guys.png", 6, 6);
 		bigText = mArt.split("res/guys.png", 12, 12);
 		flags = new TextureRegion[10];

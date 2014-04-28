@@ -27,7 +27,7 @@ public class FightService {
 		// Fight
 		for (ShipModel a: attacker.getShips()) {
 			for (ShipModel d: defender.getShips()) {
-				fight (d, a);
+				fight (a, d);
 			}
 		}
 		
@@ -40,7 +40,7 @@ public class FightService {
 		}
 		attacker.getShips().removeAll(destroyed);
 		
-		// Remove attacker casualties
+		// Remove defender casualties
 		destroyed.clear();
 		for (ShipModel d: defender.getShips()) {
 			if (d.getHull() == 0) {

@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 
 public abstract class BaseScreenLayer {
-	public static final String[]	CHARS = {"abcdefghijklmnopqrstuvwxyz0123456789", ".,!?:;\"'+-=/\\<%   () $^&*@"};
+	public static final String[]	CHARS = {"abcdefghijklmnopqrstuvwxyz0123456789", ".,!?:;\"'+-=/\\<%   () $^&*@~"};
 
 	public static final int 		CACHE = 0;
 	public static final int 		DYNAMIC = 1;
@@ -25,15 +25,18 @@ public abstract class BaseScreenLayer {
 	private Color						mColorBad;
 	private Color						mColorGood;
 	private StringConfig				mStringConfig;
+	protected int						mProjectionWidth;
+
+	protected int mProjectionHeight;
 
 	public class StringConfig {
 		public static final int SIZE_REGULAR = 0;
 		public static final int SIZE_BIG = 1;
 
-		public int maxWidth;
+		public int 		maxWidth;
 		public boolean isMultiline;
-		public Color color;
-		public int size;
+		public Color 	color;
+		public int 		size;
 		public boolean isNumbersColored;
 	}
 	
@@ -200,6 +203,7 @@ public abstract class BaseScreenLayer {
 	private void resetStringConfig () {
 		mStringConfig.color = null;
 		mStringConfig.isMultiline = false;
+		mStringConfig.isNumbersColored = false;
 		mStringConfig.maxWidth = Integer.MAX_VALUE;
 		mStringConfig.size = StringConfig.SIZE_REGULAR;
 	}
@@ -246,6 +250,12 @@ public abstract class BaseScreenLayer {
 		string = string.toLowerCase();
 		for (int i = 0; i < string.length(); i++) {
 			char ch = string.charAt(i);
+			if (ch == 'é' || ch == 'è') {
+				ch = 'e';
+			}
+			if (ch == 'à') {
+				ch = 'a';
+			}
 			for (int ys = 0; ys < CHARS.length; ys++) {
 				int xs = CHARS[ys].indexOf(ch);
 				if (xs >= 0) {
@@ -268,5 +278,10 @@ public abstract class BaseScreenLayer {
 	abstract public void begin();
 	abstract public void end();
 	abstract public boolean isChange ();
+
+	public void setProjectionSize (int projectionWidth, int projectionHeight) {
+		mProjectionWidth = projectionWidth;
+		mProjectionHeight = projectionHeight;
+	}
 
 }

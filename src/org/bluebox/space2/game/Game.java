@@ -15,6 +15,7 @@ import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.screen.ErrorScreen;
 import org.bluebox.space2.game.screen.FleetCreateScreen;
 import org.bluebox.space2.game.screen.PauseScreen;
+import org.bluebox.space2.game.screen.PlanetScreen;
 import org.bluebox.space2.game.screen.SpaceScreen;
 import org.bluebox.space2.game.service.GameService;
 import org.bluebox.space2.path.PathResolver;
@@ -64,7 +65,8 @@ public class Game implements ApplicationListener {
 		FLIP_RIGHT,
 		FLIP_BOTTOM,
 		FLIP_TOP,
-		GO_DOWN
+		GO_DOWN,
+		ZOOM
 	}
 
 	public Game(IArtManager art) {
@@ -123,7 +125,8 @@ public class Game implements ApplicationListener {
 		if (Constants.GAME_WIDTH < 380 || Constants.GAME_HEIGHT < 240) {
 			setScreen(new ErrorScreen(ErrorScreen.RESOLUTION_NOT_SUPPORTED));
 		} else {
-			setScreen(new SpaceScreen());
+			//setScreen(new SpaceScreen());
+			setScreen(new PlanetScreen(GameService.getInstance().getPlayer().getHome().getSystem(), GameService.getInstance().getPlayer().getHome()));
 //			setScreen(new PanelCreateFleet(GameService.getInstance().getPlayer().getHome().getDock()));
 		}
 		
@@ -342,6 +345,7 @@ public class Game implements ApplicationListener {
 		
 		mOffScreen = oldScreen;
 		mScreen = newScreen;
+		newScreen.notifyChange();
 		mGestureListener.setScreen(newScreen);
 		if (mScreen != null) mScreen.init(this, (int)mGameTime);
 	}

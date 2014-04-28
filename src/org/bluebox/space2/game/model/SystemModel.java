@@ -22,6 +22,7 @@ public class SystemModel implements ILocation {
 	private int 					mType;
 	private PlanetModel 			mCapital;
 	private List<FleetModel> 	mFleets;
+	private List<SystemModel> 	mNeighbors;
 	private int 					mId;
 
 	public SystemModel (String name, int x, int y) {
@@ -32,6 +33,7 @@ public class SystemModel implements ILocation {
 		mPosX = x;
 		mPosY = y;
 		mType = Math.min((int)(Game.sRandom.nextInt(7)), 3);
+		mNeighbors = new ArrayList<SystemModel>();
 	}
 
 	public int getX () {
@@ -221,6 +223,14 @@ public class SystemModel implements ILocation {
 			indice += p.getIndice();
 		}
 		return indice;
+	}
+
+	public void addNeighbor (SystemModel neighbor) {
+		mNeighbors.add(neighbor);
+	}
+
+	public List<SystemModel> getNeighbors () {
+		return mNeighbors;
 	}
 	
 }

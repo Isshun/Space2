@@ -6,6 +6,7 @@ import java.util.List;
 import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.engine.screen.BaseScreen;
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
+import org.bluebox.space2.engine.ui.ButtonView;
 import org.bluebox.space2.engine.ui.ImageView;
 import org.bluebox.space2.engine.ui.TextView;
 import org.bluebox.space2.engine.ui.View;
@@ -34,6 +35,8 @@ public class SpaceScreen extends BaseScreen {
 	private List<TravelModel> 	mTravelPath;
 	private List<SystemModel> 	mSystemPath;
 	private Color[][]				mMap;
+	private ButtonView 			mBtZoomIn;
+	private ButtonView 			mBtZoomOff;
 
 	public SpaceScreen () {
 		mParalax = Art.bg;
@@ -46,6 +49,28 @@ public class SpaceScreen extends BaseScreen {
 		
 		mGame.setBg(Art.bg);
 		
+		mBtZoomIn = new ButtonView(200, 6, 60, 14, null);
+		mBtZoomIn.setText("zoom in");
+		mBtZoomIn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				mZoom = (float)Math.min(2, mZoom + 0.04);
+				notifyChange();
+			}
+		});
+		addView(mBtZoomIn);
+
+		mBtZoomOff = new ButtonView(260, 6, 60, 14, null);
+		mBtZoomOff.setText("zoom out");
+		mBtZoomOff.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				mZoom = (float)Math.max(1, mZoom - 0.04);
+				notifyChange();
+			}
+		});
+		addView(mBtZoomOff);
+
 		// Button planets
 		mBtPlanets = new ImageView(Art.bt_planets, 6, 6);
 		mBtPlanets.setOnClickListener(new OnClickListener() {
@@ -91,7 +116,7 @@ public class SpaceScreen extends BaseScreen {
 		addView(new TextView("ARMADA", 122, 40));
 		
 		mActionScreen = new SpaceActionScreen(this, GameService.getInstance().getPlayer().getHome().getSystem());
-		addScreen(mActionScreen);
+		//addScreen(mActionScreen);
 	}
 	
 	private void drawArea () {
@@ -111,14 +136,14 @@ public class SpaceScreen extends BaseScreen {
 					int y2 = system.getY() + Constants.SYSTEM_SIZE / 2;
 					
 					for (int i = 0; i < 1000; i++) {
-						setPoint((int)Math.round(x2+Math.cos(i) * x), (int)Math.round(y2+Math.sin(i) * x), system.getOwner().getSpaceColor());
+						setMinimapPoint((int)Math.round(x2+Math.cos(i) * x), (int)Math.round(y2+Math.sin(i) * x), system.getOwner().getSpaceColor());
 					}
 				}
 			}
 		}
 	}
 
-	private void setPoint (int x, int y, Color color) {
+	private void setMinimapPoint (int x, int y, Color color) {
 		if (x >= 0 && y >= 0 && x < Constants.MAP_WIDTH && y < Constants.MAP_HEIGHT && mMap[x][y] == null) {
 			mMap[x][y] = color;
 		}
@@ -304,9 +329,13 @@ public class SpaceScreen extends BaseScreen {
 //			GameService.getInstance().addSystem(mPosX + x, mPosY + y);
 //		}
 		
+		int mapPosX = (int)(x * mZoom - mRealPosX);
+		int mapPosY = (int)(y * mZoom - mRealPosY);
+		
 		// Selected mode
 		if (mSelected != null) {
-			SystemModel system = GameService.getInstance().getSystemAtPos(x - mRealPosX, y - mRealPosY);
+			
+			SystemModel system = GameService.getInstance().getSystemAtPos(mapPosX, mapPosY);
 			if (system != null && mSelected != system) {
 				mActionSystem = system;
 				mActionScreen.setSelected(system);
@@ -315,7 +344,6 @@ public class SpaceScreen extends BaseScreen {
 		
 		// Normal mode
 		else {
-
 			// bt government
 			if (x >= 6 && x <= 6 + 32 && y >= 2 && y <= 44) {
 				addScreen(new PanelGovernmentScreen());
@@ -328,13 +356,13 @@ public class SpaceScreen extends BaseScreen {
 				return;
 			}
 			
-			SystemModel system = GameService.getInstance().getSystemAtPos(x - mRealPosX, y - mRealPosY);
+			SystemModel system = GameService.getInstance().getSystemAtPos(mapPosX, mapPosY);
 			if (system != null) {
 				addScreen(new SystemScreen(system));
 				return;
 			}
 			
-			TravelModel travel = GameService.getInstance().getTravelAtPos(x - mRealPosX, y - mRealPosY);
+			TravelModel travel = GameService.getInstance().getTravelAtPos(mapPosX, mapPosY);
 			if (travel != null) {
 				addScreen(new TravelScreen(travel));
 				return;

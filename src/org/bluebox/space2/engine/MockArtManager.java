@@ -14,4 +14,10 @@ public class MockArtManager implements IArtManager {
 		return null;
 	}
 
+	@Override
+	public TextureRegion[] split2 (String name, int width, int height) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

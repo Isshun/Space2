@@ -31,14 +31,14 @@ public class FleetInfoScreen extends BaseScreen {
 	private static final int START_Y = 36;
 	private static final int START_X = 5;
 	
-	IShipCollectionModel 	mShipCollection;
-	private int 				mSelected;
-	private double 			mTotInd;
-	private double 			mAttInd;
-	private double 			mDefInd;
-	private ButtonView		mBtNewFleet;
-	private List<IShipCollectionModel> mShipCollections;
-	private ButtonView mBtBack;
+	IShipCollectionModel 					mShipCollection;
+	private int 								mSelected;
+	private double 							mTotInd;
+	private double 							mAttInd;
+	private double 							mDefInd;
+	private ButtonView						mBtNewFleet;
+	private List<IShipCollectionModel> 	mShipCollections;
+	private ButtonView 						mBtBack;
 
 	public FleetInfoScreen (IShipCollectionModel collection, List<IShipCollectionModel> collections) {
 		mShipCollection = collection;
@@ -135,6 +135,10 @@ public class FleetInfoScreen extends BaseScreen {
 				(int)((GRID_CONTENT_WIDTH - 14) * ship.getHullRatio()),
 				2,
 				Color.rgba8888(0, 1, 0, 1));
+			
+			mainLayer.drawString(ship.getClassName().substring(0, 5) + ".",
+				START_X + 7 + GRID_PADDING + (i % GRID_COLUMNS) * GRID_WIDTH,
+				START_Y + 40 + GRID_PADDING + (int)(i / GRID_COLUMNS) * GRID_HEIGHT);
 			
 			i++;
 		}
