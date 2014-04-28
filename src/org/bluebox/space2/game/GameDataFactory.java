@@ -18,119 +18,195 @@ import org.bluebox.space2.game.model.TravelModel;
 import org.bluebox.space2.game.model.BuildingClassModel.Type;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 import org.bluebox.space2.game.model.TechnologyModel;
+import org.bluebox.space2.game.model.IBuildingEffect;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GameDataFactory {
 
-//	private String 	mName;
-//	private String 	mEffect;
-//	private String 	mDesc;
-//	private String 	mShortName;
-//	private int			mBuildValue; 
-//	public Type 		type;
-//	private TextureRegion mIcon;
-
-	
-	public class TestClass {
-		public String test;
-		public int test2;
-	}
-
 	private static final BuildingClassModel sBuildingClasses[] = {
-		new BuildingClassModel("Fermes",								"Fermes", 			"^+20%", 				0, Type.HYDROPONICS, 		Art.buildings[0], "L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.", new IBuildingCondition() {
-			@Override
-			public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
-				switch (planet.getClassification().id) {
-				case PlanetClassModel.CLASS_L_JUNGLE: return 1;
-				case PlanetClassModel.CLASS_L: return 1;
-				case PlanetClassModel.CLASS_P: return 1;
-				case PlanetClassModel.CLASS_K_LOW_OXYGEN: return 1;
-				case PlanetClassModel.CLASS_M: return 1;
-				}
 
-				requires.add(Strings.REQUIRES_FARMING_LANDS);
-
-				switch (planet.getClassification().id) {
-				case PlanetClassModel.CLASS_K: return 0;
-				}
-
-				return -1;
-			}
-		}),
-
-		new BuildingClassModel("Fermes Hydroponiques",				"Hydro.", 			"^+20%", 				0, Type.HYDROPONICS, 		Art.buildings[0], "L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.", new IBuildingCondition() {
-			@Override
-			public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
-				if (player.hasTech(TechnologyModel.Type.HYDROPONICS)) {
-					return 1;
-				}
-				requires.add(Strings.REQUIRES_HYDROPONICS_TECH);
-				return 0;
-			}
-		}),
-		
-		new BuildingClassModel("Centre économique", 				"Eco.", 				"$+20% @+5% pop+5", 	0, Type.ECONOMIC_CENTER, 	Art.buildings[1], "", null),
-		new BuildingClassModel("Dock spatial", 					"Sp. Dock", 		"*+20%",					0, Type.DOCK, 					Art.buildings[2], "Dock for spaceships located in low orbit, they provide facilities to build and repair spacecraft.", null),
-		new BuildingClassModel("Habitats colonial", 				"C-Hab.", 			"pop+50", 						0, Type.COLONIAL_HABITAT, 		Art.buildings[3], "", null),
-		new BuildingClassModel("Résaux de transport",			"Trans.", 			"*+20% $+20% @+20% &+20%", 						0, Type.TRANSPORTATION, 		Art.buildings[4], "", null),
-		
-		new BuildingClassModel("Centrales marémotrice",			"Centrales maré.","*+20% ~+5%",	 					0, Type.TIDAL_POWER, 		Art.buildings[5], "", new IBuildingCondition() {
-			@Override
-			public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
-				switch (planet.getClassification().id) {
-				case PlanetClassModel.CLASS_K_OCEAN: return 1;
-				case PlanetClassModel.CLASS_M: return 1;
-				}
-				requires.add(Strings.REQUIRES_OCEAN);
-				return -1;
-			}
-		}),
-		
-		new BuildingClassModel("Eoliennes océanique", 			"Eol. Océanique","*+20% ~+5%", 						0, Type.OFFSHORE_TURBINE, 		Art.buildings[6], "", new IBuildingCondition() {
-			@Override
-			public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
-				switch (planet.getClassification().id) {
-				case PlanetClassModel.CLASS_K_OCEAN: return 1;
-				case PlanetClassModel.CLASS_M: return 1;
-				}
-				requires.add(Strings.REQUIRES_OCEAN);
-				return -1;
-			}
-		}),
-
-		new BuildingClassModel("Eoliennes", 						"Eol.", 				"*+20%", 						0, Type.WIND_TURBINE, 		Art.buildings[7], "", null),
-		new BuildingClassModel("Centre de recherche", 			"Rech.", 			"&+20% *+10%", 						0, Type.RECHERCHE_CENTER, 		Art.buildings[8], "", null),
-		new BuildingClassModel("Connexion au réseau commun",	"Reseaux commun",	"~+50%", 						0, Type.COMMUN_NETWORK, 		Art.buildings[9], "", new IBuildingCondition() {
-			@Override
-			public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
-				int ret = 0;
-				
-				List<SystemModel> neighbors = planet.getSystem().getNeighbors();
-				for (SystemModel neighbor: neighbors) {
-					if (player.equals(neighbor.getOwner())) {
-						ret = 1;
+		new BuildingClassModel("Fermes",								"Fermes", 			"^+20%", 				42, Type.HYDROPONICS, 		Art.buildings[0], "L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.",
+			new IBuildingCondition() {
+				@Override
+				public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
+					switch (planet.getClassification().id) {
+					case PlanetClassModel.CLASS_L_JUNGLE: return 1;
+					case PlanetClassModel.CLASS_L: return 1;
+					case PlanetClassModel.CLASS_P: return 1;
+					case PlanetClassModel.CLASS_K_LOW_OXYGEN: return 1;
+					case PlanetClassModel.CLASS_M: return 1;
 					}
+	
+					requires.add(Strings.REQUIRES_FARMING_LANDS);
+	
+					switch (planet.getClassification().id) {
+					case PlanetClassModel.CLASS_K: return 0;
+					}
+	
+					return -1;
 				}
-				if (ret == 0) {
-					requires.add(Strings.REQUIRES_TRAVEL_LINE_TO_EMPIRE);
+			},
+			new IBuildingEffect() {
+				@Override
+				public void effect (PlayerModel player, PlanetModel planet) {
+					planet.addFoodModifier(0.2);
 				}
+			}
+		),
 
-				if (player.hasTech(TechnologyModel.Type.COMMUN_NETWORK) == false) {
-					requires.add(Strings.REQUIRES_COMMUN_NETWORK_TECH);
-					ret = 0;
+		new BuildingClassModel("Fermes Hydroponiques",				"Hydro.", 			"^+20%", 				42, Type.HYDROPONICS, 		Art.buildings[0], "L'hydroponie est la culture de plantes réalisée sur un substrat neutre et inerte (de type sable, pouzzolane, billes d'argile, laine de roche etc.). Ce substrat est régulièrement irrigué d'un courant de solution qui apporte des sels minéraux et des nutriments essentiels à la plante.",
+			new IBuildingCondition() {
+				@Override
+				public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
+					if (player.hasTech(TechnologyModel.Type.HYDROPONICS)) {
+						return 1;
+					}
+					requires.add(Strings.REQUIRES_HYDROPONICS_TECH);
+					return 0;
 				}
-
-				return 0;
+			},
+			new IBuildingEffect() {
+				@Override
+				public void effect (PlayerModel player, PlanetModel planet) {
+					planet.addFoodModifier(0.2);
+				}
+			}
+		),
+		
+		new BuildingClassModel("Centre économique", 				"Eco.", 				"$+20% @+5% pop+5", 	42, Type.ECONOMIC_CENTER, 	Art.buildings[1], "", null,
+			new IBuildingEffect() {
+			@Override
+			public void effect (PlayerModel player, PlanetModel planet) {
+				planet.addMoneyModifier(0.2);
+				planet.addCultureModifier(0.05);
 			}
 		}),
-		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null),
-		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null),
-		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null),
-		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null),
-		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null),
-		new BuildingClassModel("", "", "", 0, Type.HYDROPONICS, Art.buildings[0], "", null)
+		
+		new BuildingClassModel("Dock spatial", 					"Sp. Dock", 		"*+20%",					42, Type.DOCK, 					Art.buildings[2], "Dock for spaceships located in low orbit, they provide facilities to build and repair spacecraft.", null,
+			new IBuildingEffect() {
+			@Override
+			public void effect (PlayerModel player, PlanetModel planet) {
+				planet.addProdModifier(0.2);
+			}
+		}),
+		
+		new BuildingClassModel("Habitats coloniaux", 			"C-Hab.", 			"pop+50", 				42, Type.COLONIAL_HABITAT, 		Art.buildings[3], "", null,
+			new IBuildingEffect() {
+			@Override
+			public void effect (PlayerModel player, PlanetModel planet) {
+			}
+		}),
+		
+		new BuildingClassModel("Résaux de transport",			"Trans.", 			"*+20% $+20% @+20% &+20%", 						42, Type.TRANSPORTATION, 		Art.buildings[4], "", null,
+			new IBuildingEffect() {
+			@Override
+			public void effect (PlayerModel player, PlanetModel planet) {
+				planet.addProdModifier(0.2);
+				planet.addScienceModifier(0.2);
+				planet.addCultureModifier(0.2);
+				planet.addMoneyModifier(0.2);
+			}
+		}),
+		
+		new BuildingClassModel("Centrales marémotrice",			"Centrales maré.","*+20% ~+5%",	 					42, Type.TIDAL_POWER, 		Art.buildings[5], "",
+			new IBuildingCondition() {
+				@Override
+				public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
+					switch (planet.getClassification().id) {
+					case PlanetClassModel.CLASS_K_OCEAN: return 1;
+					case PlanetClassModel.CLASS_M: return 1;
+					}
+					requires.add(Strings.REQUIRES_OCEAN);
+					return -1;
+				}
+			},
+			new IBuildingEffect() {
+				@Override
+				public void effect (PlayerModel player, PlanetModel planet) {
+					planet.addProdModifier(0.2);
+					planet.addHapinessModifier(0.05);
+				}
+			}
+		),
+		
+		new BuildingClassModel("Eoliennes océanique", 			"Eol. Océanique","*+20% ~+5%", 						42, Type.OFFSHORE_TURBINE, 		Art.buildings[6], "",
+			new IBuildingCondition() {
+				@Override
+				public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
+					switch (planet.getClassification().id) {
+					case PlanetClassModel.CLASS_K_OCEAN: return 1;
+					case PlanetClassModel.CLASS_M: return 1;
+					}
+					requires.add(Strings.REQUIRES_OCEAN);
+					return -1;
+				}
+			},
+			new IBuildingEffect() {
+				@Override
+				public void effect (PlayerModel player, PlanetModel planet) {
+					planet.addProdModifier(0.2);
+					planet.addHapinessModifier(0.05);
+				}
+			}
+		),
+
+		new BuildingClassModel("Eoliennes", 						"Eol.", 				"*+20%", 						42, Type.WIND_TURBINE, 		Art.buildings[7], "", null,
+			new IBuildingEffect() {
+			@Override
+			public void effect (PlayerModel player, PlanetModel planet) {
+				planet.addProdModifier(0.2);
+			}
+		}),
+		
+		new BuildingClassModel("Centre de recherche", 			"Rech.", 			"&+20% *+10%", 				42, Type.RECHERCHE_CENTER, 		Art.buildings[8], "", null,
+			new IBuildingEffect() {
+			@Override
+			public void effect (PlayerModel player, PlanetModel planet) {
+				planet.addProdModifier(0.1);
+				planet.addScienceModifier(0.2);
+			}
+		}),
+
+		new BuildingClassModel("Connexion au réseau commun",	"Reseaux commun",	"~+50%", 						42, Type.COMMUN_NETWORK, 		Art.buildings[9], "",
+			new IBuildingCondition() {
+				@Override
+				public int isAvailable (PlayerModel player, PlanetModel planet, List<String> requires) {
+					int ret = 0;
+					
+					List<SystemModel> neighbors = planet.getSystem().getNeighbors();
+					for (SystemModel neighbor: neighbors) {
+						if (player.equals(neighbor.getOwner())) {
+							ret = 1;
+						}
+					}
+					if (ret == 0) {
+						requires.add(Strings.REQUIRES_TRAVEL_LINE_TO_EMPIRE);
+					}
+	
+					if (player.hasTech(TechnologyModel.Type.COMMUN_NETWORK) == false) {
+						requires.add(Strings.REQUIRES_COMMUN_NETWORK_TECH);
+						ret = 0;
+					}
+	
+					return 0;
+				}
+			},
+			new IBuildingEffect() {
+				@Override
+				public void effect (PlayerModel player, PlanetModel planet) {
+					planet.addProdModifier(0.2);
+					planet.addHapinessModifier(0.5);
+				}
+			}
+		),
+		new BuildingClassModel("", "", "", 42, Type.HYDROPONICS, Art.buildings[0], "", null, null),
+		new BuildingClassModel("", "", "", 42, Type.HYDROPONICS, Art.buildings[0], "", null, null),
+		new BuildingClassModel("", "", "", 42, Type.HYDROPONICS, Art.buildings[0], "", null, null),
+		new BuildingClassModel("", "", "", 42, Type.HYDROPONICS, Art.buildings[0], "", null, null),
+		new BuildingClassModel("", "", "", 42, Type.HYDROPONICS, Art.buildings[0], "", null, null),
+		new BuildingClassModel("", "", "", 42, Type.HYDROPONICS, Art.buildings[0], "", null, null)
 	};
 
 	private static final int sSystemMap[][][] = {

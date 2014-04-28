@@ -48,7 +48,7 @@ public class PanelGovernmentScreen extends BaseScreen {
 				case 0: return p1.getPeople() > p2.getPeople() ? -1 : 1;
 				case 1: return p1.getSatisfation() > p2.getSatisfation() ? -1 : 1;
 				case 2: return p1.getFood() > p2.getFood() ? -1 : 1;
-				case 3: return p1.getBuild() > p2.getBuild() ? -1 : 1;
+				case 3: return p1.getProd() > p2.getProd() ? -1 : 1;
 				case 4: return p1.getMoney() > p2.getMoney() ? -1 : 1;
 				case 5: return p1.getScience() > p2.getScience() ? -1 : 1;
 				case 6: return p1.getCulture() > p2.getCulture() ? -1 : 1;
@@ -65,7 +65,7 @@ public class PanelGovernmentScreen extends BaseScreen {
 				mainLayer.drawString(String.valueOf(planet.getPeople()), START_X + 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				mainLayer.drawString(String.valueOf((int)planet.getSatisfation()), START_X + 2 + SPACING_X * 1, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				mainLayer.drawString(String.valueOf((int)planet.getFood()), START_X + 2 + SPACING_X * 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
-				mainLayer.drawString(String.valueOf((int)planet.getBuild()), START_X + 2 + SPACING_X * 3, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawString(String.valueOf((int)planet.getProd()), START_X + 2 + SPACING_X * 3, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				mainLayer.drawString(String.valueOf((int)planet.getMoney()), START_X + 2 + SPACING_X * 4, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				mainLayer.drawString(String.valueOf((int)planet.getScience()), START_X + 2 + SPACING_X * 5, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				mainLayer.drawString(String.valueOf((int)planet.getCulture()), START_X + 2 + SPACING_X * 6, START_Y + 5 + i * (LINE_HEIGHT + 1));

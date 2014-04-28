@@ -64,8 +64,10 @@ public class BuildingClassModel {
 	public Type 					type;
 	public TextureRegion 		mIcon;
 	private IBuildingCondition mBuildingCondition;
+	private IBuildingEffect 	mBuildingEffect;
 
-	public BuildingClassModel (String name, String shortName, String effect, int builValue, Type type, TextureRegion icon, String desc, IBuildingCondition buildingCondition) {
+	public BuildingClassModel (String name, String shortName, String effect, int builValue, Type type, TextureRegion icon, String desc, IBuildingCondition buildingCondition, IBuildingEffect buildingEffect) {
+		mBuildingEffect = buildingEffect;
 		mBuildingCondition = buildingCondition;
 		mName = name;
 		mEffect = effect;
@@ -137,6 +139,12 @@ public class BuildingClassModel {
 			return null;
 		}
 		return requires;
+	}
+
+	public void addEffect (PlayerModel player, PlanetModel planet) {
+		if (mBuildingEffect != null) {
+			mBuildingEffect.effect(player, planet);
+		}
 	}
 
 }

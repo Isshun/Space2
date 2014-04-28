@@ -78,7 +78,7 @@ public class ShipModel implements IBuilding  {
 	}
 
 	public int getBuildETA () {
-		return (int)(getBuildRemain() / (mPlanet.getBuild())) + 1;
+		return (int)(getBuildRemain() / (mPlanet.getProd())) + 1;
 	}
 
 	public double damage (double damage) {

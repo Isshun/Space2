@@ -47,6 +47,15 @@ public class PlanetScreen extends BaseScreen {
 
 	@Override
 	protected void onCreate () {
+		ButtonView btDebug = new ButtonView("Debug", Constants.GAME_HEIGHT - 20, Constants.GAME_WIDTH - 70);
+		btDebug.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				addScreen(new PlanetDebugScreen(mPlanet));
+			}
+		});
+		addView(btDebug);
+		
 		// Button ship
 		mBtShip = new ButtonView(6, Constants.GAME_HEIGHT - 20, 60, 20, mColor);
 		mBtShip.setText("ship");
@@ -175,7 +184,7 @@ public class PlanetScreen extends BaseScreen {
 			//drawCharacteristics(mainLayer, 6, 32);
 			drawCurrentBuilding(mainLayer, 6, 32);
 			drawCurrentDock(mainLayer, 6, 85);
-			//drawInfos(mainLayer, 6, 84);
+			drawInfos(mainLayer, 200, 84);
 			mBtShip.setVisibility(mPlanet.getDock() != null ? View.VISIBLE : View.GONE);
 			mBtStructure.setVisibility(View.VISIBLE);
 		} else {
@@ -247,27 +256,36 @@ public class PlanetScreen extends BaseScreen {
 	private void drawInfos (BaseScreenLayer mainLayer, int posX, int posY) {
 		mainLayer.drawRectangle(posX, posY, 134, 72, mColor);
 		mainLayer.drawRectangle(posX, posY, 134, 12, mColor);
-		mainLayer.drawString("Production ", posX + 4, posY + 4);
+		//mainLayer.drawString("Production ", posX + 4, posY + 4);
+
+		mainLayer.drawString(String.format("^%d *%d $%d @%d &%d",
+			(int)mPlanet.getFood(),
+			(int)mPlanet.getProd(),
+			(int)mPlanet.getMoney(),
+			(int)mPlanet.getCulture(),
+			(int)mPlanet.getScience()
+			), posX + 20, posY + 4);
+
 		
-		posY += 14;
-		mainLayer.draw(Art.res_food, posX + 4, posY);
-		mainLayer.drawString(String.format("Food:        %d (%d)", (int)mPlanet.getFood(), (int)mPlanet.getBaseFood()), posX + 20, posY + 4);
-
-		posY += 12;
+//		posY += 14;
+//		mainLayer.draw(Art.res_food, posX + 4, posY);
+//		mainLayer.drawString(String.format("Food:        %d (%d)", (int)mPlanet.getFood(), (int)mPlanet.getBaseFood()), posX + 20, posY + 4);
+//
+//		posY += 12;
 		mainLayer.draw(Art.ic_construction_12, posX + 4, posY);
-		mainLayer.drawString(String.format("Build:       %d (%d)", (int)mPlanet.getBuild(), (int)mPlanet.getBaseBuild()), posX + 20, posY + 4);
-
-		posY += 12;
-		mainLayer.draw(Art.ic_money_12, posX + 4, posY);
-		mainLayer.drawString(String.format("Money:       %d (%d)", (int)mPlanet.getMoney(), (int)mPlanet.getBaseMoney()), posX + 20, posY + 4);
-
-		posY += 12;
-		mainLayer.draw(Art.ic_science, posX + 4, posY);
-		mainLayer.drawString(String.format("Science:     %d (%d)", (int)mPlanet.getScience(), (int)mPlanet.getBaseScience()), posX + 20, posY + 4);
-
-		posY += 12;
-		mainLayer.draw(Art.res_culture, posX + 4, posY);
-		mainLayer.drawString(String.format("Culture:     %d (%d)", (int)mPlanet.getCulture(), (int)mPlanet.getBaseCulture()), posX + 20, posY + 4);
+//		mainLayer.drawString(String.format("Build:       %d (%d)", (int)mPlanet.getProd(), (int)mPlanet.getBaseBuild()), posX + 20, posY + 4);
+//
+//		posY += 12;
+//		mainLayer.draw(Art.ic_money_12, posX + 4, posY);
+//		mainLayer.drawString(String.format("Money:       %d (%d)", (int)mPlanet.getMoney(), (int)mPlanet.getBaseMoney()), posX + 20, posY + 4);
+//
+//		posY += 12;
+//		mainLayer.draw(Art.ic_science, posX + 4, posY);
+//		mainLayer.drawString(String.format("Science:     %d (%d)", (int)mPlanet.getScience(), (int)mPlanet.getBaseScience()), posX + 20, posY + 4);
+//
+//		posY += 12;
+//		mainLayer.draw(Art.res_culture, posX + 4, posY);
+//		mainLayer.drawString(String.format("Culture:     %d (%d)", (int)mPlanet.getCulture(), (int)mPlanet.getBaseCulture()), posX + 20, posY + 4);
 	}
 
 	@Override

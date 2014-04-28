@@ -36,4 +36,8 @@ public class BuildingModel implements IBuilding {
 	public String getShortName () {
 		return mBuildClass.getShortName();
 	}
+
+	public void addEffect (PlayerModel player, PlanetModel planet) {
+		mBuildClass.addEffect(player, planet);
+	}
 }

@@ -26,8 +26,7 @@ public abstract class BaseScreenLayer {
 	private Color						mColorGood;
 	private StringConfig				mStringConfig;
 	protected int						mProjectionWidth;
-
-	protected int mProjectionHeight;
+	protected int 						mProjectionHeight;
 
 	public class StringConfig {
 		public static final int SIZE_REGULAR = 0;

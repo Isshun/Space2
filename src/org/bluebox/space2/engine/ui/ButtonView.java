@@ -21,6 +21,12 @@ public class ButtonView extends RectangleView {
 		mPadding = 4;
 	}
 
+	public ButtonView (String text, int y, int x) {
+		super(x, y, text.length() * 6 + 8, 20, null);
+		setText(text);
+		mPadding = 4;
+	}
+
 	@Override
 	public void draw (SpriteCache spriteBatch) {
 		spriteBatch.add(Art.bt_bg, mPosX, mPosY);

@@ -20,7 +20,7 @@ public class PlanetModel implements ILocation {
 	private int 							mPeople;
 	private int 							mPeopleTotal;
 	private double 						mBaseFood;
-	private double 						mBaseBuild;
+	private double 						mBaseProd;
 	private double 						mBaseCulture;
 	private double 						mBaseScience;
 	private double 						mBaseMoney;
@@ -32,8 +32,20 @@ public class PlanetModel implements ILocation {
 	private List<FleetModel> 			mFleets;
 	private DockModel 					mDock;
 	private PlayerModel 					mOwner;
+	private double 						mProdModifier;
+	private double 						mFoodModifier;
+	private double 						mScienceModifier;
+	private double 						mCultureModifier;
+	private double 						mHapinessModifier;
+	private double 						mMoneyModifier;
 
 	public PlanetModel (int classId, int size) {
+		mProdModifier = 1;
+		mFoodModifier = 1;
+		mMoneyModifier = 1;
+		mScienceModifier = 1;
+		mCultureModifier = 1;
+		mHapinessModifier = 1;
 		mShipsToBuild = new ArrayList<ShipModel>();
 		mBuildings = new ArrayList<BuildingModel>();
 		mStructuresToBuilds = new ArrayList<BuildingModel>();
@@ -42,13 +54,61 @@ public class PlanetModel implements ILocation {
 		mClass = PlanetClassModel.getFromId(classId);
 		mSize = size;
 		mPeopleTotal = 3 + mSize * 2;
-		mBaseBuild = 5 + Game.sRandom.nextInt(8);
+		mBaseProd = 5 + Game.sRandom.nextInt(8);
 		mBaseMoney = Game.sRandom.nextInt(10);
 		mBaseScience = Game.sRandom.nextInt(10);
 		mBaseCulture = Game.sRandom.nextInt(10);
 		mBaseFood = Game.sRandom.nextInt(10);
 		mSatisfaction = Game.sRandom.nextInt(100);
 	}
+	
+	public List<ShipModel> getBuilds () { return mShipsToBuild; }
+	public List<FleetModel> getOrbit () { return mFleets; }
+	public PlanetClassModel getClassification() { return mClass; }
+	public SystemModel getSystem () { return mSystem; }
+	public String getName() { return mName; }
+	public String getShortName() { return getLatinNumber(mPos + 1); }
+	public String getClassName() { return mClass.name; }
+	public String getSizeName () { return PlanetSizeModel.getText(mSize); }
+	public String getShortClassification () { return mClass.shortName; }
+	public String getShortSizeName () { return PlanetSizeModel.getShortText(mSize); }
+	public double getInitialTick () { return mInitialTick; }
+	public double getBaseFood () { return mBaseFood; }
+	public double getBaseCulture () { return mBaseCulture; }
+	public double getBaseScience () { return mBaseScience; }
+	public double getBaseProd () { return mBaseProd; }
+	public double getBaseMoney() { return mBaseMoney; }
+	public double getFoodModifier () { return mFoodModifier; }
+	public double getCultureModifier () { return mCultureModifier; }
+	public double getScienceModifier () { return mScienceModifier; }
+	public double getProdModifier () { return mProdModifier; }
+	public double getMoneyModifier () { return mMoneyModifier; }
+	public double getFood () { return Math.ceil(mBaseFood * mFoodModifier * mPeople); }
+	public double getProd () { return Math.ceil(mBaseProd * mProdModifier * mPeople); }
+	public double getMoney () { return Math.ceil(mBaseMoney * mMoneyModifier * mPeople); }
+	public double getCulture () { return Math.ceil(mBaseCulture * mCultureModifier * mPeople); }
+	public double getScience () { return Math.ceil(mBaseScience * mScienceModifier * mPeople); }
+	public double getSatisfation () { return mSatisfaction; }
+	public int getPeople () { return mPeople; }
+	public int getSize () { return mSize; }
+	public int getBuildETA (int buildValue) { return (int)(buildValue / mBaseProd * mPeople) + 1; }
+
+	public void setSize (int size) { mSize = size; }
+	public void setInitialTick (double d) { mInitialTick = d; }
+	public void setBaseFood (double value) { mBaseFood = value; }
+	public void setBaseCulture (double value) { mBaseCulture = value; }
+	public void setBaseProd (double value) { mBaseProd = value; }
+	public void setBaseMoney (double value) { mBaseMoney = value; }
+	public void setBaseScience (double value) { mBaseScience = value; }
+
+	public void addProdModifier (double value) { mProdModifier += value; }
+	public void addMoneyModifier (double value) { mMoneyModifier += value; }
+	public void addFoodModifier (double value) { mFoodModifier += value; }
+	public void addScienceModifier (double value) { mScienceModifier += value; }
+	public void addCultureModifier (double value) { mCultureModifier += value; }
+	public void addHapinessModifier (double value) { mHapinessModifier += value; }
+
+
 
 	private static int getRandomPlanetClass () {
 		int totalRand = 0;
@@ -67,34 +127,6 @@ public class PlanetModel implements ILocation {
 		}
 		
 		return 0;
-	}
-
-	public String getName() {
-		return mName;
-	}
-
-	public String getShortName() {
-		return getLatinNumber(mPos + 1);
-	}
-
-	public String getClassName() {
-		return mClass.name;
-	}
-
-	public PlanetClassModel getClassification() {
-		return mClass;
-	}
-
-	public double getInitialTick () {
-		return mInitialTick;
-	}
-
-	public void setInitialTick (double d) {
-		mInitialTick = d;
-	}
-
-	public String getSizeName () {
-		return PlanetSizeModel.getText(mSize);
 	}
 
 	public void setSystem (SystemModel system, int pos) {
@@ -118,80 +150,12 @@ public class PlanetModel implements ILocation {
 		return null;
 	}
 
-	public String getShortClassification () {
-		return mClass.shortName;
-	}
-
-	public String getShortSizeName () {
-		return PlanetSizeModel.getShortText(mSize);
-	}
-
-	public double getBaseFood () {
-		return mBaseFood;
-	}
-
-	public double getBaseCulture () {
-		return mBaseCulture;
-	}
-
-	public double getBaseScience () {
-		return mBaseScience;
-	}
-
-	public double getBaseBuild () {
-		return mBaseBuild;
-	}
-
-	public double getBaseMoney() {
-		return mBaseMoney;
-	}
-
-	public int getPeople () {
-		return mPeople;
-	}
-
-	public double getFood () {
-		return Math.ceil(mBaseFood * mPeople);
-	}
-
-	public double getBuild () {
-		return Math.ceil(mBaseBuild * mPeople);
-	}
-
-	public double getMoney () {
-		return Math.ceil(mBaseMoney * mPeople);
-	}
-
-	public double getCulture () {
-		return Math.ceil(mBaseCulture * mPeople);
-	}
-
-	public double getScience () {
-		return Math.ceil(mBaseScience * mPeople);
-	}
-
-	public SystemModel getSystem () {
-		return mSystem;
-	}
-
-	public double getSatisfation () {
-		return mSatisfaction;
-	}
-
-	public int getSize () {
-		return mSize;
-	}
-
 	public void setClassification (int classIndex) {
 		for (PlanetClassModel c: PlanetClassModel.sClass) {
 			if (c.id == classIndex) {
 				mClass = c;
 			}
 		}
-	}
-
-	public void setSize (int size) {
-		mSize = size;
 	}
 
 	public void buildShip(ShipClassModel sc) {
@@ -208,16 +172,12 @@ public class PlanetModel implements ILocation {
 		mShipsToBuild.add(sc);
 	}
 
-	public List<ShipModel> getBuilds () {
-		return mShipsToBuild;
-	}
-
 	public void update () {
 		// Planet has ship in todo list
 		if (mShipsToBuild.size() > 0) {
 			
 			// Ship construction is done
-			if (mShipsToBuild.get(0).build(mBaseBuild * mPeople)) {
+			if (mShipsToBuild.get(0).build(mBaseProd * mPeople)) {
 				mDock.addShip(mShipsToBuild.get(0));
 				mShipsToBuild.remove(0);
 			}
@@ -227,20 +187,12 @@ public class PlanetModel implements ILocation {
 		if (mStructuresToBuilds.size() > 0) {
 			
 			// Ship construction is done
-			if (mStructuresToBuilds.get(0).build(mBaseBuild * mPeople)) {
-				mBuildings.add(mStructuresToBuilds.get(0));
+			if (mStructuresToBuilds.get(0).build(mBaseProd * mPeople)) {
+				addStructure(mStructuresToBuilds.get(0));
 				mStructuresToBuilds.remove(0);
 			}
 		}
 		
-	}
-
-	public List<FleetModel> getOrbit () {
-		return mFleets;
-	}
-
-	public int getBuildETA (int buildValue) {
-		return (int)(buildValue / mBaseBuild * mPeople) + 1;
 	}
 
 	public void setOwner (PlayerModel owner) {
@@ -268,7 +220,7 @@ public class PlanetModel implements ILocation {
 			break;
 		}
 		//return (int)(mSize / 4);
-		return (int)((mBaseBuild + mBaseCulture + mBaseFood + mBaseMoney + mBaseScience) * mSize * classIndice);
+		return (int)((mBaseProd + mBaseCulture + mBaseFood + mBaseMoney + mBaseScience) * mSize * classIndice);
 	}
 
 	public boolean isFree () {
@@ -361,11 +313,17 @@ public class PlanetModel implements ILocation {
 	}
 
 	public void addStructure(BuildingClassModel.Type type) {
-		if (mDock == null && type == BuildingClassModel.Type.DOCK) {
+		addStructure(GameService.getInstance().createBuilding(type, this));
+	}
+
+	public void addStructure(BuildingModel building) {
+		if (mDock == null && building.getType() == BuildingClassModel.Type.DOCK) {
 			mDock = new DockModel(this);
 		}
 		
-		mBuildings.add(GameService.getInstance().createBuilding(type, this));
+		building.addEffect(mOwner, this);
+		
+		mBuildings.add(building);
 	}
 
 	public int getTotalPeople () {

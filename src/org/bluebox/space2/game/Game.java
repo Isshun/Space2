@@ -125,8 +125,8 @@ public class Game implements ApplicationListener {
 		if (Constants.GAME_WIDTH < 380 || Constants.GAME_HEIGHT < 240) {
 			setScreen(new ErrorScreen(ErrorScreen.RESOLUTION_NOT_SUPPORTED));
 		} else {
-			//setScreen(new SpaceScreen());
-			setScreen(new PlanetScreen(GameService.getInstance().getPlayer().getHome().getSystem(), GameService.getInstance().getPlayer().getHome()));
+			setScreen(new SpaceScreen());
+//			setScreen(new PlanetScreen(GameService.getInstance().getPlayer().getHome().getSystem(), GameService.getInstance().getPlayer().getHome()));
 //			setScreen(new PanelCreateFleet(GameService.getInstance().getPlayer().getHome().getDock()));
 		}
 		
