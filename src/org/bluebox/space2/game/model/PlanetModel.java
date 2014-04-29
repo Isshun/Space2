@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.bluebox.space2.Utils;
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
 import org.bluebox.space2.game.Game;
 import org.bluebox.space2.game.GameData;
@@ -18,8 +19,6 @@ import org.bluebox.space2.game.service.FightService;
 import org.bluebox.space2.game.service.GameService;
 
 public class PlanetModel implements ILocation {
-	private static int					sCount;
-	
 	private int 							mId;
 	private String 						mName;
 	private double 						mInitialTick;
@@ -49,7 +48,7 @@ public class PlanetModel implements ILocation {
 	private double 						mMoneyModifier;
 
 	public PlanetModel (int classId, int size) {
-		mId = sCount++;
+		mId = Utils.getUUID();
 		mProdModifier = 1;
 		mFoodModifier = 1;
 		mMoneyModifier = 1;

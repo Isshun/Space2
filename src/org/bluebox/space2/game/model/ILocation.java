@@ -9,4 +9,5 @@ public interface ILocation {
 	void removeFleet (FleetModel fleet);
 	void addFleet (FleetModel fleet);
 	List<FleetModel> getFleets ();
+	int getId ();
 }

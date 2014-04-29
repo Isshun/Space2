@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bluebox.space2.game.model.BuildingClassModel;
 import org.bluebox.space2.game.model.FleetModel;
+import org.bluebox.space2.game.model.ILocation;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.model.ShipClassModel;
@@ -58,4 +59,48 @@ public class GameData {
 		}
 		return null;
 	}
+
+	public TravelModel getTravelFromId (int id) {
+		for (TravelModel travel: travelLines) {
+			if (travel.getId() == id) {
+				return travel;
+			}
+		}
+		return null;
+	}
+
+	public PlayerModel getPlayerFromId (int id) {
+		for (PlayerModel player: players) {
+			if (player.getId() == id) {
+				return player;
+			}
+		}
+		return null;
+	}
+
+	public ShipClassModel getShipClassFromId (int id) {
+		for (ShipClassModel shipClass: shipClasses) {
+			if (shipClass.getId() == id) {
+				return shipClass;
+			}
+		}
+		return null;
+	}
+
+	public ILocation getLocationFromId(int id) {
+		ILocation location = getSystemFromId(id);
+		if (location != null) {
+			return location;
+		}
+		location = getTravelFromId(id);
+		if (location != null) {
+			return location;
+		}
+		location = getPlanetFromId(id);
+		if (location != null) {
+			return location;
+		}
+		return null;
+	}
+
 }

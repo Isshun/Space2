@@ -64,7 +64,7 @@ public class SpaceScreen extends BaseScreen {
 		mBtZoomIn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
-				mZoom = (float)Math.min(2, mZoom + 0.04);
+				mZoom = (float)Math.max(1, mZoom - 0.04);
 				notifyChange();
 			}
 		});
@@ -75,7 +75,7 @@ public class SpaceScreen extends BaseScreen {
 		mBtZoomOff.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
-				mZoom = (float)Math.max(1, mZoom - 0.04);
+				mZoom = (float)Math.min(2, mZoom + 0.04);
 				notifyChange();
 			}
 		});

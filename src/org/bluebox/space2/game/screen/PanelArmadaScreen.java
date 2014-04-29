@@ -36,7 +36,7 @@ public class PanelArmadaScreen extends BaseScreen {
 		mainLayer.drawString("Name", 		6, 24);
 		
 		mainLayer.drawString("Loc.", 	START_X, 24);
-		mainLayer.drawString("Ships", 	START_X + 60 + SPACING_X * 1, 24);
+		mainLayer.drawString("Ships", START_X + 60 + SPACING_X * 1, 24);
 		mainLayer.drawString("Pow.", 	START_X + 60 + SPACING_X * 2, 24);
 		mainLayer.drawString("Def.",	START_X + 60 + SPACING_X * 3, 24);
 		
@@ -49,8 +49,8 @@ public class PanelArmadaScreen extends BaseScreen {
 			mainLayer.setStringMaxWidth(16 * 6);
 			mainLayer.drawString(fleet.getLocationName(), START_X + 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
 			mainLayer.drawString(String.valueOf((int)fleet.getNbShip()), START_X + 62 + SPACING_X * 1, START_Y + 5 + i * (LINE_HEIGHT + 1));
-			mainLayer.drawString(String.valueOf((int)fleet.getPower()), START_X + 62 + SPACING_X * 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
-			mainLayer.drawString(String.valueOf((int)fleet.getDefense()), START_X + 62 + SPACING_X * 3, START_Y + 5 + i * (LINE_HEIGHT + 1));
+			mainLayer.drawString(String.valueOf((int)fleet.getAttackIndice()), START_X + 62 + SPACING_X * 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
+			mainLayer.drawString(String.valueOf((int)fleet.getDefenseIndice()), START_X + 62 + SPACING_X * 3, START_Y + 5 + i * (LINE_HEIGHT + 1));
 			i++;
 		}
 	}

@@ -2,6 +2,7 @@ package org.bluebox.space2.game;
 
 import java.util.List;
 
+import org.bluebox.space2.Utils;
 import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.game.model.BuildingClassModel;
 import org.bluebox.space2.game.model.DeviceModel;
@@ -226,6 +227,8 @@ public class GameDataFactory {
 
 	public static GameData create () {
 		GameData data = new GameData();
+		
+		Utils.resetUUID();
 
 		initGame(data);
 		
@@ -327,9 +330,9 @@ public class GameDataFactory {
 	public static void initFleets (GameData data) {
 
 		// Create fleets
-		ShipClassModel sc = data.shipClasses.get(0);
 		for (PlayerModel player: data.players) {
 			{
+				ShipClassModel sc = data.shipClasses.get(0);
 				FleetModel fleet = new FleetModel(player, NameGenerator.generate(player.getNameGeneratorLanguage(), player.getFleets().size()));
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Alpha" : player.getName());
@@ -349,6 +352,7 @@ public class GameDataFactory {
 				data.fleets.add(fleet);
 			}
 			{
+				ShipClassModel sc = data.shipClasses.get(1);
 				FleetModel fleet = new FleetModel(player);
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Beta" : player.getName());
@@ -362,6 +366,7 @@ public class GameDataFactory {
 				data.fleets.add(fleet);
 			}
 			{
+				ShipClassModel sc = data.shipClasses.get(2);
 				FleetModel fleet = new FleetModel(player);
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Omega" : player.getName());

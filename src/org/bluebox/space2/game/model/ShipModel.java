@@ -2,34 +2,36 @@ package org.bluebox.space2.game.model;
 
 import java.util.List;
 
+import org.bluebox.space2.Utils;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 
 
 public class ShipModel implements IBuilding  {
 	private List<ShipDeviceModel>	mDevices;
-
-	private double 	mSpeed;
-	private int 		mMass;
-	private double 	mArmory;
-	private double 	mShieldPower;
-	private double 	mGlobalIndice;
-	private double 	mAttackIndice;
-	private double 	mDefenseIndice;
-	private int 		mCrew;
-	private int 		mTotalCrew;
-	private int 		mHull;
-	private int 		mHullBase;
-	private double 	mPhaserPower;
-	private double 	mTorpedoPower;
-	private int 		mTotalBuild;
-	private double				mBuild;
-	private PlanetModel		mPlanet;
-	private SystemModel 		mSystem;
-	private ShipClassModel 	mShipClass;
-
-	private FleetModel mFleet;
+	
+	private double 					mSpeed;
+	private int 						mId;
+	private int 						mMass;
+	private double 					mArmory;
+	private double 					mShieldPower;
+	private double 					mGlobalIndice;
+	private double 					mAttackIndice;
+	private double 					mDefenseIndice;
+	private int 						mCrew;
+	private int 						mTotalCrew;
+	private int 						mHull;
+	private int 						mHullBase;
+	private double 					mPhaserPower;
+	private double 					mTorpedoPower;
+	private int 						mTotalBuild;
+	private double						mBuild;
+	private PlanetModel				mPlanet;
+	private SystemModel 				mSystem;
+	private ShipClassModel 			mShipClass;
+	private FleetModel 				mFleet;
 	
 	public ShipModel(ShipClassModel shipClass) {
+		mId = Utils.getUUID();
 		mSpeed = 42;
 		mMass = shipClass.getMass();
 		mShipClass = shipClass;
@@ -46,6 +48,7 @@ public class ShipModel implements IBuilding  {
 		mGlobalIndice = mAttackIndice + mDefenseIndice;
 	}
 
+	public int 				getId () { return mId; }
 	public double			getSpeed () { return mSpeed; }
 	public double 			getIndice () { return mGlobalIndice; }
 	public double 			getAttackIndice () { return mAttackIndice; }
@@ -66,6 +69,13 @@ public class ShipModel implements IBuilding  {
 	public int 				getBuildRemain () { return (int)(mTotalBuild - mBuild); }
 	public PlanetModel 	getPlanet () { return mPlanet; }
 	public SystemModel 	getSystem () { return mSystem; }
+	public FleetModel 	getFleet () { return mFleet; }
+	public ShipClassModel getShipClass () { return mShipClass; }
+
+	public void setFleet (FleetModel fleet) { mFleet = fleet; }
+	public void setId (int id) { mId = id; }
+	public void setCrew (int crew) { mCrew = crew; }
+	public void setHull (int hull) { mHull = hull; }
 
 	public boolean build (double value) {
 		mBuild = (int)Math.min(mBuild + value, mTotalBuild);
@@ -94,15 +104,4 @@ public class ShipModel implements IBuilding  {
 		return mShipClass.hasDevice(device);
 	}
 
-	public FleetModel getFleet () {
-		return mFleet;
-	}
-
-	public void setFleet (FleetModel fleet) {
-		mFleet = fleet;
-	}
-
-	public ShipClassModel getShipClass () {
-		return mShipClass;
-	}
 }

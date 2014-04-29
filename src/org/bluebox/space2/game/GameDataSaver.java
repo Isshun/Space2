@@ -3,10 +3,14 @@ package org.bluebox.space2.game;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.bluebox.space2.game.model.BuildingModel;
+import org.bluebox.space2.game.model.FleetModel;
+import org.bluebox.space2.game.model.ILocation;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
+import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
 
@@ -38,7 +42,46 @@ public class GameDataSaver {
 			}
 			bw.write("END TRAVELS\n");
 
+			// Travel lines
+			bw.write("BEGIN FLEETS\n");
+			for (FleetModel fleet: mData.fleets) {
+				saveFleet(bw, fleet);
+			}
+			bw.write("END FLEETS\n");
+
 			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void saveFleet (BufferedWriter bw, FleetModel fleet) {
+		try {
+			bw.write("BEGIN FLEET\n");
+			bw.write("\tID=" + fleet.getId() + "\n");
+			bw.write("\tOWNER=" + fleet.getOwner().getId() + "\n");
+			bw.write("\tSPEED=" + fleet.getSpeed() + "\n");
+			bw.write("\tNAME=" + fleet.getName() + "\n");
+			bw.write("\tLOCATION=" + fleet.getLocation().getId() + "\n");
+			
+			for (ShipModel ship: fleet.getShips()) {
+				saveShip(bw, ship);
+			}
+			
+			bw.write("END FLEET\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void saveShip (BufferedWriter bw, ShipModel ship) {
+		try {
+			bw.write("\tBEGIN SHIP\n");
+			bw.write("\t\tID=" + ship.getId() + "\n");
+			bw.write("\t\tCLASS=" + ship.getShipClass().getId() + "\n");
+			bw.write("\t\tHULL=" + ship.getHull() + "\n");
+			bw.write("\t\tCREW=" + ship.getCrew() + "\n");
+			bw.write("\tEND SHIP\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -47,6 +90,7 @@ public class GameDataSaver {
 	private static void saveTravel (BufferedWriter bw, TravelModel travel) {
 		try {
 			bw.write("BEGIN TRAVEL\n");
+			bw.write("\tID=" + travel.getId() + "\n");
 			bw.write("\tFROM=" + travel.getFrom().getId() + "\n");
 			bw.write("\tTO=" + travel.getTo().getId() + "\n");
 			bw.write("END TRAVEL\n");

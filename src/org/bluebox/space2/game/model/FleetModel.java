@@ -1,9 +1,12 @@
 package org.bluebox.space2.game.model;
 
+import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bluebox.space2.Utils;
+import org.bluebox.space2.game.GameData;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 import org.bluebox.space2.path.PathResolver;
 import org.bluebox.space2.path.Vertex;
@@ -15,6 +18,7 @@ public class FleetModel implements IShipCollectionModel {
 		MOVE
 	}
 	
+	private int					mId;
 	private List<ShipModel>	mShips;
 	private PlayerModel 		mOwner;
 	private double 			mSpeed;
@@ -29,6 +33,7 @@ public class FleetModel implements IShipCollectionModel {
 	private double mDefenseIndice;
 
 	public FleetModel (PlayerModel owner) {
+		mId = Utils.getUUID();
 		mAction = Action.NONE;
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
@@ -38,6 +43,7 @@ public class FleetModel implements IShipCollectionModel {
 	}
 
 	public FleetModel (PlayerModel owner, String name) {
+		mId = Utils.getUUID();
 		mAction = Action.NONE;
 		mSpeed = Double.MAX_VALUE;
 		mShips = new ArrayList<ShipModel>();
@@ -120,14 +126,6 @@ public class FleetModel implements IShipCollectionModel {
 
 	public int getNbShip () {
 		return mShips.size();
-	}
-
-	public int getPower () {
-		return 42;
-	}
-
-	public int getDefense () {
-		return 42;
 	}
 
 	public List<ShipModel> getShips () {
@@ -258,6 +256,14 @@ public class FleetModel implements IShipCollectionModel {
 			}
 		}
 		destroy();
+	}
+
+	public int getId () {
+		return mId;
+	}
+
+	public void setId (int id) {
+		mId = id;
 	}
 
 }

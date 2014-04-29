@@ -4,10 +4,16 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.bluebox.space2.Utils;
+import org.bluebox.space2.game.model.FleetModel;
+import org.bluebox.space2.game.model.ILocation;
 import org.bluebox.space2.game.model.PlanetClassModel;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
+import org.bluebox.space2.game.model.ShipClassModel;
+import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
 
@@ -17,6 +23,11 @@ public class GameDataLoader {
 
 	public static GameData load () {
 		GameData data = new GameData();
+		
+		Utils.resetUUID();
+		
+		GameDataFactory.initShipClasses(data);
+		
 		data.planets = new ArrayList<PlanetModel>();
 		
 		try (BufferedReader br = new BufferedReader(new FileReader("1.sav"))) {
@@ -42,8 +53,14 @@ public class GameDataLoader {
 
 				// Travel lines
 				if ("BEGIN TRAVEL".equals(line)) {
-					TravelModel travel = TravelModel.load(data, br);
+					TravelModel travel = TravelModel.load(br, data);
 					data.travelLines.add(travel);
+				}
+
+				// Travel lines
+				if ("BEGIN FLEET".equals(line)) {
+					FleetModel fleet = loadFleet(br, data);
+					data.fleets.add(fleet);
 				}
 
 			}
@@ -56,6 +73,73 @@ public class GameDataLoader {
 		addPlanetsToPlayers(data);
 		
 		return data;
+	}
+
+	private static FleetModel loadFleet (BufferedReader br, GameData data) {
+		List<ShipModel> ships = new ArrayList<ShipModel>();
+		ILocation fleetLocation = null;
+		PlayerModel owner = null;
+		String fleetName = null;
+		double fleetSpeed = -1;
+		int fleetId = -1;
+		
+		String line = null;
+		try {
+			while ((line = br.readLine()) != null) {
+				line = line.replace("\t", "");
+
+				if ("END FLEET".equals(line)) {
+					FleetModel fleet = new FleetModel(owner);
+					fleet.setId(fleetId);
+					fleet.setLocation(fleetLocation);
+					fleet.addShips(ships);
+					owner.addFleet(fleet);
+					return fleet;
+				}
+				if (line.indexOf("ID") == 0) { fleetId = Integer.valueOf(line.substring(3)); }
+				if (line.indexOf("SPEED") == 0) { fleetSpeed = Double.valueOf(line.substring(6)); }
+				if (line.indexOf("NAME") == 0) { fleetName = line.substring(5); }
+				if (line.indexOf("LOCATION") == 0) { fleetLocation = data.getLocationFromId(Integer.valueOf(line.substring(9))); }
+				if (line.indexOf("OWNER") == 0) { owner = data.getPlayerFromId(Integer.valueOf(line.substring(6))); }
+				if (line.indexOf("BEGIN SHIP") == 0) {
+					ShipModel ship = loadShip(br, data);
+					ships.add(ship);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+		return null;
+	}
+
+	private static ShipModel loadShip (BufferedReader br, GameData data) {
+		int shipId = -1;
+		int classId = -1;
+		int hull = -1;
+		int crew = -1;
+		
+		String line = null;
+		try {
+			while ((line = br.readLine()) != null) {
+				line = line.replace("\t", "");
+				if ("END SHIP".equals(line)) {
+					ShipModel ship = new ShipModel(data.getShipClassFromId(classId));
+					ship.setCrew(crew);
+					ship.setHull(hull);
+					ship.setId(shipId);
+					return ship;
+				}
+				if (line.indexOf("ID") == 0) { shipId = Integer.valueOf(line.substring(3)); }
+				if (line.indexOf("CLASS") == 0) { classId = Integer.valueOf(line.substring(6)); }
+				if (line.indexOf("HULL") == 0) { hull = Integer.valueOf(line.substring(5)); }
+				if (line.indexOf("CREW") == 0) { crew = Integer.valueOf(line.substring(5)); }
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+		return null;
 	}
 
 	private static PlayerModel loadPlayer (BufferedReader br, GameData data) {

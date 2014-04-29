@@ -3,22 +3,25 @@ package org.bluebox.space2.game.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bluebox.space2.Utils;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 
 
 public class ShipClassModel {
-	private String 	mName;
-	private int 		mBuildValue;
-	private int 		mMass;
-	private double 	mArmory;
-	private double 	mShieldPower;
-	private int 		mTotalCrew;
-	private int 		mHull;
-	private double 	mTorpedoPower;
-	private double 	mPhaserPower;
+	private int 					mId;
+	private String 				mName;
+	private int 					mBuildValue;
+	private int 					mMass;
+	private double 				mArmory;
+	private double 				mShieldPower;
+	private int 					mTotalCrew;
+	private int 					mHull;
+	private double 				mTorpedoPower;
+	private double 				mPhaserPower;
 	private List<DeviceModel>	mDevices;
 
 	public ShipClassModel (String name, int hull) {
+		mId = Utils.getUUID();
 		mName = name;
 		mHull = hull;
 		mTotalCrew = hull / 3;
@@ -90,5 +93,13 @@ public class ShipClassModel {
 
 	public void addDevice (Device deviceId) {
 		addDevice(DeviceModel.get(deviceId));
+	}
+
+	public int getId () {
+		return mId;
+	}
+
+	public void setId (int id) {
+		mId = id;
 	}
 }

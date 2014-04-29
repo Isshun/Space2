@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bluebox.space2.Utils;
 import org.bluebox.space2.game.Game;
 import org.bluebox.space2.game.GameData;
 import org.bluebox.space2.game.model.DeviceModel.Device;
@@ -18,6 +19,7 @@ public class SystemModel implements ILocation {
 	private static final String CLASS_NAME = "SystemModel";
 
 	private static int 			sCount;
+	
 	private String 				mName;
 	private int 					mPosX;
 	private int 					mPosY;
@@ -30,7 +32,8 @@ public class SystemModel implements ILocation {
 	private int 					mId;
 
 	public SystemModel (String name, int x, int y) {
-		mId = sCount++;
+		sCount++;
+		mId = Utils.getUUID();
 		mPlanets = new ArrayList<PlanetModel>();
 		mFleets = new ArrayList<FleetModel>();
 		mName = name;
