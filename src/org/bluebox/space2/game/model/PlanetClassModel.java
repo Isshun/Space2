@@ -73,4 +73,13 @@ public class PlanetClassModel {
 		return this.id;
 	}
 	
+	public static PlanetClassModel getPlanetClass (int classId) {
+		for (PlanetClassModel pc: PlanetClassModel.sClass) {
+			if (pc.id == classId) {
+				return pc;
+			}
+		}
+		return null;
+	}
+
 }

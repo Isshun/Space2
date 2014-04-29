@@ -173,35 +173,10 @@ public class PlayerModel {
 		return mId;
 	}
 
-	public static PlayerModel load (GameData mData, BufferedReader br) {
-		PlayerModel player = new PlayerModel(null, Color.RED, Color.RED, false);
-		
-		String line = null;
-		try {
-			while ((line = br.readLine()) != null) {
-				line = line.replace("\t", "");
-
-				if ("END PLAYER".equals(line)) { return player; }
-				if (line.indexOf("ID") == 0) { player.mId = Integer.valueOf(line.substring(3)); }
-				if (line.indexOf("HOME") == 0) { player.mHome = mData.getPlanetFromId(Integer.valueOf(line.substring(5))); }
-				if (line.indexOf("COLOR1") == 0) { player.mColor = Color.valueOf(line.substring(7)); }
-				if (line.indexOf("COLOR2") == 0) { player.mSpaceColor = Color.valueOf(line.substring(7)); }
-				if (line.indexOf("NAME") == 0) { player.mName = line.substring(5); }
-				if (line.indexOf("IA") == 0) { player.mIsAI = true; }
-				
-				if ("BEGIN SYSTEM".equals(line)) {
-					SystemModel system = SystemModel.load(mData, br, player);
-					system.setOwner(player);
-					mData.systems.add(system);
-					mData.planets.addAll(system.getPlanets());
-				}
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-				
-		return null;
-	}
-
+	public void setId (int id) { mId = id; }
+	public void setHome (PlanetModel home) { mHome = home; }
+	public void setColor (Color color) { mColor = color; }
+	public void setSpaceColor (Color color) { mSpaceColor = color; }
+	public void setName (String name) {mName = name; }
+	public void setAI (int i) { mIsAI = i != 1; }
 }

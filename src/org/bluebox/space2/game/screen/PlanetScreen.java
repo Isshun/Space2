@@ -204,7 +204,7 @@ public class PlanetScreen extends BaseScreen {
 		mainLayer.drawString("Info", posX + 4, posY + 4);
 		mainLayer.drawString("Size:          " + mPlanet.getSizeName(), posX + 4, posY + 4 + 12);
 		mainLayer.drawString("Class:   " + mPlanet.getClassName(), posX + 4, posY + 4 + 22);
-		mainLayer.drawString("Population:         " + mPlanet.getPeople(), posX + 4, posY + 4 + 32);
+		mainLayer.drawString("Population:         " + mPlanet.getPopulation(), posX + 4, posY + 4 + 32);
 	}
 
 	private void drawCurrentBuilding(BaseScreenLayer mainLayer, int posX, int posY) {

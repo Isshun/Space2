@@ -45,7 +45,7 @@ public class PanelGovernmentScreen extends BaseScreen {
 			public int compare (PlanetModel p1, PlanetModel p2) {
 				switch (mSortMode) {
 				case -1: return p1.getName().compareTo(p2.getName());
-				case 0: return p1.getPeople() > p2.getPeople() ? -1 : 1;
+				case 0: return p1.getPopulation() > p2.getPopulation() ? -1 : 1;
 				case 1: return p1.getSatisfation() > p2.getSatisfation() ? -1 : 1;
 				case 2: return p1.getFood() > p2.getFood() ? -1 : 1;
 				case 3: return p1.getProd() > p2.getProd() ? -1 : 1;
@@ -58,11 +58,11 @@ public class PanelGovernmentScreen extends BaseScreen {
 		});
 		int i = 0;
 		for (PlanetModel planet : planets) {
-			if (planet.getPeople() > 0) {
+			if (planet.getPopulation() > 0) {
 				mainLayer.drawRectangle(4, START_Y + i * (LINE_HEIGHT + 1), Constants.GAME_WIDTH - 8, LINE_HEIGHT, i % 2 == 0 ? Color.rgba8888(0.85f, 0.85f, 1, 0.45f) : Color.rgba8888(0.85f, 0.85f, 1, 0.4f));
 				mainLayer.draw(Art.planets[planet.getClassification().id][Art.PLANET_RES_12], 5, START_Y + 2 + i * (LINE_HEIGHT + 1));
 				mainLayer.drawString(planet.getName(), 20, START_Y + 5 + i * (LINE_HEIGHT + 1));
-				mainLayer.drawString(String.valueOf(planet.getPeople()), START_X + 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
+				mainLayer.drawString(String.valueOf(planet.getPopulation()), START_X + 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				mainLayer.drawString(String.valueOf((int)planet.getSatisfation()), START_X + 2 + SPACING_X * 1, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				mainLayer.drawString(String.valueOf((int)planet.getFood()), START_X + 2 + SPACING_X * 2, START_Y + 5 + i * (LINE_HEIGHT + 1));
 				mainLayer.drawString(String.valueOf((int)planet.getProd()), START_X + 2 + SPACING_X * 3, START_Y + 5 + i * (LINE_HEIGHT + 1));
@@ -80,7 +80,7 @@ public class PanelGovernmentScreen extends BaseScreen {
 		Set<PlanetModel> planets = mPlayer.getPlanets();
 		List<PlanetModel> colonized = new ArrayList<PlanetModel>();
 		for (PlanetModel planet : planets) {
-			if (planet.getPeople() > 0) {
+			if (planet.getPopulation() > 0) {
 				colonized.add(planet);
 			}
 		}

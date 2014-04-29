@@ -237,71 +237,9 @@ public class SystemModel implements ILocation {
 		return mNeighbors;
 	}
 
-	public void save (BufferedWriter bw) {
-
-		try {
-			bw.write("BEGIN SYSTEM\n");
-
-			bw.write("\tID=" + mId + "\n");
-			bw.write("\tNAME=" + mName + "\n");
-			bw.write("\tPOS_X=" + mPosX + "\n");
-			bw.write("\tPOS_Y=" + mPosY + "\n");
-			
-			if (mCapital != null) {
-			bw.write("\tCAPITAL=" + mCapital.getId() + "\n");
-			}
-
-			if (mOwner != null) {
-				bw.write("\tOWNER=" + mOwner.getId() + "\n");
-			}
-	
-			bw.write("\tBEGIN PLANETS\n");
-			for (PlanetModel planet: mPlanets) {
-				planet.save(bw);
-			}
-			bw.write("\tEND PLANETS\n");
-			
-			bw.write("END SYSTEM\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public static SystemModel load (GameData mData, BufferedReader br, PlayerModel owner) {
-		SystemModel system = new SystemModel(null, 0, 0);
-		int capitalId = -1;
-		
-		String line = null;
-		try {
-			while ((line = br.readLine()) != null) {
-				line = line.replace("\t", "");
-
-				if ("END SYSTEM".equals(line)) {
-					if (capitalId != -1) {
-						system.mCapital = mData.getPlanetFromId(capitalId);
-					}
-					return system;
-				}
-				
-				if (line.indexOf("ID") == 0) { system.mId = Integer.valueOf(line.substring(3)); }
-				if (line.indexOf("CAPITAL") == 0) { capitalId = Integer.valueOf(line.substring(8)); }
-				if (line.indexOf("NAME") == 0) { system.mName = line.substring(5); }
-				if (line.indexOf("OWNER") == 0) { system.mOwner = owner; }
-				if (line.indexOf("POS_X") == 0) { system.mPosX = Integer.valueOf(line.substring(6)); }
-				if (line.indexOf("POS_Y") == 0) { system.mPosY = Integer.valueOf(line.substring(6)); }
-				
-				if ("BEGIN PLANET".equals(line)) {
-					PlanetModel planet = PlanetModel.load(mData, br, owner);
-					planet.setSystem(system, system.mPlanets.size());
-					system.mPlanets.add(planet);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-				
-		return null;
-	}
+	public void setId (Integer id) { mId = id; }
+	public void setName (String name) { mName = name; }
+	public void setX (Integer x) { mPosX = x; }
+	public void setY (Integer y) { mPosY = y; }
 	
 }

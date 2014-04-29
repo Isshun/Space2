@@ -55,7 +55,7 @@ public class AIColonize {
 	private static int getNbPlanetUnderPopulationThresold (PlayerModel player, double thresold) {
 		int nbPlanetBellowPopulationThresold = 0;
 		for (PlanetModel p: player.getPlanets()) {
-			if ((float)p.getPeople() / p.getTotalPeople() < thresold) {
+			if ((float)p.getPopulation() / p.getPopulationMax() < thresold) {
 				nbPlanetBellowPopulationThresold++;
 			}
 		}

@@ -19,6 +19,7 @@ import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
 import org.bluebox.space2.game.model.BuildingClassModel.Type;
 import org.bluebox.space2.game.model.DeviceModel.Device;
+import org.bluebox.space2.path.PathResolver;
 import org.bluebox.space2.path.Vertex;
 
 import com.badlogic.gdx.graphics.Color;
@@ -90,6 +91,9 @@ public class GameService {
 	}
 
 	public PlayerModel getPlayer () {
+		if (mData == null) {
+			return null;
+		}
 		return mData.player;
 	}
 
@@ -152,6 +156,7 @@ public class GameService {
 
 	public void setData (GameData data) {
 		mData = data;
+		PathResolver.getInstance().init(data.systems, data.travelLines);
 	}
 
 	public GameData getData () {

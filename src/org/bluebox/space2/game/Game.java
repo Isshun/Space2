@@ -19,6 +19,7 @@ import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.screen.ErrorScreen;
+import org.bluebox.space2.game.screen.MenuScreen;
 import org.bluebox.space2.game.screen.PauseScreen;
 import org.bluebox.space2.game.screen.SpaceScreen;
 import org.bluebox.space2.game.service.GameService;
@@ -54,7 +55,6 @@ public class Game implements ApplicationListener {
 	private MainGestureListener 		mGestureListener;
 	private BaseScreen 					mOffScreen;
 	private BaseScreenLayer 			mScreenBG;
-	private GameData						mData;
 	private int 							mRenderCount;
 	protected Timer 						mTimer;
 	private long 							mLastRender;
@@ -62,6 +62,8 @@ public class Game implements ApplicationListener {
 	private IArtManager mArt;
 
 	private TextureRegion mBg;
+
+	private boolean mIsRunning;
 
 	public enum Anim {
 		NO_TRANSITION,
@@ -112,14 +114,7 @@ public class Game implements ApplicationListener {
 		Gdx.graphics.requestRendering();
 		mScreens = new LinkedList<BaseScreen>();
 
-		//mData = GameDataFactory.create();
-		mData = GameDataLoader.load(mData);
-	
-		GameService.getInstance().setData(mData);
-		
 		//GameService.getInstance().initDebug(0);
-
-		PathResolver.getInstance().init(GameService.getInstance().getSystems(), GameService.getInstance().getTraveLines());
 
 		Matrix4 projection = new Matrix4();
 		projection.setToOrtho(0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 0, -1, 1);
@@ -131,7 +126,7 @@ public class Game implements ApplicationListener {
 		if (Constants.GAME_WIDTH < 380 || Constants.GAME_HEIGHT < 240) {
 			setScreen(new ErrorScreen(ErrorScreen.RESOLUTION_NOT_SUPPORTED));
 		} else {
-			setScreen(new SpaceScreen());
+			setScreen(new MenuScreen());
 //			setScreen(new PlanetScreen(GameService.getInstance().getPlayer().getHome().getSystem(), GameService.getInstance().getPlayer().getHome()));
 //			setScreen(new PanelCreateFleet(GameService.getInstance().getPlayer().getHome().getDock()));
 		}
@@ -250,7 +245,10 @@ public class Game implements ApplicationListener {
 
 	public void update () {
 //		System.out.println("update");
-
+		if (!mIsRunning) {
+			return;
+		}
+		
 		if (mGestureListener.isMoving()) {
 			return;
 		}
@@ -372,5 +370,13 @@ public class Game implements ApplicationListener {
 
 	public void setBg (TextureRegion bg) {
 		mBg = bg;
+	}
+
+	public void startRunning () {
+		mIsRunning = true;
+	}
+
+	public void stopRunning () {
+		mIsRunning = false;
 	}
 }

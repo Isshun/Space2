@@ -24,7 +24,7 @@ public class PlanetDebugScreen extends BaseScreen {
 	protected void onDraw (BaseScreenLayer mainLayer, BaseScreenLayer UILayer) {
 		int line = 0;
 		
-		mainLayer.drawString("pop: " + mPlanet.getPeople(), 4, 4 + line++ * 10);
+		mainLayer.drawString("pop: " + mPlanet.getPopulation(), 4, 4 + line++ * 10);
 
 		mainLayer.drawString(String.format("base values: *%d @%d ^%d $%d &%d",
 			(int)mPlanet.getBaseProd(),

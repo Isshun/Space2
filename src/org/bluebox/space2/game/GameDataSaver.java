@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.bluebox.space2.game.model.BuildingModel;
+import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
@@ -16,26 +18,7 @@ public class GameDataSaver {
 			// Players
 			bw.write("BEGIN PLAYERS\n");
 			for (PlayerModel player: mData.players) {
-				bw.write("\tBEGIN PLAYER\n");
-				bw.write("\t\tID=" + player.getId() + "\n");
-				bw.write("\t\tNAME=" + player.getName() + "\n");
-				bw.write("\t\tHOME=" + player.getHome().getId() + "\n");
-				bw.write("\t\tCOLOR1=" + player.getColor().toString() + "\n");
-				bw.write("\t\tCOLOR2=" + player.getSpaceColor().toString() + "\n");
-				if (player.isAI()) {
-					bw.write("\t\tAI=" + 1 + "\n");
-				}
-				
-				// Systems
-				bw.write("BEGIN SYSTEMS\n");
-				for (SystemModel system: player.getSystems()) {
-					system.save(bw);
-				}
-				bw.write("END SYSTEMS\n");
-
-				bw.write("\t\tHOME=" + player.getHome().getId() + "\n");
-				
-				bw.write("\tEND PLAYER\n\n");
+				savePlayer(bw, player);
 			}
 			bw.write("END PLAYERS\n\n");
 
@@ -43,7 +26,7 @@ public class GameDataSaver {
 			bw.write("BEGIN SYSTEMS\n");
 			for (SystemModel system: mData.systems) {
 				if (system.isFree()) {
-					system.save(bw);
+					saveSystem(bw, system);
 				}
 			}
 			bw.write("END SYSTEMS\n");
@@ -51,14 +34,140 @@ public class GameDataSaver {
 			// Travel lines
 			bw.write("BEGIN TRAVELS\n");
 			for (TravelModel travel: mData.travelLines) {
-				bw.write("BEGIN TRAVEL\n");
-				bw.write("\tFROM=" + travel.getFrom().getId() + "\n");
-				bw.write("\tTO=" + travel.getTo().getId() + "\n");
-				bw.write("END TRAVEL\n");
+				saveTravel(bw, travel);
 			}
 			bw.write("END TRAVELS\n");
 
 			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void saveTravel (BufferedWriter bw, TravelModel travel) {
+		try {
+			bw.write("BEGIN TRAVEL\n");
+			bw.write("\tFROM=" + travel.getFrom().getId() + "\n");
+			bw.write("\tTO=" + travel.getTo().getId() + "\n");
+			bw.write("END TRAVEL\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void savePlayer (BufferedWriter bw, PlayerModel player) {
+		try {
+			bw.write("\tBEGIN PLAYER\n");
+			bw.write("\t\tID=" + player.getId() + "\n");
+			bw.write("\t\tNAME=" + player.getName() + "\n");
+			bw.write("\t\tHOME=" + player.getHome().getId() + "\n");
+			bw.write("\t\tCOLOR1=" + player.getColor().toString() + "\n");
+			bw.write("\t\tCOLOR2=" + player.getSpaceColor().toString() + "\n");
+
+			if (player.isAI()) {
+				bw.write("\t\tAI=" + 1 + "\n");
+			}
+			
+			// Systems
+			bw.write("BEGIN SYSTEMS\n");
+			for (SystemModel system: player.getSystems()) {
+				saveSystem(bw, system);
+			}
+			bw.write("END SYSTEMS\n");
+	
+			bw.write("\t\tHOME=" + player.getHome().getId() + "\n");
+			
+			bw.write("\tEND PLAYER\n\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void saveSystem (BufferedWriter bw, SystemModel system) {
+		try {
+			bw.write("BEGIN SYSTEM\n");
+
+			bw.write("\tID=" + system.getId() + "\n");
+			bw.write("\tNAME=" + system.getName() + "\n");
+			bw.write("\tPOS_X=" + system.getX() + "\n");
+			bw.write("\tPOS_Y=" + system.getY() + "\n");
+			
+			if (system.getCapital() != null) {
+			bw.write("\tCAPITAL=" + system.getCapital().getId() + "\n");
+			}
+
+			if (system.getOwner() != null) {
+				bw.write("\tOWNER=" + system.getOwner().getId() + "\n");
+			}
+	
+			bw.write("\tBEGIN PLANETS\n");
+			for (PlanetModel planet: system.getPlanets()) {
+				savePlanet(bw, planet);
+			}
+			bw.write("\tEND PLANETS\n");
+			
+			bw.write("END SYSTEM\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void savePlanet (BufferedWriter bw, PlanetModel planet) {
+		System.out.println("Save planet: " + planet.getName());
+
+		try {
+			bw.write("\t\tBEGIN PLANET\n");
+			bw.write("\t\t\tID=" + planet.getId() + "\n");
+			bw.write("\t\t\tSYSTEM=" + planet.getSystem().getId() + "\n");
+			bw.write("\t\t\tSIZE=" + planet.getSize() + "\n");
+			bw.write("\t\t\tNAME=" + planet.getName() + "\n");
+			bw.write("\t\t\tCLASS=" + planet.getClassification().id + "\n");
+			bw.write("\t\t\tPROD_BASE=" + planet.getBaseProd() + "\n");
+			bw.write("\t\t\tPROD_MODIFIER=" + planet.getProdModifier() + "\n");
+			bw.write("\t\t\tFOOD_BASE=" + planet.getBaseFood() + "\n");
+			bw.write("\t\t\tFOOD_MODIFIER=" + planet.getFoodModifier() + "\n");
+			bw.write("\t\t\tMONEY_BASE=" + planet.getBaseMoney() + "\n");
+			bw.write("\t\t\tMONEY_MODIFIER=" + planet.getMoneyModifier() + "\n");
+			bw.write("\t\t\tCULTURE_BASE=" + planet.getBaseCulture() + "\n");
+			bw.write("\t\t\tCULTURE_MODIFIER=" + planet.getCultureModifier() + "\n");
+			bw.write("\t\t\tSCIENCE_BASE=" + planet.getBaseScience() + "\n");
+			bw.write("\t\t\tSCIENCE_MODIFIER=" + planet.getScienceModifier() + "\n");
+			bw.write("\t\t\tPOPULATION=" + planet.getPopulation() + "\n");
+			bw.write("\t\t\tPOPULATION_MAX=" + planet.getPopulationMax() + "\n");
+
+			if (planet.getOwner() != null) {
+				bw.write("\t\t\tOWNER=" + planet.getOwner().getId() + "\n");
+			}
+
+			bw.write("\t\t\tBEGIN BUILDINGS\n");
+			for (BuildingModel building: planet.getStructures()) {
+				saveBuilding(bw, building);
+			}
+			bw.write("\t\t\tEND BUILDINGS\n");
+
+			bw.write("\t\tEND PLANET\n\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+//			if (structureItem != null) {
+//				bw.write(x + "\t" + y + "\t" + structureItem.getType().ordinal() + "\t" + structureItem.getMatterSupply() + "\n");
+//			}
+//
+//			if (userItem != null) {
+//				bw.write(x + "\t" + y + "\t" + userItem.getType().ordinal() + "\t" + userItem.getMatterSupply() + "\n");
+//			}
+//
+//			if (ressource != null) {
+//				bw.write(x + "\t" + y + "\t" + ressource.getType().ordinal() + "\t" + ressource.getMatterSupply() + "\n");
+//			}
+
+		System.out.println("Save planet: " + planet.getName() + " done");
+	}
+
+	private static void saveBuilding (BufferedWriter bw, BuildingModel building) {
+		try {
+			bw.write(building.getType() + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
