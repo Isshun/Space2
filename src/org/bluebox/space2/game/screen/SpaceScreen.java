@@ -12,6 +12,7 @@ import org.bluebox.space2.engine.ui.TextView;
 import org.bluebox.space2.engine.ui.View;
 import org.bluebox.space2.engine.ui.View.OnClickListener;
 import org.bluebox.space2.game.Constants;
+import org.bluebox.space2.game.GameDataSaver;
 import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
@@ -48,6 +49,15 @@ public class SpaceScreen extends BaseScreen {
 		drawArea();
 		
 		mGame.setBg(Art.bg);
+		
+		ButtonView btSave = new ButtonView("Save", Constants.GAME_WIDTH - 64, 4);
+		btSave.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				GameDataSaver.save(GameService.getInstance().getData());
+			}
+		});
+		addView(btSave);
 		
 		mBtZoomIn = new ButtonView(200, 6, 60, 14, null);
 		mBtZoomIn.setText("zoom in");
@@ -115,7 +125,7 @@ public class SpaceScreen extends BaseScreen {
 		addView(mBtArmada);
 		addView(new TextView("ARMADA", 122, 40));
 		
-		mActionScreen = new SpaceActionScreen(this, GameService.getInstance().getPlayer().getHome().getSystem());
+		//mActionScreen = new SpaceActionScreen(this, GameService.getInstance().getPlayer().getHome().getSystem());
 		//addScreen(mActionScreen);
 	}
 	

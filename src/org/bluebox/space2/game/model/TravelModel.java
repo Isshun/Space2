@@ -1,7 +1,14 @@
 package org.bluebox.space2.game.model;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bluebox.space2.game.GameData;
+
+import com.badlogic.gdx.graphics.Color;
 
 public class TravelModel implements ILocation {
 	private SystemModel 			mFrom;
@@ -70,5 +77,34 @@ public class TravelModel implements ILocation {
 	@Override
 	public List<FleetModel> getFleets () {
 		return mFleets;
+	}
+
+	public void save (BufferedWriter bw) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static TravelModel load (GameData mData, BufferedReader br) {
+		SystemModel from = null;
+		SystemModel to = null;
+		
+		String line = null;
+		try {
+			while ((line = br.readLine()) != null) {
+				line = line.replace("\t", "");
+
+				if ("END TRAVEL".equals(line)) {
+					if (from != null && to != null) {
+						return new TravelModel(from, to);
+					}
+				}
+				if (line.indexOf("FROM") == 0) { from = mData.getSystemFromId(Integer.valueOf(line.substring(5))); }
+				if (line.indexOf("TO") == 0) { to = mData.getSystemFromId(Integer.valueOf(line.substring(3))); }
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+		return null;
 	}
 }

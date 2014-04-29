@@ -1,5 +1,11 @@
 package org.bluebox.space2.game;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -9,13 +15,11 @@ import org.bluebox.space2.engine.IArtManager;
 import org.bluebox.space2.engine.MainGestureListener;
 import org.bluebox.space2.engine.screen.BaseScreen;
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
-import org.bluebox.space2.game.ai.AI;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
+import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.screen.ErrorScreen;
-import org.bluebox.space2.game.screen.FleetCreateScreen;
 import org.bluebox.space2.game.screen.PauseScreen;
-import org.bluebox.space2.game.screen.PlanetScreen;
 import org.bluebox.space2.game.screen.SpaceScreen;
 import org.bluebox.space2.game.service.GameService;
 import org.bluebox.space2.path.PathResolver;
@@ -108,10 +112,12 @@ public class Game implements ApplicationListener {
 		Gdx.graphics.requestRendering();
 		mScreens = new LinkedList<BaseScreen>();
 
-		mData = GameDataFactory.create();
+		//mData = GameDataFactory.create();
+		mData = GameDataLoader.load(mData);
+	
 		GameService.getInstance().setData(mData);
 		
-		GameService.getInstance().initDebug(0);
+		//GameService.getInstance().initDebug(0);
 
 		PathResolver.getInstance().init(GameService.getInstance().getSystems(), GameService.getInstance().getTraveLines());
 

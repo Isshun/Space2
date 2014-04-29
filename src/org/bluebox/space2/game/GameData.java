@@ -32,4 +32,30 @@ public class GameData {
 		travelLines = new ArrayList<TravelModel>();
 		fleets = new ArrayList<FleetModel>();
 	}
+
+	public void addPlanetToSystemId (int id, PlanetModel planet) {
+		for (SystemModel system: systems) {
+			if (system.getId() == id) {
+				system.addPlanet(planet);
+			}
+		}
+	}
+
+	public PlanetModel getPlanetFromId (int id) {
+		for (PlanetModel planet: planets) {
+			if (planet.getId() == id) {
+				return planet;
+			}
+		}
+		return null;
+	}
+
+	public SystemModel getSystemFromId (int id) {
+		for (SystemModel system: systems) {
+			if (system.getId() == id) {
+				return system;
+			}
+		}
+		return null;
+	}
 }

@@ -21,7 +21,7 @@ public class ButtonView extends RectangleView {
 		mPadding = 4;
 	}
 
-	public ButtonView (String text, int y, int x) {
+	public ButtonView (String text, int x, int y) {
 		super(x, y, text.length() * 6 + 8, 20, null);
 		setText(text);
 		mPadding = 4;

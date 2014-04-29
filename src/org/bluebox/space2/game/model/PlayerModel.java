@@ -1,5 +1,7 @@
 package org.bluebox.space2.game.model;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -7,13 +9,16 @@ import java.util.Set;
 
 import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.game.Game;
+import org.bluebox.space2.game.GameData;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class PlayerModel {
-	
+	private static int 				sCount;
+
 	private String 					mName;
+	private int 						mId;
 	private int 						mFlag;
 	private Color						mColor;
 	private List<SystemModel>	 	mSystems;
@@ -29,6 +34,7 @@ public class PlayerModel {
 	private Set<TechnologyModel>	mTechs;
 	
 	public PlayerModel(String name, Color uiColor, Color color, boolean isAI) {
+		mId = sCount++;
 		mName = name;
 		mFleets = new HashSet<FleetModel>();
 		mFlag = (int)(Game.sRandom.nextInt(9));
@@ -161,6 +167,41 @@ public class PlayerModel {
 
 	public boolean hasTech (TechnologyModel.Type tech) {
 		return mTechs.contains(tech);
+	}
+
+	public int getId () {
+		return mId;
+	}
+
+	public static PlayerModel load (GameData mData, BufferedReader br) {
+		PlayerModel player = new PlayerModel(null, Color.RED, Color.RED, false);
+		
+		String line = null;
+		try {
+			while ((line = br.readLine()) != null) {
+				line = line.replace("\t", "");
+
+				if ("END PLAYER".equals(line)) { return player; }
+				if (line.indexOf("ID") == 0) { player.mId = Integer.valueOf(line.substring(3)); }
+				if (line.indexOf("HOME") == 0) { player.mHome = mData.getPlanetFromId(Integer.valueOf(line.substring(5))); }
+				if (line.indexOf("COLOR1") == 0) { player.mColor = Color.valueOf(line.substring(7)); }
+				if (line.indexOf("COLOR2") == 0) { player.mSpaceColor = Color.valueOf(line.substring(7)); }
+				if (line.indexOf("NAME") == 0) { player.mName = line.substring(5); }
+				if (line.indexOf("IA") == 0) { player.mIsAI = true; }
+				
+				if ("BEGIN SYSTEM".equals(line)) {
+					SystemModel system = SystemModel.load(mData, br, player);
+					system.setOwner(player);
+					mData.systems.add(system);
+					mData.planets.addAll(system.getPlanets());
+				}
+
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+		return null;
 	}
 
 }

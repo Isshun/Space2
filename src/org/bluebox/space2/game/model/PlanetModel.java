@@ -1,17 +1,26 @@
 package org.bluebox.space2.game.model;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
 import org.bluebox.space2.game.Game;
+import org.bluebox.space2.game.GameData;
 import org.bluebox.space2.game.model.BuildingClassModel.Type;
 import org.bluebox.space2.game.service.FightService;
 import org.bluebox.space2.game.service.GameService;
 
-
-public class PlanetModel implements ILocation {
+public class PlanetModel implements ILocation, ISaveable {
+	private static int					sCount;
+	
+	private int 							mId;
 	private String 						mName;
 	private double 						mInitialTick;
 	private PlanetClassModel 			mClass;
@@ -40,6 +49,7 @@ public class PlanetModel implements ILocation {
 	private double 						mMoneyModifier;
 
 	public PlanetModel (int classId, int size) {
+		mId = sCount++;
 		mProdModifier = 1;
 		mFoodModifier = 1;
 		mMoneyModifier = 1;
@@ -362,6 +372,107 @@ public class PlanetModel implements ILocation {
 
 	public List<BuildingModel> getStructures() {
 		return mBuildings;
+	}
+
+	@Override
+	public void save (BufferedWriter bw) {
+		System.out.println("Save planet: " + mName);
+
+		try {
+			bw.write("\t\tBEGIN PLANET\n");
+			bw.write("\t\t\tID=" + mId + "\n");
+			bw.write("\t\t\tSYSTEM=" + mSystem.getId() + "\n");
+			bw.write("\t\t\tSIZE=" + mSize + "\n");
+			bw.write("\t\t\tNAME=" + mName + "\n");
+			bw.write("\t\t\tCLASS=" + mClass.id + "\n");
+			bw.write("\t\t\tPROD_BASE=" + mBaseProd + "\n");
+			bw.write("\t\t\tPROD_MODIFIER=" + mProdModifier + "\n");
+			bw.write("\t\t\tFOOD_BASE=" + mBaseFood + "\n");
+			bw.write("\t\t\tFOOD_MODIFIER=" + mFoodModifier + "\n");
+			bw.write("\t\t\tMONEY_BASE=" + mBaseMoney+ "\n");
+			bw.write("\t\t\tMONEY_MODIFIER=" + mMoneyModifier + "\n");
+			bw.write("\t\t\tCULTURE_BASE=" + mBaseCulture + "\n");
+			bw.write("\t\t\tCULTURE_MODIFIER=" + mCultureModifier + "\n");
+			bw.write("\t\t\tSCIENCE_BASE=" + mBaseScience + "\n");
+			bw.write("\t\t\tSCIENCE_MODIFIER=" + mScienceModifier + "\n");
+			bw.write("\t\t\tPOPULATION=" + mPeople + "\n");
+			bw.write("\t\t\tPOPULATION_MAX=" + mPeopleTotal + "\n");
+
+			if (mOwner != null) {
+				bw.write("\t\t\tOWNER=" + mOwner.getId() + "\n");
+			}
+
+			bw.write("\t\t\tBEGIN BUILDINGS\n");
+			for (BuildingModel building: mBuildings) {
+				bw.write(building.getType() + "\n");
+			}
+			bw.write("\t\t\tEND BUILDINGS\n");
+
+			bw.write("\t\tEND PLANET\n\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+//			if (structureItem != null) {
+//				bw.write(x + "\t" + y + "\t" + structureItem.getType().ordinal() + "\t" + structureItem.getMatterSupply() + "\n");
+//			}
+//
+//			if (userItem != null) {
+//				bw.write(x + "\t" + y + "\t" + userItem.getType().ordinal() + "\t" + userItem.getMatterSupply() + "\n");
+//			}
+//
+//			if (ressource != null) {
+//				bw.write(x + "\t" + y + "\t" + ressource.getType().ordinal() + "\t" + ressource.getMatterSupply() + "\n");
+//			}
+
+		System.out.println("Save planet: " + mName + " done");
+	}
+
+	public static PlanetModel load (GameData data, BufferedReader br, PlayerModel owner) {
+		PlanetModel planet = new PlanetModel(PlanetClassModel.CLASS_D, 0);
+		
+		String line = null;
+		try {
+			while ((line = br.readLine()) != null) {
+				line = line.replace("\t", "");
+
+				if ("END PLANET".equals(line)) { return planet; }
+				if (line.indexOf("ID") == 0) { planet.mId = Integer.valueOf(line.substring(3)); }
+				if (line.indexOf("SIZE") == 0) { planet.mSize = Integer.valueOf(line.substring(5)); }
+				if (line.indexOf("SYSTEM") == 0) { data.addPlanetToSystemId(Integer.valueOf(line.substring(7)), planet); }
+				if (line.indexOf("NAME") == 0) { planet.mName = line.substring(5); }
+				if (line.indexOf("OWNER") == 0) { planet.mOwner = owner; }
+				if (line.indexOf("PROD_BASE") == 0) { planet.mBaseProd = Double.valueOf(line.substring(10)); }
+				if (line.indexOf("FOOD_BASE") == 0) { planet.mBaseFood = Double.valueOf(line.substring(10)); }
+				if (line.indexOf("MONEY_BASE") == 0) { planet.mBaseMoney = Double.valueOf(line.substring(11)); }
+				if (line.indexOf("SCIENCE_BASE") == 0) { planet.mBaseScience = Double.valueOf(line.substring(13)); }
+				if (line.indexOf("CULTURE_BASE") == 0) { planet.mBaseCulture = Double.valueOf(line.substring(13)); }
+				if (line.indexOf("PROD_MODIFIER") == 0) { planet.mProdModifier = Double.valueOf(line.substring(14)); }
+				if (line.indexOf("FOOD_MODIFIER") == 0) { planet.mFoodModifier = Double.valueOf(line.substring(14)); }
+				if (line.indexOf("MONEY_MODIFIER") == 0) { planet.mMoneyModifier = Double.valueOf(line.substring(15)); }
+				if (line.indexOf("SCIENCE_MODIFIER") == 0) { planet.mScienceModifier = Double.valueOf(line.substring(17)); }
+				if (line.indexOf("CULTURE_MODIFIER") == 0) { planet.mCultureModifier = Double.valueOf(line.substring(17)); }
+				if (line.indexOf("CLASS") == 0) { planet.mClass = getPlanetClass(Integer.valueOf(line.substring(6))); }
+				
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+		return null;
+	}
+
+	private static PlanetClassModel getPlanetClass (int classId) {
+		for (PlanetClassModel pc: PlanetClassModel.sClass) {
+			if (pc.id == classId) {
+				return pc;
+			}
+		}
+		return null;
+	}
+
+	public int getId () {
+		return mId;
 	}
 
 }
