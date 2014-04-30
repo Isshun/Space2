@@ -2,7 +2,7 @@ package org.bluebox.space2.game.screen;
 
 import org.bluebox.space2.engine.screen.BaseScreen;
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
-import org.bluebox.space2.game.model.BuildingModel;
+import org.bluebox.space2.game.model.StructureModel;
 import org.bluebox.space2.game.model.PlanetModel;
 
 public class PlanetDebugScreen extends BaseScreen {
@@ -49,13 +49,13 @@ public class PlanetDebugScreen extends BaseScreen {
 
 		int oldLine = ++line;
 		mainLayer.drawString("installations: ", 4, 4 + line++ * 10);
-		for (BuildingModel building: mPlanet.getStructures()) {
+		for (StructureModel building: mPlanet.getStructures()) {
 			mainLayer.drawString(building.getName(), 4, 4 + line++ * 10);
 		}
 
 		line = oldLine;
 		mainLayer.drawString("building: ", 200, 4 + line++ * 10);
-		for (BuildingModel building: mPlanet.getStructuresToBuild()) {
+		for (StructureModel building: mPlanet.getStructuresToBuild()) {
 			mainLayer.drawString(building.getName(), 200, 4 + line++ * 10);
 		}
 

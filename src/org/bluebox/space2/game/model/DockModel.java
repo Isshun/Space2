@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bluebox.space2.game.service.GameService;
 
-public class DockModel extends BuildingModel implements IShipCollectionModel {
+public class DockModel extends StructureModel implements IShipCollectionModel {
 	private List<ShipModel>	mShips;
 
 	public DockModel(PlanetModel planet) {

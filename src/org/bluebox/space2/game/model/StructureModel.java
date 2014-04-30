@@ -2,13 +2,13 @@ package org.bluebox.space2.game.model;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class BuildingModel implements IBuilding {
+public class StructureModel implements IBuilding {
 	protected PlanetModel		mPlanet;
 	private BuildingClassModel mBuildClass;
 	private int 					mTotalBuild;
 	private double					mBuild;
 
-	public BuildingModel(BuildingClassModel buildClass, PlanetModel planet) {
+	public StructureModel(BuildingClassModel buildClass, PlanetModel planet) {
 		mBuildClass = buildClass;
 		mPlanet = planet;
 		mTotalBuild = buildClass.getBuildValue();

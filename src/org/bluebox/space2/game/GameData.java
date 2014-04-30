@@ -14,6 +14,9 @@ import org.bluebox.space2.game.model.TravelModel;
 
 public class GameData {
 
+	public int 							spacePosX;
+	public int 							spacePosY;
+	
 	public List<ShipClassModel> 	shipClasses;
 	public List<SystemModel> 		systems;
 	public List<PlanetModel> 		planets;
@@ -99,6 +102,15 @@ public class GameData {
 		location = getPlanetFromId(id);
 		if (location != null) {
 			return location;
+		}
+		return null;
+	}
+
+	public BuildingClassModel getBuildingClassFromId (String name) {
+		for (BuildingClassModel buildingClass: buildingClasses) {
+			if (buildingClass.getType().toString().equals(name)) {
+				return buildingClass;
+			}
 		}
 		return null;
 	}

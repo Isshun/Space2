@@ -18,7 +18,7 @@ import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.IShipCollectionModel;
-import org.bluebox.space2.game.model.RelationModel;
+import org.bluebox.space2.game.model.PlayerRelationModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;

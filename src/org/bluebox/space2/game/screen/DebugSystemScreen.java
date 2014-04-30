@@ -37,7 +37,7 @@ public class DebugSystemScreen extends BaseScreen {
 			}
 			
 			// Draw fleet
-			List<FleetModel> fleets = p.getOrbit();
+			List<FleetModel> fleets = p.getFleets();
 			for (FleetModel f: fleets) {
 				TextView text = new TextView(f.getName() + ": " + f.getNbShip() + " / " + f.getOwner().getName(), 120, 12 + j++ * 10);
 				text.setOnClickListener(new OnClickListener() {

@@ -42,6 +42,8 @@ public class SpaceScreen extends BaseScreen {
 	public SpaceScreen () {
 		mParalax = Art.bg;
 		mMap = new Color[Constants.MAP_WIDTH][Constants.MAP_HEIGHT];
+		mRealPosX = GameService.getInstance().getData().spacePosX;
+		mRealPosY = GameService.getInstance().getData().spacePosY;
 	}
 	
 	@Override
@@ -390,6 +392,8 @@ public class SpaceScreen extends BaseScreen {
 	@Override
 	public void onMoveEnd (int offsetX, int offsetY) {
 //		notifyChange();
+		GameService.getInstance().getData().spacePosX = mRealPosX;
+		GameService.getInstance().getData().spacePosY = mRealPosY;
 	}
 	
 	@Override

@@ -18,7 +18,7 @@ public class MenuScreen extends BaseScreen {
 		btCreate.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
-				GameService.getInstance().setData(GameDataFactory.create());
+				GameDataFactory.createNewGame();
 				mGame.startRunning();
 				addScreen(new SpaceScreen());
 			}
@@ -29,7 +29,7 @@ public class MenuScreen extends BaseScreen {
 		btLoad.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
-				GameService.getInstance().setData(GameDataLoader.load());
+				GameDataLoader.load();
 				mGame.startRunning();
 				addScreen(new SpaceScreen());
 			}

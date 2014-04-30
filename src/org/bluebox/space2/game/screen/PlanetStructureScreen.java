@@ -6,7 +6,7 @@ import org.bluebox.space2.engine.screen.BaseScreenLayer;
 import org.bluebox.space2.engine.ui.ButtonView;
 import org.bluebox.space2.engine.ui.View.OnClickListener;
 import org.bluebox.space2.game.Constants;
-import org.bluebox.space2.game.model.BuildingModel;
+import org.bluebox.space2.game.model.StructureModel;
 import org.bluebox.space2.game.model.PlanetModel;
 
 import com.badlogic.gdx.graphics.Color;
@@ -45,17 +45,17 @@ public class PlanetStructureScreen extends BaseScreen {
 
 		int i = 0;
 		mTotalETA = 0;
-		for (BuildingModel building: mPlanet.getStructuresToBuild()) {
+		for (StructureModel building: mPlanet.getStructuresToBuild()) {
 			drawIcon(mainLayer, building, 8 + 34 * i, 34 + 34 * 0, false);
 			i++;
 		}
-		for (BuildingModel building: mPlanet.getStructures()) {
+		for (StructureModel building: mPlanet.getStructures()) {
 			drawIcon(mainLayer, building, 8 + 34 * i, 34 + 34 * 0, true);
 			i++;
 		}
 	}
 
-	private void drawIcon (BaseScreenLayer mainLayer, BuildingModel building, int x, int y, boolean isBuild) {
+	private void drawIcon (BaseScreenLayer mainLayer, StructureModel building, int x, int y, boolean isBuild) {
 		if (isBuild) {
 			String shortName = building.getShortName();
 			if (shortName != null && shortName.length() > 3) {

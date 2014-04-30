@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import org.bluebox.space2.game.model.BuildingModel;
+import org.bluebox.space2.game.model.StructureModel;
 import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.ILocation;
 import org.bluebox.space2.game.model.PlanetModel;
@@ -13,11 +13,15 @@ import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
+import org.bluebox.space2.game.service.GameService;
 
 public class GameDataSaver {
 
 	public static void save (GameData mData) {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter("1.sav", false))) {
+			
+			bw.write("SPACE_POS_X=" + GameService.getInstance().getData().spacePosX + "\n");
+			bw.write("SPACE_POS_Y=" + GameService.getInstance().getData().spacePosY + "\n");
 			
 			// Players
 			bw.write("BEGIN PLAYERS\n");
@@ -184,7 +188,7 @@ public class GameDataSaver {
 			}
 
 			bw.write("\t\t\tBEGIN BUILDINGS\n");
-			for (BuildingModel building: planet.getStructures()) {
+			for (StructureModel building: planet.getStructures()) {
 				saveBuilding(bw, building);
 			}
 			bw.write("\t\t\tEND BUILDINGS\n");
@@ -194,24 +198,12 @@ public class GameDataSaver {
 			e.printStackTrace();
 		}
 
-//			if (structureItem != null) {
-//				bw.write(x + "\t" + y + "\t" + structureItem.getType().ordinal() + "\t" + structureItem.getMatterSupply() + "\n");
-//			}
-//
-//			if (userItem != null) {
-//				bw.write(x + "\t" + y + "\t" + userItem.getType().ordinal() + "\t" + userItem.getMatterSupply() + "\n");
-//			}
-//
-//			if (ressource != null) {
-//				bw.write(x + "\t" + y + "\t" + ressource.getType().ordinal() + "\t" + ressource.getMatterSupply() + "\n");
-//			}
-
 		System.out.println("Save planet: " + planet.getName() + " done");
 	}
 
-	private static void saveBuilding (BufferedWriter bw, BuildingModel building) {
+	private static void saveBuilding (BufferedWriter bw, StructureModel building) {
 		try {
-			bw.write(building.getType() + "\n");
+			bw.write("\t\t\t\t" + building.getType() + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

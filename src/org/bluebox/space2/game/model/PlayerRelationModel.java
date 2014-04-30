@@ -1,6 +1,6 @@
 package org.bluebox.space2.game.model;
 
-public class RelationModel {
+public class PlayerRelationModel {
 
 	public static final int RELATION_WAR = 0;
 	public static final int RELATION_NEUTRAL = 1;

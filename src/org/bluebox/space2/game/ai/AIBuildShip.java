@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bluebox.space2.game.model.BuildingClassModel;
-import org.bluebox.space2.game.model.BuildingModel;
+import org.bluebox.space2.game.model.StructureModel;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
 import org.bluebox.space2.game.model.ShipClassModel;

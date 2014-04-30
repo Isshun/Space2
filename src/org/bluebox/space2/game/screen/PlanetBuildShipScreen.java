@@ -60,7 +60,7 @@ public class PlanetBuildShipScreen extends BaseScreen {
 		}
 
 		// Draw ship on construction
-		List<ShipModel> builds = mPlanet.getBuilds();
+		List<ShipModel> builds = mPlanet.getShipToBuild();
 		int j = 0;
 		int time = 0;
 		for (ShipModel sc: builds) {
@@ -71,7 +71,7 @@ public class PlanetBuildShipScreen extends BaseScreen {
 		}
 
 		// Draw ship in orbit
-		List<FleetModel> orbit = mPlanet.getOrbit();
+		List<FleetModel> orbit = mPlanet.getFleets();
 		int k = 0;
 		if (mPlanet.getDock() != null) {
 			mainLayer.drawString(mPlanet.getDock().getName(), Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + LIST_START_Y);

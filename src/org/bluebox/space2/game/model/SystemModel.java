@@ -121,22 +121,10 @@ public class SystemModel implements ILocation {
 		mFleets.add(fleet);
 		fleet.setLocation(this);
 	}
-	
-	public int attack(FleetModel fleet) {
-		boolean attackerWin = false;
-		for (PlanetModel planet: mPlanets) {
-			if (planet.attack(fleet) == FightService.DEFENDER_WIN) {
-				System.out.println("system winner: defender");
-				return FightService.DEFENDER_WIN;
-			}
-		}
-		System.out.println("system winner: attacker");
-		return FightService.ATTACKER_WIN;
-	}
 
 	public void moveTo (FleetModel fleet) {
 		if (hasHostileForce(fleet.getOwner())) {
-			int winner = attack(fleet);
+			int winner = FightService.getInstance().attack(this, fleet);
 			if (winner == FightService.ATTACKER_WIN) {
 				fleet.setLocation(this);
 			}
@@ -146,9 +134,17 @@ public class SystemModel implements ILocation {
 	}
 
 	private boolean hasHostileForce (PlayerModel player) {
+		// Check fleet for system
+		for (FleetModel fleet: mFleets) {
+			if (fleet.getOwner().getRelation(player) == PlayerRelationModel.RELATION_WAR) {
+				return true;
+			}
+		}
+		
+		// Check fleet for planets
 		for (PlanetModel planet: mPlanets) {
-			for (FleetModel fleet: planet.getOrbit()) {
-				if (fleet.getOwner().getRelation(player) == RelationModel.RELATION_WAR) {
+			for (FleetModel fleet: planet.getFleets()) {
+				if (fleet.getOwner().getRelation(player) == PlayerRelationModel.RELATION_WAR) {
 					return true;
 				}
 			}

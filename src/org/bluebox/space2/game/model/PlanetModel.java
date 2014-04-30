@@ -35,8 +35,8 @@ public class PlanetModel implements ILocation {
 	private double 						mSatisfaction;
 	private int 							mSize;
 	private List<ShipModel>				mShipsToBuild;
-	private List<BuildingModel>		mBuildings;
-	private List<BuildingModel>		mStructuresToBuilds;
+	private List<StructureModel>		mStructures;
+	private List<StructureModel>		mStructuresToBuild;
 	private List<FleetModel> 			mFleets;
 	private DockModel 					mDock;
 	private PlayerModel 					mOwner;
@@ -56,8 +56,8 @@ public class PlanetModel implements ILocation {
 		mCultureModifier = 1;
 		mHapinessModifier = 1;
 		mShipsToBuild = new ArrayList<ShipModel>();
-		mBuildings = new ArrayList<BuildingModel>();
-		mStructuresToBuilds = new ArrayList<BuildingModel>();
+		mStructures = new ArrayList<StructureModel>();
+		mStructuresToBuild = new ArrayList<StructureModel>();
 		mFleets = new ArrayList<FleetModel>();
 		mPeople = 1;
 		mClass = PlanetClassModel.getFromId(classId);
@@ -71,8 +71,7 @@ public class PlanetModel implements ILocation {
 		mSatisfaction = Game.sRandom.nextInt(100);
 	}
 	
-	public List<ShipModel> getBuilds () { return mShipsToBuild; }
-	public List<FleetModel> getOrbit () { return mFleets; }
+	public List<ShipModel> getShipToBuild () { return mShipsToBuild; }
 	public PlanetClassModel getClassification() { return mClass; }
 	public SystemModel getSystem () { return mSystem; }
 	public String getName() { return mName; }
@@ -126,7 +125,10 @@ public class PlanetModel implements ILocation {
 	public void addCultureModifier (double value) { mCultureModifier += value; }
 	public void addHapinessModifier (double value) { mHapinessModifier += value; }
 
-
+	@Override
+	public List<FleetModel> getFleets () {
+		return mFleets;
+	}
 
 	private static int getRandomPlanetClass () {
 		int totalRand = 0;
@@ -202,12 +204,12 @@ public class PlanetModel implements ILocation {
 		}
 		
 		// Planet has structure in todo list
-		if (mStructuresToBuilds.size() > 0) {
+		if (mStructuresToBuild.size() > 0) {
 			
 			// Ship construction is done
-			if (mStructuresToBuilds.get(0).build(mBaseProd * mPeople)) {
-				addStructure(mStructuresToBuilds.get(0));
-				mStructuresToBuilds.remove(0);
+			if (mStructuresToBuild.get(0).build(mBaseProd * mPeople)) {
+				addStructure(mStructuresToBuild.get(0));
+				mStructuresToBuild.remove(0);
 			}
 		}
 		
@@ -270,33 +272,10 @@ public class PlanetModel implements ILocation {
 		mFleets.add(fleet);
 		mSystem.addFleet(fleet);
 	}
-
-	public int attack (FleetModel attacker) {
-		for (FleetModel defender: mFleets) {
-			if (attacker.getOwner().getRelation(defender.getOwner()) == RelationModel.RELATION_WAR) {
-				if (FightService.getInstance().fight(defender, attacker) == FightService.DEFENDER_WIN) {
-					removeDestroyedFleet();
-					return FightService.DEFENDER_WIN;
-				}
-			}
-		}
-
-		return FightService.ATTACKER_WIN;
-	}
 	
 	public void colonize (PlayerModel player) {
 		setOwner(player);
 		mSystem.setOwner(player);
-	}
-
-	private void removeDestroyedFleet () {
-		List<FleetModel> destroyed = new ArrayList<FleetModel>();
-		for (FleetModel defender: mFleets) {
-			if (defender.getNbShip() == 0) {
-				destroyed.add(defender);
-			}
-		}
-		mFleets.removeAll(destroyed);
 	}
 
 	public DockModel getDock () {
@@ -323,34 +302,44 @@ public class PlanetModel implements ILocation {
 	}
 
 	public void buildStructure(BuildingClassModel.Type type) {
+		
+		// Structure to build already contains this building
+		for (StructureModel building: mStructuresToBuild) {
+			if (building.getType().equals(type)) {
+				return;
+			}
+		}
+
+		// Structure already contains this building
+		for (StructureModel building: mStructures) {
+			if (building.getType().equals(type)) {
+				return;
+			}
+		}
+		
 		if (mDock == null && type == BuildingClassModel.Type.DOCK) {
 			mDock = new DockModel(this);
 		}
 		
-		mStructuresToBuilds.add(GameService.getInstance().createBuilding(type, this));
+		mStructuresToBuild.add(GameService.getInstance().createStructure(type, this));
 	}
 
 	public void addStructure(BuildingClassModel.Type type) {
-		addStructure(GameService.getInstance().createBuilding(type, this));
+		addStructure(GameService.getInstance().createStructure(type, this));
 	}
 
-	public void addStructure(BuildingModel building) {
-		if (mDock == null && building.getType() == BuildingClassModel.Type.DOCK) {
+	public void addStructure(StructureModel structure) {
+		if (mDock == null && structure.getType() == BuildingClassModel.Type.DOCK) {
 			mDock = new DockModel(this);
 		}
 		
-		building.addEffect(mOwner, this);
+		structure.addEffect(mOwner, this);
 		
-		mBuildings.add(building);
+		mStructures.add(structure);
 	}
 
 	public int getPopulationMax () {
 		return mPeopleTotal;
-	}
-
-	@Override
-	public List<FleetModel> getFleets () {
-		return mFleets;
 	}
 
 	public int getShipBuildRemainder () {
@@ -362,7 +351,7 @@ public class PlanetModel implements ILocation {
 	}
 
 	public boolean hasBuilding (Type type) {
-		for (BuildingModel building: mBuildings) {
+		for (StructureModel building: mStructures) {
 			if (building.getType().equals(type)) {
 				return true;
 			}
@@ -370,14 +359,14 @@ public class PlanetModel implements ILocation {
 		return false;
 	}
 
-	public List<BuildingModel> getStructuresToBuild () {
-		return mStructuresToBuilds;
+	public List<StructureModel> getStructuresToBuild () {
+		return mStructuresToBuild;
 	}
 
 	public boolean hasDock () {
 		return mDock != null;
 	}
 
-	public List<BuildingModel> getStructures() { return mBuildings; }
+	public List<StructureModel> getStructures() { return mStructures; }
 	
 }

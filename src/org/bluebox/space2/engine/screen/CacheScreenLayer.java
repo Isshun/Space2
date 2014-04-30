@@ -54,8 +54,6 @@ public class CacheScreenLayer extends BaseScreenLayer {
 		projection.translate(animOffsetX, animOffsetY, 0);
 		projection.scl(scaleX, scaleY, 0);
 
-		System.out.println("scale = " + animOffsetY + " x " + Constants.GAME_HEIGHT);
-		
 		mSpriteCache.setProjectionMatrix(projection);
 		mSpriteCache.begin();  
 		mSpriteCache.draw(mSpriteCacheId);  

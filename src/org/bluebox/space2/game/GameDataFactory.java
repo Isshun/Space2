@@ -20,6 +20,8 @@ import org.bluebox.space2.game.model.BuildingClassModel.Type;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 import org.bluebox.space2.game.model.TechnologyModel;
 import org.bluebox.space2.game.model.IBuildingEffect;
+import org.bluebox.space2.game.service.GameService;
+import org.bluebox.space2.path.PathResolver;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -225,13 +227,16 @@ public class GameDataFactory {
 		{{565, 203},{434, 302},{714, 414},{685, 514},{574, 555},{623, 329},{728, 285},{430, 520},{932, 571},{562, 422},{147, 382},{753, 637},{930, 486},{207, 427},{246, 519},{132, 570},{349, 649}}
 	};
 
-	public static GameData create () {
+	public static GameData createNewGame () {
 		GameData data = new GameData();
-		
+		GameService.getInstance().setData(data);
+
 		Utils.resetUUID();
 
 		initGame(data);
 		
+		PathResolver.getInstance().init(data.systems, data.travelLines);
+
 		return data;
 	}
 

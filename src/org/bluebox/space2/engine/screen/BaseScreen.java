@@ -40,7 +40,7 @@ public abstract class BaseScreen {
 	private BaseScreenLayer				mUILayer;
 	
 	protected static Random 		sRandom = new Random();
-	protected Game 					mGame;
+	public Game 						mGame;
 	private int 						mScreenTime;
 	private int 						mBackHistory;
 	private List<View>				mViews;
@@ -51,7 +51,7 @@ public abstract class BaseScreen {
 	private int 						mGameTimeAtStart;
 	protected int 						mRealPosX;
 	protected int 						mRealPosY;
-	protected float					mZoom;
+	public float						mZoom;
 
 	protected int 						mDeprecatedPosX;
 	protected int 						mDeprecatedPosY;

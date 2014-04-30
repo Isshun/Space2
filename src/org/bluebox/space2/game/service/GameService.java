@@ -6,7 +6,7 @@ import java.util.List;
 import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.GameData;
 import org.bluebox.space2.game.model.BuildingClassModel;
-import org.bluebox.space2.game.model.BuildingModel;
+import org.bluebox.space2.game.model.StructureModel;
 import org.bluebox.space2.game.model.DeviceModel;
 import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.NameGenerator;
@@ -156,7 +156,6 @@ public class GameService {
 
 	public void setData (GameData data) {
 		mData = data;
-		PathResolver.getInstance().init(data.systems, data.travelLines);
 	}
 
 	public GameData getData () {
@@ -176,10 +175,10 @@ public class GameService {
 		return null;
 	}
 
-	public BuildingModel createBuilding (Type type, PlanetModel planet) {
+	public StructureModel createStructure (Type type, PlanetModel planet) {
 		for (BuildingClassModel buildingClass: mData.buildingClasses) {
 			if (buildingClass.type == type) {
-				return new BuildingModel(buildingClass, planet);
+				return new StructureModel(buildingClass, planet);
 			}
 		}
 		return null;

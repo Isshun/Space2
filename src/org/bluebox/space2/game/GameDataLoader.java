@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bluebox.space2.Utils;
+import org.bluebox.space2.game.model.BuildingClassModel;
+import org.bluebox.space2.game.model.StructureModel;
 import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.ILocation;
 import org.bluebox.space2.game.model.PlanetClassModel;
@@ -16,6 +18,8 @@ import org.bluebox.space2.game.model.ShipClassModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
+import org.bluebox.space2.game.service.GameService;
+import org.bluebox.space2.path.PathResolver;
 
 import com.badlogic.gdx.graphics.Color;
 
@@ -23,10 +27,12 @@ public class GameDataLoader {
 
 	public static GameData load () {
 		GameData data = new GameData();
-		
+		GameService.getInstance().setData(data);
+
 		Utils.resetUUID();
 		
 		GameDataFactory.initShipClasses(data);
+		GameDataFactory.initBuildingClasses(data);
 		
 		data.planets = new ArrayList<PlanetModel>();
 		
@@ -34,6 +40,14 @@ public class GameDataLoader {
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				line = line.replace("\t", "");
+
+				if (line.indexOf("SPACE_POS_X") == 0) {
+					GameService.getInstance().getData().spacePosX = Integer.valueOf(line.substring(12));
+				}
+
+				if (line.indexOf("SPACE_POS_Y") == 0) {
+					GameService.getInstance().getData().spacePosY = Integer.valueOf(line.substring(12));
+				}
 
 				// Start systems
 				if ("BEGIN PLAYER".equals(line)) {
@@ -71,6 +85,8 @@ public class GameDataLoader {
 		}
 		
 		addPlanetsToPlayers(data);
+		
+		PathResolver.getInstance().init(data.systems, data.travelLines);
 		
 		return data;
 	}
@@ -233,6 +249,9 @@ public class GameDataLoader {
 				if (line.indexOf("SCIENCE_MODIFIER") == 0) { planet.setScienceModifier(Double.valueOf(line.substring(17))); }
 				if (line.indexOf("CULTURE_MODIFIER") == 0) { planet.setCultureModifier(Double.valueOf(line.substring(17))); }
 				if (line.indexOf("CLASS") == 0) { planet.setClass((PlanetClassModel.getPlanetClass(Integer.valueOf(line.substring(6))))); }
+				if (line.indexOf("BEGIN BUILDINGS") == 0) {
+					loadBuildings(br, data, planet);
+				}
 				
 			}
 		} catch (IOException e) {
@@ -240,6 +259,24 @@ public class GameDataLoader {
 		}
 				
 		return null;
+	}
+
+	private static void loadBuildings (BufferedReader br, GameData data, PlanetModel planet) {
+		String line = null;
+		try {
+			while ((line = br.readLine()) != null) {
+				line = line.replace("\t", "");
+
+				if ("END BUILDINGS".equals(line)) { return; }
+				else {
+					BuildingClassModel buildingClass = data.getBuildingClassFromId(line);
+					StructureModel building = new StructureModel(buildingClass, planet);
+					planet.addStructure(building);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void addPlanetsToPlayers (GameData data) {
