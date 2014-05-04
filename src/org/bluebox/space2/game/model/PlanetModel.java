@@ -25,8 +25,8 @@ public class PlanetModel implements ILocation {
 	private PlanetClassModel 			mClass;
 	private SystemModel 					mSystem;
 	private int 							mPos;
-	private int 							mPeople;
-	private int 							mPeopleTotal;
+	private double							mPopulation;
+	private int 							mPopulationMax;
 	private double 						mBaseFood;
 	private double 						mBaseProd;
 	private double 						mBaseCulture;
@@ -59,10 +59,10 @@ public class PlanetModel implements ILocation {
 		mStructures = new ArrayList<StructureModel>();
 		mStructuresToBuild = new ArrayList<StructureModel>();
 		mFleets = new ArrayList<FleetModel>();
-		mPeople = 1;
+		mPopulation = 1;
 		mClass = PlanetClassModel.getFromId(classId);
 		mSize = size;
-		mPeopleTotal = 3 + mSize * 2;
+		mPopulationMax = 3 + mSize * 2;
 		mBaseProd = 5 + Game.sRandom.nextInt(8);
 		mBaseMoney = Game.sRandom.nextInt(10);
 		mBaseScience = Game.sRandom.nextInt(10);
@@ -91,15 +91,15 @@ public class PlanetModel implements ILocation {
 	public double getScienceModifier () { return mScienceModifier; }
 	public double getProdModifier () { return mProdModifier; }
 	public double getMoneyModifier () { return mMoneyModifier; }
-	public double getFood () { return Math.ceil(mBaseFood * mFoodModifier * mPeople); }
-	public double getProd () { return Math.ceil(mBaseProd * mProdModifier * mPeople); }
-	public double getMoney () { return Math.ceil(mBaseMoney * mMoneyModifier * mPeople); }
-	public double getCulture () { return Math.ceil(mBaseCulture * mCultureModifier * mPeople); }
-	public double getScience () { return Math.ceil(mBaseScience * mScienceModifier * mPeople); }
+	public double getFood () { return Math.ceil(mBaseFood * mFoodModifier * mPopulation); }
+	public double getProd () { return Math.ceil(mBaseProd * mProdModifier * mPopulation); }
+	public double getMoney () { return Math.ceil(mBaseMoney * mMoneyModifier * mPopulation); }
+	public double getCulture () { return Math.ceil(mBaseCulture * mCultureModifier * mPopulation); }
+	public double getScience () { return Math.ceil(mBaseScience * mScienceModifier * mPopulation); }
 	public double getSatisfation () { return mSatisfaction; }
-	public int getPopulation () { return mPeople; }
+	public double getPopulation () { return mPopulation; }
 	public int getSize () { return mSize; }
-	public int getBuildETA (int buildValue) { return (int)(buildValue / mBaseProd * mPeople) + 1; }
+	public int getBuildETA (int buildValue) { return (int)(buildValue / mBaseProd * mPopulation) + 1; }
 	public int getId () { return mId; }
 
 	public void setId (Integer id) { mId = id; }
@@ -197,7 +197,7 @@ public class PlanetModel implements ILocation {
 		if (mShipsToBuild.size() > 0) {
 			
 			// Ship construction is done
-			if (mShipsToBuild.get(0).build(mBaseProd * mPeople)) {
+			if (mShipsToBuild.get(0).build(mBaseProd * mPopulation)) {
 				mDock.addShip(mShipsToBuild.get(0));
 				mShipsToBuild.remove(0);
 			}
@@ -207,7 +207,7 @@ public class PlanetModel implements ILocation {
 		if (mStructuresToBuild.size() > 0) {
 			
 			// Ship construction is done
-			if (mStructuresToBuild.get(0).build(mBaseProd * mPeople)) {
+			if (mStructuresToBuild.get(0).build(mBaseProd * mPopulation)) {
 				addStructure(mStructuresToBuild.get(0));
 				mStructuresToBuild.remove(0);
 			}
@@ -248,7 +248,7 @@ public class PlanetModel implements ILocation {
 	}
 
 	public void setPeople (int people) {
-		mPeople = people;
+		mPopulation = people;
 	}
 
 	@Override
@@ -339,7 +339,7 @@ public class PlanetModel implements ILocation {
 	}
 
 	public int getPopulationMax () {
-		return mPeopleTotal;
+		return mPopulationMax;
 	}
 
 	public int getShipBuildRemainder () {
@@ -368,5 +368,13 @@ public class PlanetModel implements ILocation {
 	}
 
 	public List<StructureModel> getStructures() { return mStructures; }
+
+	public void setPopulation (double value) {
+		mPopulation = value;
+	}
+
+	public void setPopulationMax (int value) {
+		mPopulationMax = value;
+	}
 	
 }

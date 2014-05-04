@@ -238,6 +238,8 @@ public class GameDataLoader {
 				if (line.indexOf("SYSTEM") == 0) { data.addPlanetToSystemId(Integer.valueOf(line.substring(7)), planet); }
 				if (line.indexOf("NAME") == 0) { planet.setName(line.substring(5)); }
 				if (line.indexOf("OWNER") == 0) { planet.setOwner(owner); }
+				if (line.indexOf("POPULATION=") == 0) { planet.setPopulation(Double.valueOf(line.substring(11))); }
+				if (line.indexOf("POPULATION_MAX") == 0) { planet.setPopulationMax(Integer.valueOf(line.substring(15))); }
 				if (line.indexOf("PROD_BASE") == 0) { planet.setBaseProd(Double.valueOf(line.substring(10))); }
 				if (line.indexOf("FOOD_BASE") == 0) { planet.setBaseFood(Double.valueOf(line.substring(10))); }
 				if (line.indexOf("MONEY_BASE") == 0) { planet.setBaseMoney(Double.valueOf(line.substring(11))); }

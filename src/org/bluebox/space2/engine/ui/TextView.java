@@ -2,11 +2,13 @@ package org.bluebox.space2.engine.ui;
 
 import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
+import org.bluebox.space2.engine.screen.BaseScreenLayer.StringConfig;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -14,6 +16,7 @@ public class TextView extends View {
 
 	private String mText;
 	private Color mColor;
+	private int mSize;
 
 	public TextView (String text, int x, int y, Color color) {
 		super(x, y);
@@ -55,7 +58,11 @@ public class TextView extends View {
 						spriteBatch.add(region, mPosX, mPosY, 3, 4);
 						pixmap.dispose();
 					} else {
-						spriteBatch.add(Art.guys[xs][ys + 9], mPosX + mPadding + i * 6, mPosY + j * 8 + mPadding, 6,  6);
+						if (mSize == StringConfig.SIZE_BIG) {
+							spriteBatch.add(Art.bigText[xs][ys + 7], mPosX + mPadding + i * 12, mPosY + j * 14 + mPadding, 12,  12);
+						} else {
+							spriteBatch.add(Art.guys[xs][ys + 9], mPosX + mPadding + i * 6, mPosY + j * 8 + mPadding, 6,  6);
+						}
 					}
 //					draw(, mPosX + i * 6, mPosY, mColor);
 				}
@@ -66,6 +73,10 @@ public class TextView extends View {
 
 	public void setText (String text) {
 		mText = text.toLowerCase();
+	}
+
+	public void setSize (int size) {
+		mSize = size;
 	}
 
 }

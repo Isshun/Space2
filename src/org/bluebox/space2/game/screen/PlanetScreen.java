@@ -9,6 +9,7 @@ import org.bluebox.space2.engine.screen.BaseScreen;
 import org.bluebox.space2.engine.screen.BaseScreenLayer;
 import org.bluebox.space2.engine.screen.BaseScreenLayer.StringConfig;
 import org.bluebox.space2.engine.ui.ButtonView;
+import org.bluebox.space2.engine.ui.ImageView;
 import org.bluebox.space2.engine.ui.RectangleView;
 import org.bluebox.space2.engine.ui.View;
 import org.bluebox.space2.engine.ui.View.OnClickListener;
@@ -34,7 +35,6 @@ public class PlanetScreen extends BaseScreen {
 	private RectangleView mBtShip;
 	private RectangleView mBtStructure;
 	private ButtonView mBtDock;
-	private ButtonView mBtCancel;
 	private ButtonView mBtBuildings;
 
 	public PlanetScreen (SystemModel system, PlanetModel planet) {
@@ -47,6 +47,8 @@ public class PlanetScreen extends BaseScreen {
 
 	@Override
 	protected void onCreate () {
+		super.onCreate();
+		
 		ButtonView btDebug = new ButtonView("Debug", Constants.GAME_HEIGHT - 20, Constants.GAME_WIDTH - 70);
 		btDebug.setOnClickListener(new OnClickListener() {
 			@Override
@@ -67,16 +69,6 @@ public class PlanetScreen extends BaseScreen {
 		});
 		addView(mBtShip);
 		
-		mBtCancel = new ButtonView(Constants.GAME_WIDTH - 64, 4, 60, 20, Color.RED);
-		mBtCancel.setText("Cancel");
-		mBtCancel.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick () {
-				back();
-			}
-		});
-		addView(mBtCancel);
-
 		// Button structure
 		mBtStructure = new ButtonView(126, Constants.GAME_HEIGHT - 20, 60, 20, mColor);
 		mBtStructure.setText("structure");
@@ -174,22 +166,23 @@ public class PlanetScreen extends BaseScreen {
 //		} else {
 //		}
 		
-		mainLayer.setStringSize(StringConfig.SIZE_BIG);
-		mainLayer.drawString(mPlanet.getName(), 12, 12);
-		mainLayer.drawString("" + mPlanet.getSizeName() + " / " + mPlanet.getClassName(), 20 + 12 * mPlanet.getName().length(), 17);
-
 		if (isTop()) {
-			mBtCancel.setVisibility(View.VISIBLE);
 //			mainLayer.drawString("Population:         " + mPlanet.getPeople(), posX + 4, posY + 4 + 32);
 			//drawCharacteristics(mainLayer, 6, 32);
+			mainLayer.setStringSize(StringConfig.SIZE_BIG);
+			mainLayer.drawString(mPlanet.getName(), 12, 12);
+			mainLayer.drawString("" + mPlanet.getSizeName() + " / " + mPlanet.getClassName(), 20 + 12 * mPlanet.getName().length(), 17);
+			
+			mBtBack.setVisibility(View.VISIBLE);
+
 			drawCurrentBuilding(mainLayer, 6, 32);
 			drawCurrentDock(mainLayer, 6, 85);
 			drawInfos(mainLayer, 200, 84);
 			mBtShip.setVisibility(mPlanet.getDock() != null ? View.VISIBLE : View.GONE);
 			mBtStructure.setVisibility(View.VISIBLE);
 		} else {
-			mBtCancel.setVisibility(View.GONE);
 			//mainLayer.drawString("Build on " + mPlanet.getName(), 12, 12);
+			mBtBack.setVisibility(View.GONE);
 			mBtShip.setVisibility(View.GONE);
 			mBtStructure.setVisibility(View.GONE);
 		}

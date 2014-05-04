@@ -20,9 +20,11 @@ public class PanelArmadaScreen extends BaseScreen {
 	private static final int START_X = 120;
 
 	private List<FleetModel> 	mFleets;
-
+	
 	@Override
 	protected void onCreate () {
+		super.onCreate();
+
 		mFleets = new ArrayList<FleetModel>(mPlayer.getFleets());
 	}
 

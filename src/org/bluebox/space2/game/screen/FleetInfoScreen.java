@@ -61,6 +61,8 @@ public class FleetInfoScreen extends BaseScreen {
 
 	@Override
 	protected void onCreate () {
+		super.onCreate();
+		
 		mGame.setBg(Art.bg_1);
 
 		List<SystemModel> systems = GameService.getInstance().getSystems();
@@ -85,17 +87,6 @@ public class FleetInfoScreen extends BaseScreen {
 			}
 		});
 		addView(mBtNewFleet);
-
-		// Back button
-		mBtBack = new ButtonView(Constants.GAME_WIDTH - 64, 4, 42, 20, Color.RED);
-		mBtBack.setText("close");
-		mBtBack.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick () {
-				back();
-			}
-		});
-		addView(mBtBack);
 	}
 
 	@Override

@@ -58,6 +58,7 @@ public class Art {
 	private static IArtManager 		mArt;
 	public static TextureRegion 		bt_cancel;
 	public static TextureRegion 		bt_bg;
+	public static TextureRegion 		ic_close;
 
 	public static void load () {
 		ship_big = mArt.load("res/ship7.png", 128, 87);
@@ -69,6 +70,7 @@ public class Art {
 		bt_move = mArt.load("res/bt_move.png", 60, 13);
 		bt_bg = mArt.load("res/bt_bg.png", 60, 13);
 		ic_move = mArt.load("res/ic_move.png", 11, 11);
+		ic_close = mArt.load("res/ic_close.png", 20, 20);
 		
 		spacedock = mArt.load("res/spacedock.png", 108, 80);
 		shield = mArt.load("res/shield.png", 32, 32);

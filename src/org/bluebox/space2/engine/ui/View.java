@@ -20,6 +20,7 @@ public abstract class View {
 	protected int 				mPadding;
 	private OnClickListener mOnClickListener;
 	private int 				mVisibility;
+	protected boolean			mIsClickable;
 	
 	public View (int x, int y) {
 		mPosX = x;
@@ -32,7 +33,7 @@ public abstract class View {
 	}
 
 	public boolean isClickable () {
-		return true;
+		return mIsClickable;
 	}
 
 	public boolean contains (int x, int y) {

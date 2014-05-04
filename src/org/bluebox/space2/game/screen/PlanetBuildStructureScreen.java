@@ -1,5 +1,6 @@
 package org.bluebox.space2.game.screen;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bluebox.space2.engine.screen.BaseScreen;
@@ -43,11 +44,19 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 		parent.notifyChange();
 		mPlanet = planet;
 		mOutTransition = Anim.GO_DOWN;
-		mBuildings = GameService.getInstance().getBuildingClasses();
+
+		mBuildings = new ArrayList<BuildingClassModel>();
+		for (BuildingClassModel b: GameService.getInstance().getData().buildingClasses) {
+			if (mPlanet.hasBuilding(b.type) == false) {
+				mBuildings.add(b);
+			}
+		}
 	}
 
 	@Override
 	protected void onCreate () {
+		super.onCreate();
+		
 		int btWidth = POPUP_WIDTH / 2 - 12;
 		
 		mLbPage = new TextView("page: 1 / " + (int)(mBuildings.size() / ITEM_BY_PAGE + 1), POPUP_PADDING, POPUP_TOP + POPUP_PADDING + POPUP_HEIGHT - 12);
@@ -89,6 +98,9 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 		int posY = Constants.GAME_HEIGHT - 100;
 		
 		System.out.println("popup width: " + POPUP_WIDTH + ", sep: " + SEP + ", sub: " + (POPUP_WIDTH - SEP));
+		
+		mainLayer.setStringSize(StringConfig.SIZE_BIG);
+		mainLayer.drawString("Build on " + mPlanet.getName(), 12, 12);
 
 		// Background
 		mainLayer.drawRectangle(POPUP_PADDING + SEP, POPUP_PADDING + POPUP_TOP, POPUP_WIDTH, POPUP_HEIGHT, new Color(0.2f, 0.2f, 0.2f, 0.85f));
@@ -115,7 +127,9 @@ public class PlanetBuildStructureScreen extends BaseScreen {
 		if (requires != null) {
 			mainLayer.setStringColor(Color.RED);
 		}
-		mainLayer.drawString(building.getShortName(), posX + 34, posY + 4);
+		mainLayer.drawString(building.getName(), posX + 34, posY + 4);
+		mainLayer.setStringColorNumbers(true);
+		mainLayer.drawString(building.getEffect(), posX + 34, posY + 14);
 	}
 
 	private void drawInfo (BaseScreenLayer mainLayer, BuildingClassModel building, int startX, int startY, int width, int height) {

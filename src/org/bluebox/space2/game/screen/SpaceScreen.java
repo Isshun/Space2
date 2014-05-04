@@ -85,6 +85,7 @@ public class SpaceScreen extends BaseScreen {
 
 		// Button planets
 		mBtPlanets = new ImageView(Art.bt_planets, 6, 6);
+		mBtPlanets.setClickable(true);
 		mBtPlanets.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
@@ -96,6 +97,7 @@ public class SpaceScreen extends BaseScreen {
 
 		// Button relations
 		mBtRelations = new ImageView(Art.bt_relations, 44, 6);
+		mBtRelations.setClickable(true);
 		mBtRelations.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
@@ -107,6 +109,7 @@ public class SpaceScreen extends BaseScreen {
 
 		// Button debug
 		mBtDebug = new ImageView(Art.bt_debug, 82, 6);
+		mBtDebug.setClickable(true);
 		mBtDebug.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {
@@ -118,6 +121,7 @@ public class SpaceScreen extends BaseScreen {
 
 		// Button armada
 		mBtArmada = new ImageView(Art.bt_debug, 120, 6);
+		mBtArmada.setClickable(true);
 		mBtArmada.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick () {

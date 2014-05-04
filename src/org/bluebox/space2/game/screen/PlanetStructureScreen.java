@@ -28,15 +28,7 @@ public class PlanetStructureScreen extends BaseScreen {
 
 	@Override
 	protected void onCreate () {
-		mBtCancel = new ButtonView(Constants.GAME_WIDTH - 64, 4, 60, 20, Color.RED);
-		mBtCancel.setText("Close");
-		mBtCancel.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick () {
-				back();
-			}
-		});
-		addView(mBtCancel);
+		super.onCreate();
 	}
 
 	@Override

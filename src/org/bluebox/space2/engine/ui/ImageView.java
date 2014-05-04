@@ -22,4 +22,8 @@ public class ImageView extends View {
 		spriteBatch.add(mRegion, mPosX, mPosY, width, mRegion.getRegionHeight());
 	}
 
+	public void setClickable (boolean value) {
+		mIsClickable = value;
+	}
+
 }

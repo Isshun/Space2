@@ -20,13 +20,13 @@ public class SystemScreen extends BaseScreen {
 	private static final int PLANET_SPACING = 64;
 	private static final int PLANET_SIZE = 42;
 
-	private SystemModel mSystem;
-	private double tick;
-	private boolean mTouch;
-	private int mTouchX;
-	private int mTouchY;
-	private int mPlanetRevolution;
-	private ButtonView mBtCancel;
+	private SystemModel	mSystem;
+	private double 		tick;
+	private boolean 		mTouch;
+	private int 			mTouchX;
+	private int 			mTouchY;
+	private int 			mPlanetRevolution;
+	private ButtonView 	mBtCancel;
 
 	public SystemScreen (SystemModel system) {
 		System.out.println("Open system: " + system.getName());
@@ -147,17 +147,9 @@ public class SystemScreen extends BaseScreen {
 
 	@Override
 	protected void onCreate () {
-		System.out.println("System pos:" + mSystem.getX() + ", " + mSystem.getY());
+		super.onCreate();
 
-		mBtCancel = new ButtonView(Constants.GAME_WIDTH - 64, 4, 60, 20, Color.RED);
-		mBtCancel.setText("Cancel");
-		mBtCancel.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick () {
-				back();
-			}
-		});
-		addView(mBtCancel);
+		System.out.println("System pos:" + mSystem.getX() + ", " + mSystem.getY());
 	}
 
 	@Override

@@ -6,7 +6,12 @@ import java.util.List;
 import java.util.Random;
 
 import org.bluebox.space2.engine.Art;
+import org.bluebox.space2.engine.screen.BaseScreenLayer.StringConfig;
+import org.bluebox.space2.engine.ui.ImageView;
+import org.bluebox.space2.engine.ui.RectangleView;
+import org.bluebox.space2.engine.ui.TextView;
 import org.bluebox.space2.engine.ui.View;
+import org.bluebox.space2.engine.ui.View.OnClickListener;
 import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.Game;
 import org.bluebox.space2.game.Game.Anim;
@@ -68,6 +73,9 @@ public abstract class BaseScreen {
 	private int 						mFinalAnimationWidth;
 	private int 						mAnimationHeight;
 	private int 						mFinalAnimationHeight;
+	protected ImageView 				mBtBack;
+	private RectangleView mTitle;
+	private TextView mTitleText;
 	
 	public BaseScreen() {
 		mMainLayer = BaseScreenLayer.create(BaseScreenLayer.CACHE);
@@ -136,6 +144,15 @@ public abstract class BaseScreen {
 		mViews.add(v);
 	}
 
+	protected void setTitle (String title) {
+		mTitle = new RectangleView(6, 6, Constants.GAME_WIDTH - 12, 20, new Color(1, 1, 1, 0.45f));
+		addView(mTitle);
+		
+		mTitleText = new TextView(title, 6, 7);
+		mTitleText.setSize(StringConfig.SIZE_BIG);
+		mTitleText.setPadding(4);
+		addView(mTitleText);
+	}
 
 	public void render (int gameTime, int cycle, long renderTime) {
 		long time = System.currentTimeMillis();
@@ -245,7 +262,18 @@ public abstract class BaseScreen {
 	public void onRender(BaseScreenLayer dynamicLayer, int gameTime, int screenTime) {
 	}
 	
-	protected abstract void onCreate ();
+	protected void onCreate () {
+		mBtBack = new ImageView(Art.ic_close, Constants.GAME_WIDTH - 20 - 6, 6);
+		mBtBack.setClickable(true);
+		mBtBack.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick () {
+				back();
+			}
+		});
+		addView(mBtBack);
+	}
+	
 	protected abstract void onDraw(BaseScreenLayer mainLayer, BaseScreenLayer UILayer);
 	public abstract void onTouch(int x, int y);
 	public abstract void onLongTouch(int x, int y);

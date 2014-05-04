@@ -18,12 +18,14 @@ import com.badlogic.gdx.graphics.Color;
 public class PanelGovernmentScreen extends BaseScreen {
 
 	private static final int LINE_HEIGHT = 15;
-	private static final int START_Y = 19;
+	private static final int START_Y = 50;
 	private static final int START_X = 118;
 	private static final int SPACING_X = 30;
 	int mSortMode;
 	
 	public PanelGovernmentScreen() {
+		setTitle("Government");
+		
 		mSortMode = -1;
 	}
 	
@@ -31,13 +33,13 @@ public class PanelGovernmentScreen extends BaseScreen {
 	public void onDraw (BaseScreenLayer mainLayer, BaseScreenLayer UILayer) {
 		mainLayer.draw(Art.bg, 0, 0);
 
-		mainLayer.draw(Art.ic_people, START_X, 3);
-		mainLayer.draw(Art.ic_satisfaction, START_X + SPACING_X * 1, 3);
-		mainLayer.draw(Art.res_food, START_X + SPACING_X * 2, 3);
-		mainLayer.draw(Art.ic_construction_12, 118 + SPACING_X * 3, 3);
-		mainLayer.draw(Art.ic_money_12, START_X + SPACING_X * 4, 3);
-		mainLayer.draw(Art.ic_science, START_X + SPACING_X * 5, 3);
-		mainLayer.draw(Art.res_culture, START_X + SPACING_X * 6, 3);
+		mainLayer.draw(Art.ic_people, START_X, 33);
+		mainLayer.draw(Art.ic_satisfaction, START_X + SPACING_X * 1, 33);
+		mainLayer.draw(Art.res_food, START_X + SPACING_X * 2, 33);
+		mainLayer.draw(Art.ic_construction_12, 118 + SPACING_X * 3, 33);
+		mainLayer.draw(Art.ic_money_12, START_X + SPACING_X * 4, 33);
+		mainLayer.draw(Art.ic_science, START_X + SPACING_X * 5, 33);
+		mainLayer.draw(Art.res_culture, START_X + SPACING_X * 6, 33);
 		
 		List<PlanetModel> planets = new ArrayList<PlanetModel>(GameService.getInstance().getPlayer().getPlanets());
 		Collections.sort(planets, new Comparator<PlanetModel>() {
@@ -77,35 +79,35 @@ public class PanelGovernmentScreen extends BaseScreen {
 
 	@Override
 	public void onTouch (int x, int y) {
-		Set<PlanetModel> planets = mPlayer.getPlanets();
-		List<PlanetModel> colonized = new ArrayList<PlanetModel>();
-		for (PlanetModel planet : planets) {
-			if (planet.getPopulation() > 0) {
-				colonized.add(planet);
-			}
-		}
-		if (y > START_Y) {
-			int pos = (y - 22) / (LINE_HEIGHT + 1);
-			if (colonized.size() > pos) {
-				PlanetModel planet = colonized.get(pos);
-
-				if (x > START_X + 2 + SPACING_X * 7 && x < START_X + 2 + SPACING_X * 7 + 32) {
-					BaseScreen s = back();
-					if (s instanceof SpaceScreen) {
-						((SpaceScreen)s).gotoPos(planet.getX(), planet.getY());
-					}
-				} else {
-					addScreen(new PlanetScreen(planet.getSystem(), planet));
-				}
-			}
-		} else {
-			if (x > START_X) {
-				int pos = (x - START_X) / SPACING_X;
-				mSortMode = pos;
-			} else {
-				mSortMode = -1;
-			}
-		}
+//		Set<PlanetModel> planets = mPlayer.getPlanets();
+//		List<PlanetModel> colonized = new ArrayList<PlanetModel>();
+//		for (PlanetModel planet : planets) {
+//			if (planet.getPopulation() > 0) {
+//				colonized.add(planet);
+//			}
+//		}
+//		if (y > START_Y) {
+//			int pos = (y - 22) / (LINE_HEIGHT + 1);
+//			if (colonized.size() > pos) {
+//				PlanetModel planet = colonized.get(pos);
+//
+//				if (x > START_X + 2 + SPACING_X * 7 && x < START_X + 2 + SPACING_X * 7 + 32) {
+//					BaseScreen s = back();
+//					if (s instanceof SpaceScreen) {
+//						((SpaceScreen)s).gotoPos(planet.getX(), planet.getY());
+//					}
+//				} else {
+//					addScreen(new PlanetScreen(planet.getSystem(), planet));
+//				}
+//			}
+//		} else {
+//			if (x > START_X) {
+//				int pos = (x - START_X) / SPACING_X;
+//				mSortMode = pos;
+//			} else {
+//				mSortMode = -1;
+//			}
+//		}
 	}
 
 	@Override
@@ -116,8 +118,7 @@ public class PanelGovernmentScreen extends BaseScreen {
 
 	@Override
 	protected void onCreate () {
-		// TODO Auto-generated method stub
-		
+		super.onCreate();
 	}
 
 	@Override

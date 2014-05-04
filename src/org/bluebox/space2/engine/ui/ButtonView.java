@@ -19,12 +19,14 @@ public class ButtonView extends RectangleView {
 	public ButtonView (int x, int y, int width, int height, Color color) {
 		super(x, y, width, height, null);
 		mPadding = 4;
+		mIsClickable = true;
 	}
 
 	public ButtonView (String text, int x, int y) {
 		super(x, y, text.length() * 6 + 8, 20, null);
 		setText(text);
 		mPadding = 4;
+		mIsClickable = true;
 	}
 
 	@Override
