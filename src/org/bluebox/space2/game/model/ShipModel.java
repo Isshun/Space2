@@ -6,7 +6,7 @@ import org.bluebox.space2.Utils;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 
 
-public class ShipModel implements IBuilding  {
+public class ShipModel extends BuildingBaseModel  {
 	private List<ShipDeviceModel>	mDevices;
 	
 	private double 					mSpeed;
@@ -24,20 +24,21 @@ public class ShipModel implements IBuilding  {
 	private double 					mPhaserPower;
 	private double 					mTorpedoPower;
 	private int 						mTotalBuild;
-	private double						mBuild;
 	private PlanetModel				mPlanet;
 	private SystemModel 				mSystem;
-	private ShipClassModel 			mShipClass;
+	private ShipTemplateModel 		mShipClass;
 	private FleetModel 				mFleet;
+	private boolean 					mIsWorking;
 	
-	public ShipModel(ShipClassModel shipClass) {
+	public ShipModel(ShipTemplateModel shipClass) {
+		super(shipClass.getBuildValue());
+		
 		mId = Utils.getUUID();
 		mSpeed = 42;
 		mMass = shipClass.getMass();
 		mShipClass = shipClass;
 		mArmory = shipClass.getArmory();
 		mShieldPower = shipClass.getShieldPower();
-		mTotalBuild = shipClass.getBuildValue();
 		mTotalCrew = mCrew = shipClass.getTotalCrew();
 		mHull = mHullBase = shipClass.getHull();
 		mPhaserPower = shipClass.getPhaserPower();
@@ -66,21 +67,17 @@ public class ShipModel implements IBuilding  {
 	public double 			getShieldPower () { return mShieldPower; }
 	public double 			getArmory () { return mArmory; }
 	public String 			getSpecialDeviceName () { return "none"; }
-	public int 				getBuildRemain () { return (int)(mTotalBuild - mBuild); }
 	public PlanetModel 	getPlanet () { return mPlanet; }
 	public SystemModel 	getSystem () { return mSystem; }
 	public FleetModel 	getFleet () { return mFleet; }
-	public ShipClassModel getShipClass () { return mShipClass; }
+	public ShipTemplateModel getShipClass () { return mShipClass; }
+	public ILocation		getLocation () { return mFleet.getLocation(); }
+
 
 	public void setFleet (FleetModel fleet) { mFleet = fleet; }
 	public void setId (int id) { mId = id; }
 	public void setCrew (int crew) { mCrew = crew; }
 	public void setHull (int hull) { mHull = hull; }
-
-	public boolean build (double value) {
-		mBuild = (int)Math.min(mBuild + value, mTotalBuild);
-		return mBuild == mTotalBuild;
-	}
 
 	public void setPlanet (PlanetModel planet) {
 		mPlanet = planet;
@@ -104,4 +101,7 @@ public class ShipModel implements IBuilding  {
 		return mShipClass.hasDevice(device);
 	}
 
+	public boolean isDestroyed () {
+		return false;
+	}
 }

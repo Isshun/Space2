@@ -7,7 +7,7 @@ import org.bluebox.space2.Utils;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 
 
-public class ShipClassModel {
+public class ShipTemplateModel {
 	private int 					mId;
 	private String 				mName;
 	private int 					mBuildValue;
@@ -20,7 +20,7 @@ public class ShipClassModel {
 	private double 				mPhaserPower;
 	private List<DeviceModel>	mDevices;
 
-	public ShipClassModel (String name, int hull) {
+	public ShipTemplateModel (String name, int hull) {
 		mId = Utils.getUUID();
 		mName = name;
 		mHull = hull;

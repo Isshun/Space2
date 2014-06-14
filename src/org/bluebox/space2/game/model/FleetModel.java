@@ -1,12 +1,10 @@
 package org.bluebox.space2.game.model;
 
-import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.bluebox.space2.Utils;
-import org.bluebox.space2.game.GameData;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 import org.bluebox.space2.path.PathResolver;
 import org.bluebox.space2.path.Vertex;
@@ -28,9 +26,10 @@ public class FleetModel implements IShipCollectionModel {
 
 	private LinkedList<Vertex> mPath;
 
-	private Action mAction;
-	private double mAttackIndice;
-	private double mDefenseIndice;
+	private Action 		mAction;
+	private double 		mAttackIndice;
+	private double 		mDefenseIndice;
+	private ILocation 	mTargetLocation;
 
 	public FleetModel (PlayerModel owner) {
 		mId = Utils.getUUID();
@@ -182,20 +181,9 @@ public class FleetModel implements IShipCollectionModel {
 		}
 	}
 
-	public void setCourse (SystemModel goal) {
-		SystemModel current = null;
-		if (mLocation instanceof PlanetModel) {
-			current = ((PlanetModel)mLocation).getSystem();
-		} else if (mLocation instanceof SystemModel) {
-			current = (SystemModel)mLocation;
-		}
-		
-		LinkedList<Vertex> path = PathResolver.getInstance().getPath(current, goal);
-		
-		if (path != null) {
-			mPath = path;
-		}
-		
+	public void setCourse (ILocation goal) {
+		mTargetLocation = goal;
+		mPath = PathResolver.getInstance().getPath(mLocation, mTargetLocation);
 		move();
 	}
 
@@ -266,4 +254,11 @@ public class FleetModel implements IShipCollectionModel {
 		mId = id;
 	}
 
+	public boolean isMoving () {
+		return mAction == Action.MOVE;
+	}
+
+	public ILocation getTargetLocation () {
+		return mTargetLocation;
+	}
 }

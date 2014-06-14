@@ -3,28 +3,28 @@ package org.bluebox.space2.game;
 import java.util.List;
 
 import org.bluebox.space2.Utils;
+import org.bluebox.space2.ai.AIPlayerModel;
 import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.game.model.BuildingClassModel;
+import org.bluebox.space2.game.model.BuildingClassModel.Type;
 import org.bluebox.space2.game.model.DeviceModel;
+import org.bluebox.space2.game.model.DeviceModel.Device;
 import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.IBuildingCondition;
+import org.bluebox.space2.game.model.IBuildingEffect;
 import org.bluebox.space2.game.model.NameGenerator;
 import org.bluebox.space2.game.model.PlanetClassModel;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
-import org.bluebox.space2.game.model.ShipClassModel;
+import org.bluebox.space2.game.model.ShipTemplateModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
-import org.bluebox.space2.game.model.TravelModel;
-import org.bluebox.space2.game.model.BuildingClassModel.Type;
-import org.bluebox.space2.game.model.DeviceModel.Device;
 import org.bluebox.space2.game.model.TechnologyModel;
-import org.bluebox.space2.game.model.IBuildingEffect;
+import org.bluebox.space2.game.model.TravelModel;
 import org.bluebox.space2.game.service.GameService;
 import org.bluebox.space2.path.PathResolver;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class GameDataFactory {
 
@@ -337,7 +337,7 @@ public class GameDataFactory {
 		// Create fleets
 		for (PlayerModel player: data.players) {
 			{
-				ShipClassModel sc = data.shipClasses.get(0);
+				ShipTemplateModel sc = data.shipTemplates.get(0);
 				FleetModel fleet = new FleetModel(player, NameGenerator.generate(player.getNameGeneratorLanguage(), player.getFleets().size()));
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Alpha" : player.getName());
@@ -357,7 +357,7 @@ public class GameDataFactory {
 				data.fleets.add(fleet);
 			}
 			{
-				ShipClassModel sc = data.shipClasses.get(1);
+				ShipTemplateModel sc = data.shipTemplates.get(1);
 				FleetModel fleet = new FleetModel(player);
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Beta" : player.getName());
@@ -371,7 +371,7 @@ public class GameDataFactory {
 				data.fleets.add(fleet);
 			}
 			{
-				ShipClassModel sc = data.shipClasses.get(2);
+				ShipTemplateModel sc = data.shipTemplates.get(2);
 				FleetModel fleet = new FleetModel(player);
 				fleet.setLocation(player.getHome());
 				//fleet.setName(player.equals(mPlayer) ? "Omega" : player.getName());
@@ -462,16 +462,16 @@ public class GameDataFactory {
 
 	public static void initPlayers (GameData data) {
 		data.player = new PlayerModel("me", new Color(0.9f, 0.9f, 0, 0.65f), Color.YELLOW, false);
-		data.players.add(new PlayerModel("player-1", new Color(0.55f, 0, 0, 0.65f), new Color(0.55f, 0, 0, 1), true));
-		data.players.add(new PlayerModel("player-2", new Color(80f/255, 120f/255, 182f/255, 0.65f), new Color(80f/255, 120f/255, 182f/255, 1), true));
-		data.players.add(new PlayerModel("player-3", new Color(160f/255, 190f/255, 24f/255, 0.65f), Color.PINK, true));
+		data.players.add(new AIPlayerModel("player-1", new Color(0.55f, 0, 0, 0.65f), new Color(0.55f, 0, 0, 1), true));
+//		data.players.add(new AIPlayerModel("player-2", new Color(80f/255, 120f/255, 182f/255, 0.65f), new Color(80f/255, 120f/255, 182f/255, 1), true));
+//		data.players.add(new AIPlayerModel("player-3", new Color(160f/255, 190f/255, 24f/255, 0.65f), Color.PINK, true));
 		data.players.add(data.player);
 		data.player.setNameGeneratorLanguage(NameGenerator.GREC);
 	}
 
 	public static void initShipClasses (GameData data) {
 		{
-			ShipClassModel sc = new ShipClassModel("Fighter", 50);
+			ShipTemplateModel sc = new ShipTemplateModel("Fighter", 50);
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
@@ -479,10 +479,10 @@ public class GameDataFactory {
 			sc.addDevice(DeviceModel.get(Device.HULL_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.setBuildValue(100);
-			data.shipClasses.add(sc);
+			data.shipTemplates.add(sc);
 		}
 		{
-			ShipClassModel sc = new ShipClassModel("Defender", 50);
+			ShipTemplateModel sc = new ShipTemplateModel("Defender", 50);
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
@@ -493,26 +493,26 @@ public class GameDataFactory {
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.setBuildValue(200);
-			data.shipClasses.add(sc);
+			data.shipTemplates.add(sc);
 		}
 		{
-			ShipClassModel sc = new ShipClassModel("Cruiser", 250);
+			ShipTemplateModel sc = new ShipTemplateModel("Cruiser", 250);
 			sc.setBuildValue(800);
-			data.shipClasses.add(sc);
+			data.shipTemplates.add(sc);
 		}
 		{
-			ShipClassModel sc =new ShipClassModel("Colonizer", 40);
+			ShipTemplateModel sc =new ShipTemplateModel("Colonizer", 40);
 			sc.addDevice(DeviceModel.get(Device.COLONIZER));
 			sc.setBuildValue(42);
-			data.shipClasses.add(sc);
+			data.shipTemplates.add(sc);
 		}
 		{
-			ShipClassModel sc = new ShipClassModel("Explorer", 50);
+			ShipTemplateModel sc = new ShipTemplateModel("Explorer", 50);
 			sc.addDevice(DeviceModel.get(Device.PHASER_1));
 			sc.addDevice(DeviceModel.get(Device.HULL_1));
 			sc.addDevice(DeviceModel.get(Device.SHIELD_1));
 			sc.setBuildValue(60);
-			data.shipClasses.add(sc);
+			data.shipTemplates.add(sc);
 		}
 	}
 

@@ -13,7 +13,7 @@ import org.bluebox.space2.game.model.NameGenerator;
 import org.bluebox.space2.game.model.PlanetClassModel;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
-import org.bluebox.space2.game.model.ShipClassModel;
+import org.bluebox.space2.game.model.ShipTemplateModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
@@ -118,8 +118,8 @@ public class GameService {
 		System.out.println("},");
 	}
 
-	public List<ShipClassModel> getShipClasses () {
-		return mData.shipClasses;
+	public List<ShipTemplateModel> getShipClasses () {
+		return mData.shipTemplates;
 	}
 
 	public List<TravelModel> getTravelPath (List<Vertex> path) {

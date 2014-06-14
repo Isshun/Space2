@@ -8,27 +8,26 @@ import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.ILocation;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
-import org.bluebox.space2.game.model.ShipClassModel;
+import org.bluebox.space2.game.model.ShipTemplateModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
 
 public class GameData {
-
-	public int 							spacePosX;
-	public int 							spacePosY;
+	public int 								spacePosX;
+	public int 								spacePosY;
 	
-	public List<ShipClassModel> 	shipClasses;
-	public List<SystemModel> 		systems;
-	public List<PlanetModel> 		planets;
-	public List<PlayerModel> 		players;
-	public List<TravelModel> 		travelLines;
-	public List<FleetModel> 		fleets;
+	public List<ShipTemplateModel> 		shipTemplates;
+	public List<SystemModel> 			systems;
+	public List<PlanetModel> 			planets;
+	public List<PlayerModel> 			players;
+	public List<TravelModel> 			travelLines;
+	public List<FleetModel> 			fleets;
 	public List<BuildingClassModel> 	buildingClasses;
-	public PlayerModel 				player;
-	public int 							systemMapIndex;
+	public PlayerModel 					player;
+	public int 								systemMapIndex;
 
 	public GameData() {
-		shipClasses = new ArrayList<ShipClassModel>();
+		shipTemplates = new ArrayList<ShipTemplateModel>();
 		systems = new ArrayList<SystemModel>();
 		planets = new ArrayList<PlanetModel>();
 		players = new ArrayList<PlayerModel>();
@@ -81,8 +80,8 @@ public class GameData {
 		return null;
 	}
 
-	public ShipClassModel getShipClassFromId (int id) {
-		for (ShipClassModel shipClass: shipClasses) {
+	public ShipTemplateModel getShipClassFromId (int id) {
+		for (ShipTemplateModel shipClass: shipTemplates) {
 			if (shipClass.getId() == id) {
 				return shipClass;
 			}

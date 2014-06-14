@@ -5,18 +5,18 @@ import java.util.List;
 
 public class AIOrders {
 
-	private List<ShipClassModel> mShipToBuilds;
+	private List<ShipTemplateModel> mShipToBuilds;
 	public boolean buildColonizer;
 
 	public AIOrders() {
-		mShipToBuilds = new ArrayList<ShipClassModel>();
+		mShipToBuilds = new ArrayList<ShipTemplateModel>();
 	}
 	
-	public void addShipToBuild (ShipClassModel sc) {
+	public void addShipToBuild (ShipTemplateModel sc) {
 		mShipToBuilds.add(sc);
 	}
 
-	public List<ShipClassModel> getShipToBuild () {
+	public List<ShipTemplateModel> getShipToBuild () {
 		return mShipToBuilds;
 	}
 

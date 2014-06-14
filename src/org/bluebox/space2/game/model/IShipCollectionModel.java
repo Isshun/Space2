@@ -5,7 +5,7 @@ import java.util.List;
 public interface IShipCollectionModel {
 
 	List<ShipModel> getShips ();
-	void 			setCourse (SystemModel system);
+	void 			setCourse (ILocation system);
 	void 			addShip (ShipModel ship);
 	String 		getLocationName ();
 	String		getName ();

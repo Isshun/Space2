@@ -15,23 +15,23 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class PlayerModel {
-	private static int 				sCount;
+	private static int 					sCount;
 
-	private String 					mName;
-	private int 						mId;
-	private int 						mFlag;
-	private Color						mColor;
-	private List<SystemModel>	 	mSystems;
-	private Set<PlanetModel>	 	mPlanets;
-	private Set<FleetModel> 		mFleets;
-	private PlanetModel 				mHome;
-	private Color 						mSpaceColor;
-	private Color 						mDarkColor;
-	private Color 						mUIColor;
-	private boolean 					mIsAI;
-	public AIOrders					aiOrders;
-	private int 						mNameGeneratorLanguage;
-	private Set<TechnologyModel>	mTechs;
+	private String 						mName;
+	private int 							mId;
+	protected  int 						mFlag;
+	protected  Color						mColor;
+	protected List<SystemModel>	 	mSystems;
+	protected  Set<PlanetModel>	 	mPlanets;
+	protected  Set<FleetModel> 		mFleets;
+	protected  PlanetModel 				mHome;
+	protected  Color 						mSpaceColor;
+	protected  Color 						mDarkColor;
+	protected  Color 						mUIColor;
+	private boolean 						mIsAI;
+	public AIOrders						aiOrders;
+	private int 							mNameGeneratorLanguage;
+	private Set<TechnologyModel>		mTechs;
 	
 	public PlayerModel(String name, Color uiColor, Color color, boolean isAI) {
 		mId = sCount++;
@@ -65,6 +65,10 @@ public class PlayerModel {
 		return mPlanets;
 	}
 	
+	public int getPlanetsCount () {
+		return mPlanets.size();
+	}
+
 	public List<SystemModel> getSystems () {
 		return mSystems;
 	}
@@ -130,7 +134,7 @@ public class PlayerModel {
 		return PlayerRelationModel.RELATION_WAR;
 	}
 
-	public void update () {
+	public void onUpdate () {
 		List<FleetModel> fleets = new ArrayList<FleetModel>(mFleets);
 		for (FleetModel fleet: fleets) {
 			fleet.move();

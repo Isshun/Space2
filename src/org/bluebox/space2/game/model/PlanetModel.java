@@ -34,7 +34,6 @@ public class PlanetModel implements ILocation {
 	private double 						mBaseMoney;
 	private double 						mSatisfaction;
 	private int 							mSize;
-	private List<ShipModel>				mShipsToBuild;
 	private List<StructureModel>		mStructures;
 	private List<StructureModel>		mStructuresToBuild;
 	private List<FleetModel> 			mFleets;
@@ -55,7 +54,6 @@ public class PlanetModel implements ILocation {
 		mScienceModifier = 1;
 		mCultureModifier = 1;
 		mHapinessModifier = 1;
-		mShipsToBuild = new ArrayList<ShipModel>();
 		mStructures = new ArrayList<StructureModel>();
 		mStructuresToBuild = new ArrayList<StructureModel>();
 		mFleets = new ArrayList<FleetModel>();
@@ -71,7 +69,6 @@ public class PlanetModel implements ILocation {
 		mSatisfaction = Game.sRandom.nextInt(100);
 	}
 	
-	public List<ShipModel> getShipToBuild () { return mShipsToBuild; }
 	public PlanetClassModel getClassification() { return mClass; }
 	public SystemModel getSystem () { return mSystem; }
 	public String getName() { return mName; }
@@ -178,29 +175,9 @@ public class PlanetModel implements ILocation {
 		}
 	}
 
-	public void buildShip(ShipClassModel sc) {
-		buildShip(new ShipModel(sc));
-	}
-
-	public void buildShip(ShipModel sc) {
-		if (mDock == null) {
-			System.out.println("addBuild: planet has no spacedock");
-		}
-		
-		System.out.println("Add build: " + sc.getClassName());
-		sc.setPlanet(this);
-		mShipsToBuild.add(sc);
-	}
-
 	public void update () {
-		// Planet has ship in todo list
-		if (mShipsToBuild.size() > 0) {
-			
-			// Ship construction is done
-			if (mShipsToBuild.get(0).build(mBaseProd * mPopulation)) {
-				mDock.addShip(mShipsToBuild.get(0));
-				mShipsToBuild.remove(0);
-			}
+		if (mDock != null) {
+			mDock.update();
 		}
 		
 		// Planet has structure in todo list
@@ -342,14 +319,6 @@ public class PlanetModel implements ILocation {
 		return mPopulationMax;
 	}
 
-	public int getShipBuildRemainder () {
-		int eta = 0;
-		for (ShipModel s: mShipsToBuild) {
-			eta += getBuildETA(s.getBuildRemain());
-		}
-		return eta;
-	}
-
 	public boolean hasBuilding (Type type) {
 		for (StructureModel building: mStructures) {
 			if (building.getType().equals(type)) {
@@ -368,13 +337,8 @@ public class PlanetModel implements ILocation {
 	}
 
 	public List<StructureModel> getStructures() { return mStructures; }
-
-	public void setPopulation (double value) {
-		mPopulation = value;
-	}
-
-	public void setPopulationMax (int value) {
-		mPopulationMax = value;
-	}
-	
+	public void setPopulation (double value) { mPopulation = value; }
+	public void setPopulationMax (int value) { mPopulationMax = value; }
+	public double getDevelopement () { return mPopulation > 0 ? mPopulationMax / mPopulation : 0; }
+	public double getBuildCoef () { return mBaseProd * mPopulation; }
 }

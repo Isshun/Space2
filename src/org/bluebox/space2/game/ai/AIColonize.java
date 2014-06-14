@@ -8,7 +8,7 @@ import org.bluebox.space2.game.Game;
 import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
-import org.bluebox.space2.game.model.ShipClassModel;
+import org.bluebox.space2.game.model.ShipTemplateModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
@@ -68,8 +68,8 @@ public class AIColonize {
 			return;
 		}
 		
-		ShipClassModel shipClass = null;
-		for (ShipClassModel sc: GameService.getInstance().getShipClasses()) {
+		ShipTemplateModel shipClass = null;
+		for (ShipTemplateModel sc: GameService.getInstance().getShipClasses()) {
 			if (sc.hasDevice(Device.COLONIZER)) {
 				player.aiOrders.addShipToBuild(sc);
 				player.aiOrders.buildColonizer = true;

@@ -55,7 +55,9 @@ public class DebugScreen extends BaseScreen {
 		PlayerModel player = GameService.getInstance().getPlayer();
 		List<ShipModel> builds = new ArrayList<ShipModel>();
 		for (PlanetModel planet: player.getPlanets()) {
-			builds.addAll(planet.getShipToBuild());
+			if (planet.getDock() != null) {
+				builds.addAll(planet.getDock().getShipToBuild());
+			}
 		}
 		int i = 0;
 		for (ShipModel build: builds) {

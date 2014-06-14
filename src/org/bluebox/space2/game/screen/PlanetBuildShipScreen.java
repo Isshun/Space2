@@ -8,7 +8,7 @@ import org.bluebox.space2.engine.screen.BaseScreenLayer;
 import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.PlanetModel;
-import org.bluebox.space2.game.model.ShipClassModel;
+import org.bluebox.space2.game.model.ShipTemplateModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.service.GameService;
 
@@ -51,23 +51,25 @@ public class PlanetBuildShipScreen extends BaseScreen {
 		mainLayer.drawString("In orbit", Constants.GAME_WIDTH / 3 * 2 + 5, POS_Y + 5);
 		
 		// Draw ship desing
-		List<ShipClassModel> classes = GameService.getInstance().getShipClasses();
+		List<ShipTemplateModel> classes = GameService.getInstance().getShipClasses();
 		int i = 0;
-		for (ShipClassModel sc: classes) {
+		for (ShipTemplateModel sc: classes) {
 			mainLayer.drawString(sc.getName(), 4, POS_Y + LIST_START_Y + i * LINE_INTERVAL);
 			mainLayer.drawString(Utils.getFormatedTime(mPlanet.getBuildETA(sc.getBuildValue())), Constants.GAME_WIDTH / 3 - 34, POS_Y + LIST_START_Y + i * LINE_INTERVAL);
 			i++;
 		}
 
 		// Draw ship on construction
-		List<ShipModel> builds = mPlanet.getShipToBuild();
-		int j = 0;
-		int time = 0;
-		for (ShipModel sc: builds) {
-			time += sc.getBuildETA();
-			mainLayer.drawString(sc.getClassName(), Constants.GAME_WIDTH / 3 + 5, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
-			mainLayer.drawString(Utils.getFormatedTime(time), Constants.GAME_WIDTH / 3 * 2 - 34, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
-			j++;
+		if (mPlanet != null && mPlanet.getDock() != null) {
+			List<ShipModel> builds = mPlanet.getDock().getShipToBuild();
+			int j = 0;
+			int time = 0;
+			for (ShipModel sc: builds) {
+				time += sc.getBuildETA();
+				mainLayer.drawString(sc.getClassName(), Constants.GAME_WIDTH / 3 + 5, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
+				mainLayer.drawString(Utils.getFormatedTime(time), Constants.GAME_WIDTH / 3 * 2 - 34, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
+				j++;
+			}
 		}
 
 		// Draw ship in orbit
@@ -88,13 +90,15 @@ public class PlanetBuildShipScreen extends BaseScreen {
 	@Override
 	public void onTouch (int x, int y) {
 		if (y > POS_Y + LIST_START_Y) {
-			List<ShipClassModel> classes = GameService.getInstance().getShipClasses();
-			int index = (y - POS_Y - LIST_START_Y + 3) / LINE_INTERVAL;
-			if (x < Constants.GAME_WIDTH / 3 && index < classes.size()) {
-				mPlanet.buildShip(new ShipModel(classes.get(index)));
-			}
-			if (x > Constants.GAME_WIDTH / 3 && x < Constants.GAME_WIDTH / 3 * 2) {
-				System.out.println("remove build");
+			if (mPlanet.getDock() != null) {
+				List<ShipTemplateModel> classes = GameService.getInstance().getShipClasses();
+				int index = (y - POS_Y - LIST_START_Y + 3) / LINE_INTERVAL;
+				if (x < Constants.GAME_WIDTH / 3 && index < classes.size()) {
+					mPlanet.getDock().buildShip(new ShipModel(classes.get(index)));
+				}
+				if (x > Constants.GAME_WIDTH / 3 && x < Constants.GAME_WIDTH / 3 * 2) {
+					System.out.println("remove build");
+				}
 			}
 		} else if (y < POS_Y) {
 			back();

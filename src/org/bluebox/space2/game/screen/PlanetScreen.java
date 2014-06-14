@@ -15,6 +15,7 @@ import org.bluebox.space2.engine.ui.View;
 import org.bluebox.space2.engine.ui.View.OnClickListener;
 import org.bluebox.space2.game.Constants;
 import org.bluebox.space2.game.Game.Anim;
+import org.bluebox.space2.game.model.DockModel;
 import org.bluebox.space2.game.model.StructureModel;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.SystemModel;
@@ -227,21 +228,24 @@ public class PlanetScreen extends BaseScreen {
 	}
 
 	private void drawCurrentDock(BaseScreenLayer mainLayer, int posX, int posY) {
-		mainLayer.drawRectangle(posX, posY, 134, 46, mColor);
-		mainLayer.drawRectangle(posX, posY, 134, 12, mColor);
-		mainLayer.drawString("Building at dock", posX + 4, posY + 4);
-		int size = mPlanet.getShipToBuild().size();
-		int totalETA = 0;
-		for (int i = 0; i < Math.min(size, 4); i++) {
-			mainLayer.drawRectangle(posX + 4 + 31 * i, posY + 16, 26, 26, new Color(0.5f, 0.5f, 0.2f, 1));
-			if (i < 3) {
-				totalETA += mPlanet.getBuildETA(mPlanet.getShipToBuild().get(i).getBuildRemain());
-				String eta = Utils.getFormatedTime(totalETA);
-				String className = mPlanet.getShipToBuild().get(i).getClassName().substring(0, 3) + ".";
-				mainLayer.drawString(className, posX + 4 + 31 * i, posY + 16);
-				mainLayer.drawString(eta, posX + 4 + 31 * i, posY + 24);
-			} else {
-				mainLayer.drawString("+" + (size - 3), posX + 4 + 31 * i, posY + 16);
+		DockModel dock = mPlanet.getDock();
+		if (dock != null) {
+			mainLayer.drawRectangle(posX, posY, 134, 46, mColor);
+			mainLayer.drawRectangle(posX, posY, 134, 12, mColor);
+			mainLayer.drawString("Building at dock", posX + 4, posY + 4);
+			int size = dock.getShipToBuild().size();
+			int totalETA = 0;
+			for (int i = 0; i < Math.min(size, 4); i++) {
+				mainLayer.drawRectangle(posX + 4 + 31 * i, posY + 16, 26, 26, new Color(0.5f, 0.5f, 0.2f, 1));
+				if (i < 3) {
+					totalETA += mPlanet.getBuildETA(dock.getShipToBuild().get(i).getBuildRemain());
+					String eta = Utils.getFormatedTime(totalETA);
+					String className = dock.getShipToBuild().get(i).getClassName().substring(0, 3) + ".";
+					mainLayer.drawString(className, posX + 4 + 31 * i, posY + 16);
+					mainLayer.drawString(eta, posX + 4 + 31 * i, posY + 24);
+				} else {
+					mainLayer.drawString("+" + (size - 3), posX + 4 + 31 * i, posY + 16);
+				}
 			}
 		}
 	}

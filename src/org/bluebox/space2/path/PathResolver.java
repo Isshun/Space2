@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bluebox.space2.game.model.ILocation;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
 import org.bluebox.space2.game.service.GameService;
@@ -45,7 +46,7 @@ public class PathResolver {
 		return sSelf;
 	}
 
-	public LinkedList<Vertex> getPath (SystemModel origin, SystemModel goal) {
+	public LinkedList<Vertex> getPath (ILocation origin, ILocation goal) {
 		Graph graph = new Graph(nodes.values(), edges);
 		DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
 

@@ -14,7 +14,7 @@ import org.bluebox.space2.game.model.ILocation;
 import org.bluebox.space2.game.model.PlanetClassModel;
 import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.PlayerModel;
-import org.bluebox.space2.game.model.ShipClassModel;
+import org.bluebox.space2.game.model.ShipTemplateModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;

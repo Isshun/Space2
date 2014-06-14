@@ -58,12 +58,9 @@ public class Game implements ApplicationListener {
 	private int 							mRenderCount;
 	protected Timer 						mTimer;
 	private long 							mLastRender;
-
-	private IArtManager mArt;
-
-	private TextureRegion mBg;
-
-	private boolean mIsRunning;
+	private IArtManager 					mArt;
+	private TextureRegion 				mBg;
+	private boolean 						mIsRunning;
 
 	public enum Anim {
 		NO_TRANSITION,
@@ -262,10 +259,7 @@ public class Game implements ApplicationListener {
 
 		List<PlayerModel> players = GameService.getInstance().getPlayers();
 		for (PlayerModel player: players) {
-			if (player.isAI()) {
-				//AI.getInstance().play(player);
-			}
-			player.update();
+			player.onUpdate();
 		}
 
 		mCycle++;
