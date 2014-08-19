@@ -5,18 +5,19 @@ import java.util.List;
 import org.bluebox.space2.Log;
 import org.bluebox.space2.ai.AIPlayerModel;
 import org.bluebox.space2.ai.Goal;
-import org.bluebox.space2.ai.forcePool.ForcePoolManager.Need;
 import org.bluebox.space2.ai.ship.ShipCaptain;
-import org.bluebox.space2.ai.ship.goal.ShipActionColonizeGoal;
 import org.bluebox.space2.ai.ship.goal.GoBuildShip;
+import org.bluebox.space2.ai.ship.goal.GoBuildShip.GoBuildShipListener;
+import org.bluebox.space2.ai.ship.goal.ShipActionColonizeGoal;
+import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.PlanetModel;
-import org.bluebox.space2.game.model.ShipTemplateModel;
 import org.bluebox.space2.game.model.ShipModel;
-import org.bluebox.space2.game.service.GameService;
-
-import com.badlogic.gdx.utils.Logger;
 
 public class ColonizeGoal extends Goal {
+	public interface GoalListener {
+		void onComplete(ColonizeGoal goal, PlanetModel planet);
+	}
+
 	enum Step {
 		FIND_PLANET,
 		LOOKING_COLONY_SHIP,
@@ -26,12 +27,17 @@ public class ColonizeGoal extends Goal {
 	
 	private Step				mStep = Step.FIND_PLANET;
 	private Goal 				mBuildColonyShipGoal;
-	private ShipModel 		mShip;
 	private PlanetModel 		mPlanet;
 	private ShipCaptain 		mCaptain;
+	protected ShipModel 		mShip;
+	protected FleetModel		mFleet;
+	protected GoalListener 	mListener;
+	private double mRouteRiskIndice;
 	
-	public ColonizeGoal (AIPlayerModel player) {
+	public ColonizeGoal (AIPlayerModel player, GoalListener listener) {
 		super(player);
+		
+		mListener = listener;
 	}
 
 	@Override
@@ -60,7 +66,6 @@ public class ColonizeGoal extends Goal {
 			
 		// Looking for colony ship
 		case LOOKING_COLONY_SHIP:
-			mShip = findColonyShip();
 			if (mShip != null) {
 				mStep = Step.ORDER_TO_COLONIZE;
 			} else {
@@ -78,21 +83,46 @@ public class ColonizeGoal extends Goal {
 			break;
 			
 		case ORDER_TO_COLONIZE:
-			mCaptain = findCaptain(mShip);
-			mCaptain.setGoal(new ShipActionColonizeGoal(mPlayer, mShip, mPlanet));
+			mRouteRiskIndice = mGSAI.getDefensiveManager().getRouteRiskIndice(mPlanet);
+
+			// Create fleet
+			if (mFleet == null) {
+				mFleet = new FleetModel(mPlayer);
+				mFleet.addShip(mShip);
+				mFleet.setLocation(mShip.getLocation());
+			}
+
+			// Create captain if not exists
+			if (mFleet.hasCaptain() == false) {
+				mFleet.setCaptain(findCaptain(mFleet, mShip));
+			}
+			
+			// Go to colonize if route is safe
+			if (mRouteRiskIndice < mFleet.getIndice()) {
+				mFleet.moveCaptainToStrongestShip();
+				mFleet.getCaptain().setGoal(new ShipActionColonizeGoal(mPlayer, mShip, mPlanet, new ShipActionColonizeGoal.GoalListener() {
+					@Override
+					public void onComplete (PlanetModel planet) {
+						if (mListener != null) {
+							mListener.onComplete(ColonizeGoal.this, planet);
+						}
+					}
+				}));
+			}
+
 			break;
 		}
 		return false;
 	}
 
-	private ShipCaptain findCaptain (ShipModel ship) {
+	private ShipCaptain findCaptain (FleetModel fleet, ShipModel ship) {
 		List<ShipCaptain> captains = mPlayer.getCaptains();
 		for (ShipCaptain captain: captains) {
-			if (captain.getShip() == ship) {
+			if (fleet.equals(captain.getFleet())) {
 				return captain;
 			}
 		}
-		return mPlayer.createCaptain(ship);
+		return mPlayer.createCaptain(fleet, ship);
 	}
 
 	private Goal buildColonyShip () {
@@ -100,7 +130,16 @@ public class ColonizeGoal extends Goal {
 		
 		ShipFilter filter = new ShipFilter();
 		filter.hasColonizer = true;
-		return mGSAI.getForcePoolManager().need(Need.BUILD_SHIP, filter);
+		
+		GoBuildShip goal = new GoBuildShip(mPlayer, filter, new GoBuildShipListener() {
+			@Override
+			public void onComplete (ShipModel ship) {
+				mShip = ship;
+			}
+		});
+		mGSAI.getForcePoolManager().need(goal);
+		
+		return goal;
 	}
 
 	private ShipModel findColonyShip () {
@@ -111,12 +150,18 @@ public class ColonizeGoal extends Goal {
 		int bestIndice = 0;
 		PlanetModel bestPlanet = null;
 		for (PlanetModel planet: mPlayer.getKnowedPlanet()) {
-			if (planet.getIndice() > bestIndice) {
+			if (planet.isFree() && planet.getIndice() > bestIndice) {
 				bestIndice = planet.getIndice();
 				bestPlanet = planet;
 			}
 		}
 		return bestPlanet;
+	}
+
+	@Override
+	public void onComplete () {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

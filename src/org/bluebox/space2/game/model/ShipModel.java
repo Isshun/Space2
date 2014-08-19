@@ -29,6 +29,7 @@ public class ShipModel extends BuildingBaseModel  {
 	private ShipTemplateModel 		mShipClass;
 	private FleetModel 				mFleet;
 	private boolean 					mIsWorking;
+	private ILocation 				mLocation;
 	
 	public ShipModel(ShipTemplateModel shipClass) {
 		super(shipClass.getBuildValue());
@@ -49,29 +50,29 @@ public class ShipModel extends BuildingBaseModel  {
 		mGlobalIndice = mAttackIndice + mDefenseIndice;
 	}
 
-	public int 				getId () { return mId; }
-	public double			getSpeed () { return mSpeed; }
-	public double 			getIndice () { return mGlobalIndice; }
-	public double 			getAttackIndice () { return mAttackIndice; }
-	public double 			getDefenseIndice () { return mDefenseIndice; }
-	public int 				getMass () { return mMass; }
-	public int 				getCrew () { return mCrew; }
-	public int 				getTotalCrew () { return mTotalCrew; }
-	public int 				getHull () { return mHull; }
-	public int 				getHullBase () { return mHullBase; }
-	public double			getHullRatio () { return (double)mHull / mHullBase; }
-	public double 			getPhaserPower () { return mPhaserPower; }
-	public double 			getTorpedoPower () { return mTorpedoPower; }
-	public double 			getVelocity () { return mSpeed; }
-	public String 			getClassName () { return mShipClass.getName(); }
-	public double 			getShieldPower () { return mShieldPower; }
-	public double 			getArmory () { return mArmory; }
-	public String 			getSpecialDeviceName () { return "none"; }
-	public PlanetModel 	getPlanet () { return mPlanet; }
-	public SystemModel 	getSystem () { return mSystem; }
-	public FleetModel 	getFleet () { return mFleet; }
-	public ShipTemplateModel getShipClass () { return mShipClass; }
-	public ILocation		getLocation () { return mFleet.getLocation(); }
+	public int 						getId () { return mId; }
+	public double					getSpeed () { return mSpeed; }
+	public double 					getIndice () { return mGlobalIndice; }
+	public double 					getAttackIndice () { return mAttackIndice; }
+	public double 					getDefenseIndice () { return mDefenseIndice; }
+	public int 						getMass () { return mMass; }
+	public int 						getCrew () { return mCrew; }
+	public int 						getTotalCrew () { return mTotalCrew; }
+	public int 						getHull () { return mHull; }
+	public int 						getHullBase () { return mHullBase; }
+	public double					getHullRatio () { return (double)mHull / mHullBase; }
+	public double 					getPhaserPower () { return mPhaserPower; }
+	public double 					getTorpedoPower () { return mTorpedoPower; }
+	public double 					getVelocity () { return mSpeed; }
+	public String 					getClassName () { return mShipClass.getName(); }
+	public double 					getShieldPower () { return mShieldPower; }
+	public double 					getArmory () { return mArmory; }
+	public String 					getSpecialDeviceName () { return "none"; }
+	public PlanetModel 			getPlanet () { return mPlanet; }
+	public SystemModel 			getSystem () { return mSystem; }
+	public FleetModel 			getFleet () { return mFleet; }
+	public ShipTemplateModel 	getShipClass () { return mShipClass; }
+	public ILocation				getLocation () { return mFleet != null ? mFleet.getLocation() : mLocation; }
 
 
 	public void setFleet (FleetModel fleet) { mFleet = fleet; }
@@ -103,5 +104,9 @@ public class ShipModel extends BuildingBaseModel  {
 
 	public boolean isDestroyed () {
 		return false;
+	}
+
+	public void setLocation (ILocation location) {
+		mLocation = location;
 	}
 }

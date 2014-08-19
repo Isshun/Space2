@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bluebox.space2.game.model.BuildingClassModel;
+import org.bluebox.space2.game.model.BuildingClassModel.Type;
 import org.bluebox.space2.game.model.FleetModel;
 import org.bluebox.space2.game.model.ILocation;
 import org.bluebox.space2.game.model.PlanetModel;
@@ -13,6 +14,7 @@ import org.bluebox.space2.game.model.SystemModel;
 import org.bluebox.space2.game.model.TravelModel;
 
 public class GameData {
+	private static GameData 			self;
 	public int 								spacePosX;
 	public int 								spacePosY;
 	
@@ -34,6 +36,7 @@ public class GameData {
 		buildingClasses = new ArrayList<BuildingClassModel>();
 		travelLines = new ArrayList<TravelModel>();
 		fleets = new ArrayList<FleetModel>();
+		self = this;
 	}
 
 	public void addPlanetToSystemId (int id, PlanetModel planet) {

@@ -11,7 +11,11 @@ import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.ShipModel;
 import org.bluebox.space2.game.model.ShipTemplateModel;
 
-public class GoBuildShip extends Goal {
+public class GoBuildShip extends BuildShipGoal {
+	public static interface GoBuildShipListener {
+		void onComplete(ShipModel ship);
+	}
+	
 	enum Step {
 		GET_TEMPLATE,
 		WAIT_TEMPLATE_DESIGN,
@@ -19,16 +23,18 @@ public class GoBuildShip extends Goal {
 		WAIT_SHIP_BUILDING
 	}
 	
-	private ShipTemplateModel	mTemplate;
-	private ShipModel				mShip;
-	private ShipFilter 			mFilter;
-	private Step					mStep = Step.GET_TEMPLATE;
-	private Goal					mTemplateDesignGoal;
-	private DockModel mDock;
+	private ShipTemplateModel		mTemplate;
+	private ShipModel					mShip;
+	private ShipFilter 				mFilter;
+	private Step						mStep = Step.GET_TEMPLATE;
+	private Goal						mTemplateDesignGoal;
+	private DockModel 				mDock;
+	private GoBuildShipListener 	mListener;
 	
-	public GoBuildShip (AIPlayerModel player, ShipFilter filter) {
+	public GoBuildShip(AIPlayerModel player, ShipFilter filter, GoBuildShipListener listener) {
 		super(player);
 		mFilter = filter;
+		mListener = listener;
 	}
 
 	public boolean isComplete () {
@@ -75,7 +81,6 @@ public class GoBuildShip extends Goal {
 			// Wait ship building
 			case WAIT_SHIP_BUILDING:
 				if (mShip.isComplete()) {
-					mPlayer.createCaptain(mShip);
 					goalCompleted();
 					return true;
 				}
@@ -90,14 +95,22 @@ public class GoBuildShip extends Goal {
 		int minDuration = Integer.MAX_VALUE;
 		
 		for (PlanetModel planet: mPlayer.getPlanets()) {
-			if (planet.getDock() != null) {
+			if (planet.hasDock()) {
 				int duration = planet.getDock().getQueueDuration() + planet.getBuildETA(mTemplate.getBuildValue());
-				if (planet.hasDock() && duration < minDuration) {
+				if (duration < minDuration) {
 					minDuration = duration;
 					bestDock = planet.getDock();
 				}
 			}
 		}
+		
 		return bestDock;
+	}
+
+	@Override
+	public void onComplete () {
+		if (mListener != null) {
+			mListener.onComplete(mShip);
+		}
 	}
 }

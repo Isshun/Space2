@@ -47,12 +47,20 @@ public class PathResolver {
 	}
 
 	public LinkedList<Vertex> getPath (ILocation origin, ILocation goal) {
+		if (origin == null) {
+			throw new RuntimeException("Origin location cannot be null");
+		}
+
+		if (goal == null) {
+			throw new RuntimeException("Goal location cannot be null");
+		}
+		
 		Graph graph = new Graph(nodes.values(), edges);
 		DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
 
-		System.out.println("Get path from " + nodes.get(origin).getName() + " to " + nodes.get(goal).getName());
-		dijkstra.execute(nodes.get(origin));
-		LinkedList<Vertex> path = dijkstra.getPath(nodes.get(goal));
+		System.out.println("Get path from " + nodes.get(origin.getSystem()).getName() + " to " + nodes.get(goal.getSystem()).getName());
+		dijkstra.execute(nodes.get(origin.getSystem()));
+		LinkedList<Vertex> path = dijkstra.getPath(nodes.get(goal.getSystem()));
 	    
 		if (path != null) {
 			for (Vertex vertex : path) {

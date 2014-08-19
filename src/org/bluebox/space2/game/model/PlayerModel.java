@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bluebox.space2.ai.GSAI;
 import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.game.Game;
 import org.bluebox.space2.game.GameData;
@@ -137,7 +138,9 @@ public class PlayerModel {
 	public void onUpdate () {
 		List<FleetModel> fleets = new ArrayList<FleetModel>(mFleets);
 		for (FleetModel fleet: fleets) {
-			fleet.move();
+			if (fleet.hasCaptain()) {
+				fleet.getCaptain().update();
+			}
 		}
 	}
 
@@ -183,4 +186,26 @@ public class PlayerModel {
 	public void setSpaceColor (Color color) { mSpaceColor = color; }
 	public void setName (String name) {mName = name; }
 	public void setAI (int i) { mIsAI = i != 1; }
+
+	public void dump () {
+		System.out.println("\n\n\n=========================== DUMP ==============================");
+		
+		for (PlanetModel planet: mPlanets) {
+			System.out.println(planet.getName());
+			
+			for (StructureModel structure: planet.getBuildList()) {
+				System.out.println("Build structure: " + structure.getName() + " (" + structure.getBuildRemain() + ")");
+			}
+			
+			if (planet.getDock() != null) {
+				for (ShipModel ship: planet.getDock().getBuildList()) {
+					System.out.println("Build ship: " + ship.getClassName() + " (" + ship.getBuildRemain() + ")");
+				}
+			}
+		}
+	}
+
+	public GSAI getAI () {
+		return null;
+	}
 }

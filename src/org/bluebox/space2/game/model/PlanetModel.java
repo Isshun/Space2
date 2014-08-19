@@ -294,10 +294,6 @@ public class PlanetModel implements ILocation {
 			}
 		}
 		
-		if (mDock == null && type == BuildingClassModel.Type.DOCK) {
-			mDock = new DockModel(this);
-		}
-		
 		mStructuresToBuild.add(GameService.getInstance().createStructure(type, this));
 	}
 
@@ -341,4 +337,21 @@ public class PlanetModel implements ILocation {
 	public void setPopulationMax (int value) { mPopulationMax = value; }
 	public double getDevelopement () { return mPopulation > 0 ? mPopulationMax / mPopulation : 0; }
 	public double getBuildCoef () { return mBaseProd * mPopulation; }
+
+	public List<StructureModel> getBuildList () {
+		return mStructuresToBuild;
+	}
+
+	public int getBuildListETA () {
+		int eta = 0;
+		for (StructureModel structure: mStructuresToBuild) {
+			eta += getBuildETA(structure.getBuildRemain());
+		}
+		return eta;
+	}
+
+	@Override
+	public ILocation getPlanet () {
+		return this;
+	}
 }

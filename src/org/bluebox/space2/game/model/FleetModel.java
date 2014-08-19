@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bluebox.space2.Utils;
+import org.bluebox.space2.ai.GSAI;
+import org.bluebox.space2.ai.ship.ShipCaptain;
 import org.bluebox.space2.game.model.DeviceModel.Device;
 import org.bluebox.space2.path.PathResolver;
 import org.bluebox.space2.path.Vertex;
@@ -30,6 +32,7 @@ public class FleetModel implements IShipCollectionModel {
 	private double 		mAttackIndice;
 	private double 		mDefenseIndice;
 	private ILocation 	mTargetLocation;
+	private ShipCaptain	mCaptain;
 
 	public FleetModel (PlayerModel owner) {
 		mId = Utils.getUUID();
@@ -67,6 +70,10 @@ public class FleetModel implements IShipCollectionModel {
 			else {
 				throw new GameException("Cannot move ship to fleet with different location");
 			}
+		}
+		
+		if (mShips.isEmpty()) {
+			mLocation = ship.getLocation();
 		}
 		
 		mShips.add(ship);
@@ -120,7 +127,7 @@ public class FleetModel implements IShipCollectionModel {
 	}
 
 	public String getLocationName () {
-		return mLocation.getName();
+		return mLocation != null ? mLocation.getName() : "?";
 	}
 
 	public int getNbShip () {
@@ -184,7 +191,8 @@ public class FleetModel implements IShipCollectionModel {
 	public void setCourse (ILocation goal) {
 		mTargetLocation = goal;
 		mPath = PathResolver.getInstance().getPath(mLocation, mTargetLocation);
-		move();
+		// TODO: why move() was called ?
+		// move();
 	}
 
 	public Action getAction () {
@@ -260,5 +268,33 @@ public class FleetModel implements IShipCollectionModel {
 
 	public ILocation getTargetLocation () {
 		return mTargetLocation;
+	}
+
+	public boolean hasCaptain () {
+		return mCaptain != null;
+	}
+
+	public ShipCaptain getCaptain () {
+		return mCaptain;
+	}
+
+	public void moveCaptainToStrongestShip () {
+		double defenseIndice = -1;
+		ShipModel strongestShip = null;
+		
+		for (ShipModel ship: mShips) {
+			if (ship.getDefenseIndice() > defenseIndice) {
+				strongestShip = ship;
+				defenseIndice = ship.getDefenseIndice();
+			}
+		}
+		
+		if (strongestShip != null) {
+			mCaptain.setShip(strongestShip);
+		}
+	}
+
+	public void setCaptain (ShipCaptain captain) {
+		mCaptain = captain;
 	}
 }

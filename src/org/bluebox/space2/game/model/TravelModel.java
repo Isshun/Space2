@@ -121,4 +121,14 @@ public class TravelModel implements ILocation {
 	public int getId () {
 		return mId;
 	}
+
+	@Override
+	public ILocation getPlanet () {
+		return null;
+	}
+
+	@Override
+	public ILocation getSystem () {
+		return null;
+	}
 }

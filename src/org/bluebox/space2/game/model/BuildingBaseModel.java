@@ -8,7 +8,7 @@ public class BuildingBaseModel {
 		mTotalBuild = buildValue;
 	}
 
-	public int 		getBuildRemain () {
+	public int 		getBuildRemain() {
 		return (int)(mTotalBuild - mBuild);
 	}
 

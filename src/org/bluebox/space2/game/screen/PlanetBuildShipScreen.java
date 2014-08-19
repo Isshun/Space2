@@ -65,7 +65,7 @@ public class PlanetBuildShipScreen extends BaseScreen {
 			int j = 0;
 			int time = 0;
 			for (ShipModel sc: builds) {
-				time += sc.getBuildETA();
+				time += sc.getBuildRemain();
 				mainLayer.drawString(sc.getClassName(), Constants.GAME_WIDTH / 3 + 5, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
 				mainLayer.drawString(Utils.getFormatedTime(time), Constants.GAME_WIDTH / 3 * 2 - 34, POS_Y + LIST_START_Y + j * LINE_INTERVAL);
 				j++;

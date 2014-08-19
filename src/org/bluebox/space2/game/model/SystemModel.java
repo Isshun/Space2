@@ -240,5 +240,14 @@ public class SystemModel implements ILocation {
 	public void setName (String name) { mName = name; }
 	public void setX (Integer x) { mPosX = x; }
 	public void setY (Integer y) { mPosY = y; }
-	
+
+	@Override
+	public ILocation getPlanet () {
+		return null;
+	}
+
+	@Override
+	public ILocation getSystem () {
+		return this;
+	}
 }

@@ -260,6 +260,10 @@ public class Game implements ApplicationListener {
 		List<PlayerModel> players = GameService.getInstance().getPlayers();
 		for (PlayerModel player: players) {
 			player.onUpdate();
+			
+			if (player.isAI()) {
+				player.dump();
+			}
 		}
 
 		mCycle++;

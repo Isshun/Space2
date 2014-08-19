@@ -55,6 +55,7 @@ public class DockModel extends StructureModel implements IShipCollectionModel {
 
 	public ShipModel buildShip(ShipTemplateModel sc) {
 		ShipModel ship = new ShipModel(sc);
+		ship.setLocation(mPlanet.getSystem());
 		return buildShip(ship);
 	}
 
@@ -83,6 +84,10 @@ public class DockModel extends StructureModel implements IShipCollectionModel {
 			eta += mPlanet.getBuildETA(s.getBuildRemain());
 		}
 		return eta;
+	}
+
+	public List<ShipModel> getBuildList () {
+		return mShipsToBuild;
 	}
 
 

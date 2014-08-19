@@ -1,5 +1,7 @@
 package org.bluebox.space2.ai;
 
+import org.bluebox.space2.game.model.ShipModel;
+
 
 public abstract class Goal {
 	protected AIPlayerModel mPlayer;
@@ -24,5 +26,10 @@ public abstract class Goal {
 	
 	protected void goalCompleted () {
 		mIsComplete = true;
+		
+		onComplete();
 	}
+	
+	public abstract void onComplete();
+
 }

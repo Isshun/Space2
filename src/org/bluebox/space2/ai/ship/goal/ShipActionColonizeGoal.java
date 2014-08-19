@@ -5,23 +5,40 @@ import org.bluebox.space2.game.model.PlanetModel;
 import org.bluebox.space2.game.model.ShipModel;
 
 public class ShipActionColonizeGoal extends ShipActionGoal {
-	private PlanetModel _planet;
+	public interface GoalListener {
+		void onComplete(PlanetModel planet);
+	}
 
-	public ShipActionColonizeGoal(AIPlayerModel player, ShipModel ship, PlanetModel planet) {
+	private PlanetModel 		mPlanet;
+	private GoalListener 	mListener;
+
+	public ShipActionColonizeGoal(AIPlayerModel player, ShipModel ship, PlanetModel planet, GoalListener listener) {
 		super(player, ship, planet);
 		
-		_planet = planet;
+		mListener = listener;
+		mPlanet = planet;
 	}
 
 	@Override
-	protected boolean action(AIPlayerModel player) {
-		_planet.colonize(player);
+	protected boolean onAction(AIPlayerModel player) {
+		mPlanet.colonize(player);
 		
-		if (_planet.getOwner() == player) {
+		if (mPlanet.getOwner() == player) {
+			if (mListener != null) {
+				mListener.onComplete(mPlanet);
+			}
 			return true;
 		}
 		
+		System.out.println("Unable to colonize planet");
+		
 		return false;
+	}
+
+	@Override
+	public void onComplete () {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

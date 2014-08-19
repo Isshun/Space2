@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bluebox.space2.Utils;
 import org.bluebox.space2.ai.AIPlayerModel;
+import org.bluebox.space2.ai.AggressiveGSAI;
 import org.bluebox.space2.engine.Art;
 import org.bluebox.space2.game.model.BuildingClassModel;
 import org.bluebox.space2.game.model.BuildingClassModel.Type;
@@ -398,7 +399,11 @@ public class GameDataFactory {
 				data.systems.get(i).addPlanet(p);
 				data.planets.add(p);
 			}
-			player.colonize(data.systems.get(i).getRicherPlanet());
+			PlanetModel planet = data.systems.get(i).getRicherPlanet();
+			player.colonize(planet);
+			if (player.isAI()) {
+				player.getAI().getPlanetsManager().addGovernator(planet);
+			}
 			i += offset;
 		}
 	}
@@ -461,8 +466,8 @@ public class GameDataFactory {
 	}
 
 	public static void initPlayers (GameData data) {
-		data.player = new PlayerModel("me", new Color(0.9f, 0.9f, 0, 0.65f), Color.YELLOW, false);
-		data.players.add(new AIPlayerModel("player-1", new Color(0.55f, 0, 0, 0.65f), new Color(0.55f, 0, 0, 1), true));
+//		data.player = new PlayerModel("Federation", new Color(0.9f, 0.9f, 0, 0.65f), Color.YELLOW, false);
+		data.player = new AIPlayerModel("Federation", new Color(0.55f, 0, 0, 0.65f), new Color(0.55f, 0, 0, 1), true, new AggressiveGSAI());
 //		data.players.add(new AIPlayerModel("player-2", new Color(80f/255, 120f/255, 182f/255, 0.65f), new Color(80f/255, 120f/255, 182f/255, 1), true));
 //		data.players.add(new AIPlayerModel("player-3", new Color(160f/255, 190f/255, 24f/255, 0.65f), Color.PINK, true));
 		data.players.add(data.player);
